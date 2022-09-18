@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "author": "Calpollo",
-  "contributors": ["Andreas Nicklaus"],
+  "contributors": [
+    "Andreas Nicklaus"
+  ],
   "description": "Terminplaner für Physiotherapiepraxen",
   "displayName": "Leto by Calpollo",
   "scripts": {
@@ -25,6 +27,8 @@
     "popper.js": "^1.16.1",
     "portal-vue": "^2.1.7",
     "register-service-worker": "^1.7.2",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.1",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
