@@ -1,6 +1,8 @@
 # leto
 
 - [leto](#leto)
+  - [Developer notes](#developer-notes)
+    - [Inter-process communication](#inter-process-communication)
 
 ## Developer notes
 
