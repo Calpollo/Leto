@@ -1,12 +1,11 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
-
-const sqlite = require("sqlite");
-const sqlite3 = require("sqlite3");
+// eslint-disable-next-line no-unused-vars
+import * as _ from "./db/localDbEndpoints";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -27,34 +26,6 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       preload: path.join(__dirname, "preload.js"),
     },
-  });
-
-  ipcMain.handle("ping", () => {
-    sqlite
-      .open({
-        filename: "./data/database.sqlite",
-        driver: sqlite3.Database,
-      })
-      .then(async (db) => {
-        // await db.exec(`DROP TABLE tbl;`)
-        await db.exec(`CREATE TABLE IF NOT EXISTS tbl (
-            col TEXT,
-            data NUMBER
-        );`);
-        await db.exec('INSERT INTO tbl VALUES ("test", 4)');
-
-        const result = await db.get("SELECT * FROM tbl");
-        // await db.run(
-        //     'INSERT INTO tbl (col) VALUES (?)',
-        //     'foo'
-        //   )
-        // const result = await db.run('SELECT * FROM tbl')
-        console.log(result);
-        console.log(await db.db);
-      })
-      .catch(console.error);
-
-    return "pong";
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

@@ -1,24 +1,11 @@
 # leto
 
-## Project setup
-```
-npm install
-```
+- [leto](#leto)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Developer notes
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Inter-process communication
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+1. `windows.ipc` allows invocation of functions anywhere in the site code.
+2. *src/preload.js* loads all functions available through `ipcRenderer.invoke`. All parameters have to passed through.
+3. *src/db/localDbEndpoints.js* handles the function calls using `ipcMain.handle`. The parameters for these functions are *event* and the passed *data*.

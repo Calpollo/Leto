@@ -14,7 +14,3 @@ new Vue({
   store,
   render: (h) => h(App),
 }).$mount("#app");
-
-window.versions.ping().then((response) => {
-  console.log(response); // prints out 'pong'
-});

@@ -1,12 +1,20 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+    <SideMenu />
     <router-view />
   </div>
 </template>
+
+<script>
+import DatabaseService from "./services/DatabaseService";
+import SideMenu from "./components/SideMenu.vue";
+export default {
+  mounted() {
+    console.log(DatabaseService);
+  },
+  components: { SideMenu },
+};
+</script>
 
 <style lang="scss">
 #app {
