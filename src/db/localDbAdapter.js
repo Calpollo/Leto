@@ -75,6 +75,15 @@ class LocalDbAdapter {
       },
     });
 
+    const [erik] = await this.Therapeut.findOrCreate({
+      where: {
+        name: "Erik Weßelborg",
+        geschlecht: "m",
+      },
+    });
+
+    await erik.addBehandlungsart([mt]);
+
     await anni.addBehandlungsart([mt, kgg]);
     await anni.setVertrag(vertrag);
 
@@ -117,11 +126,49 @@ class LocalDbAdapter {
       },
     });
 
+    const [testTermin2] = await this.Termin.findOrCreate({
+      where: {
+        datum: new Date().setDate(new Date().getDate() + 1),
+        id: "934725a7-220a-46f9-85b0-00f6869d0662",
+      },
+    });
+
+    const [testTermin3] = await this.Termin.findOrCreate({
+      where: {
+        datum: new Date().setDate(new Date().getDate() + 1),
+        id: "79c24962-b648-4c87-ac63-79009c69cfe9",
+      },
+    });
+
+    const [testTermin4] = await this.Termin.findOrCreate({
+      where: {
+        datum: new Date().setDate(new Date().getDate() + 1),
+        id: "76b4462b-b2fe-4c99-9484-5da6b2e5fd73",
+      },
+    });
+
     const [terminZeit] = await this.Zeitspanne.findOrCreate({
       where: {
         startStunde: 12,
-        endStunde: 13,
+        endStunde: 18,
         endMinute: 15,
+      },
+    });
+
+    const [terminZeit2] = await this.Zeitspanne.findOrCreate({
+      where: {
+        startStunde: 12,
+        startMinute: 15,
+        endStunde: 13,
+        endMinute: 30,
+      },
+    });
+    const [terminZeit3] = await this.Zeitspanne.findOrCreate({
+      where: {
+        startStunde: 10,
+        startMinute: 0,
+        endStunde: 11,
+        endMinute: 30,
       },
     });
 
@@ -129,6 +176,21 @@ class LocalDbAdapter {
     await testTermin.setTherapeut(anni);
     await testTermin.setRezept(testRezept);
     await testTermin.setZeitspanne(terminZeit);
+
+    await testTermin2.setPraxis(ktWagner);
+    await testTermin2.setTherapeut(anni);
+    await testTermin2.setRezept(testRezept);
+    await testTermin2.setZeitspanne(terminZeit);
+
+    await testTermin3.setPraxis(ktWagner);
+    await testTermin3.setTherapeut(anni);
+    await testTermin3.setRezept(testRezept);
+    await testTermin3.setZeitspanne(terminZeit2);
+
+    await testTermin4.setPraxis(ktWagner);
+    await testTermin4.setTherapeut(anni);
+    await testTermin4.setRezept(testRezept);
+    await testTermin4.setZeitspanne(terminZeit3);
 
     console.log("Modelle:", Object.keys(this.sequelize.models));
   }
@@ -438,6 +500,7 @@ class LocalDbAdapter {
     await this.Zeitspanne.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Zeitspanne);
 
+    console.log(this.Vertrag.associations);
     // #################
     // Synchronisation
     // #################
@@ -446,8 +509,22 @@ class LocalDbAdapter {
 
   get(table, { id, where, include } = {}) {
     if (id) return table.findByPk(id, { include });
-    if (where) return table.findOne({ where, include });
+    if (where) return table.findAll({ where, include });
     return table.findAll({ include });
+  }
+
+  create(table, { where, findIfExists = true }) {
+    if (findIfExists) {
+      return table.findOrCreate({ where });
+    } else {
+      return table.create(where);
+    }
+  }
+
+  remove(table, { id }) {
+    return table.destroy({
+      where: { id },
+    });
   }
 }
 

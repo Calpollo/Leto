@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <SideMenu />
-    <router-view />
+    <router-view class="view" />
   </div>
 </template>
 
@@ -18,23 +18,49 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  overflow-y: hidden;
+
+  font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+
+  --color: #141414;
+  color: var(--color);
+
+  --primary: #7c45e0;
+  --secondary: #064720;
+  --accent: #d77a61;
+  --secondary-accent: #1d5834;
+  --background: #eff1f3;
+  // --background-accent: #dbd3d8;
+  --background-accent: #dadada;
+
+  --error: #fa8253;
+  --warning: #ffbb00;
+
+  background-color: var(--background);
+
+  display: flex;
+  flex-direction: row;
 }
 
-nav {
-  padding: 30px;
+h2 {
+  padding-left: 4px;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+h3 {
+  padding-left: 8px;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+h4,
+h5,
+h6 {
+  padding-left: 12px;
+}
+
+.view {
+  display: inline-block;
+  width: 100%;
+  padding: 20px 50px;
 }
 </style>

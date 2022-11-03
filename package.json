@@ -54,6 +54,7 @@
     "sass-loader": "^12.0.0",
     "vue-cli-plugin-bootstrap-vue": "~0.8.2",
     "vue-cli-plugin-electron-builder": "^2.1.1",
+    "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.14"
   }
 }

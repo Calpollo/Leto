@@ -1,3 +1,6 @@
 {
-    "version": "local"
+    "version": "local",
+    "calendar": {
+        "defaultView": "3"
+    }
 }

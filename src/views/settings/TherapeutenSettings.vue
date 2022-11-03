@@ -1,0 +1,137 @@
+<template>
+  <div id="TherapeutenSettings">
+    <h2>Therapeuten</h2>
+    <p>
+      Deine Therapeuten können nur bestimmte Behandlungen ausführen und nur zu
+      den festgelegten Arbeitszeiten. Diese Daten kannst du hier festlegen.
+    </p>
+
+    <b-button class="my-2">
+      <b-icon-plus aria-hidden="true"></b-icon-plus>Neuer Therapeut</b-button
+    >
+
+    <div class="my-3" v-for="therapeut in this.therapeuten" :key="therapeut.id">
+      <h3 class="p-2 px-4">
+        {{ therapeut.name }} ({{ therapeut.geschlecht }})
+      </h3>
+      <p>
+        Im Unternehmen seit:
+        <em>{{ new Date(therapeut.createdAt).toLocaleDateString("de-DE") }}</em>
+      </p>
+      <p>
+        Zuletzt geändert:
+        <em>{{ new Date(therapeut.updatedAt).toLocaleDateString("de-DE") }}</em>
+      </p>
+
+      <b-card v-if="therapeut.Vertrag" bg-variant="light">
+        <h4>Vertrag:</h4>
+        <b-tabs>
+          <b-tab title="Vertrag">
+            <b-table
+              stacked
+              :items="
+                [therapeut.Vertrag].map(
+                  ({ wochenstunden, hausbesuchsstunden, urlaubstage }) => {
+                    return {
+                      wochenstunden,
+                      hausbesuchsstunden,
+                      urlaubstage,
+                    };
+                  }
+                )
+              "
+            ></b-table>
+          </b-tab>
+          <b-tab title="Arbeitszeiten">
+            <b-table
+              stacked
+              :items="
+                [therapeut.Vertrag].map(
+                  ({
+                    montagsZeit,
+                    dienstagsZeit,
+                    mittwochsZeit,
+                    donnerstagsZeit,
+                    freitagsZeit,
+                  }) => {
+                    return {
+                      Montag: zeitZuString(montagsZeit),
+                      Dienstag: zeitZuString(dienstagsZeit),
+                      Mittwoch: zeitZuString(mittwochsZeit),
+                      Donnerstag: zeitZuString(donnerstagsZeit),
+                      Freitag: zeitZuString(freitagsZeit),
+                    };
+                  }
+                )
+              "
+            ></b-table>
+          </b-tab>
+          <b-tab title="Urlaub">
+            <b-table
+              stacked
+              :items="
+                [therapeut.Vertrag].map(({ urlaubstage }) => {
+                  return {
+                    urlaubstage,
+                  };
+                })
+              "
+            ></b-table>
+
+            <b-list-group>
+              <b-list-group-item
+                v-for="tag in therapeut.Vertrag.Urlaub"
+                :key="tag.id"
+              >
+                {{ new Date(tag.datum).toLocaleDateString("de-DE") }}
+                <span v-if="tag.yearlyRepetition">(jährl. wiederholend)</span>
+              </b-list-group-item>
+            </b-list-group>
+          </b-tab>
+        </b-tabs>
+      </b-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import DatabaseService from "@/services/DatabaseService";
+export default {
+  data() {
+    return {
+      therapeuten: [],
+    };
+  },
+  methods: {
+    zeitZuString(event) {
+      return `${event.startStunde}:${String(event.startMinute).padStart(
+        2,
+        "0"
+      )} - ${event.endStunde}:${String(event.endMinute).padStart(2, "0")}`;
+    },
+  },
+  mounted() {
+    DatabaseService.getTherapeut({
+      include: {
+        association: "Vertrag",
+        include: [
+          "montagsZeit",
+          "dienstagsZeit",
+          "mittwochsZeit",
+          "donnerstagsZeit",
+          "freitagsZeit",
+          "Urlaub",
+        ],
+      },
+    }).then((tList) => (this.therapeuten = tList));
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+h3 {
+  background-color: var(--primary);
+  color: var(--background);
+  border-radius: 4px;
+}
+</style>

@@ -8,9 +8,90 @@ class DatabaseService {
       );
   }
 
+  isLocal() {
+    return ConfigService.getVersion() == "local";
+  }
+
+  // TODO: instead of parameters data, use specific parameters
+
+  // ############################
+  // Get Instances from the database
+  // ############################
   getZeitspanne(data) {
-    if (ConfigService.getVersion() == "local") {
-      return window.ipc.getZeitspanne(data);
+    if (this.isLocal()) {
+      return window.ipc.getZeitspanne(data).then(JSON.parse);
+    }
+  }
+
+  getTermine(data) {
+    if (this.isLocal()) {
+      return window.ipc.getTermin(data).then(JSON.parse);
+    }
+  }
+
+  getKunde(data) {
+    if (this.isLocal()) {
+      return window.ipc.getKunde(data).then(JSON.parse);
+    }
+  }
+
+  getTherapeut(data) {
+    if (this.isLocal()) {
+      return window.ipc.getTherapeut(data).then(JSON.parse);
+    }
+  }
+
+  // ############################
+  // Create Instances in the database
+  // ############################
+  createZeitspanne(data) {
+    if (this.isLocal()) {
+      return window.ipc.createZeitspanne(data).then(JSON.parse);
+    }
+  }
+
+  createTermine(data) {
+    if (this.isLocal()) {
+      return window.ipc.createTermin(data).then(JSON.parse);
+    }
+  }
+
+  createKunde(data) {
+    if (this.isLocal()) {
+      return window.ipc.createKunde(data).then(JSON.parse);
+    }
+  }
+
+  createTherapeut(data) {
+    if (this.isLocal()) {
+      return window.ipc.createTherapeut(data).then(JSON.parse);
+    }
+  }
+
+  // ############################
+  // Remove Instances in the database
+  // ############################
+  removeZeitspanne(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeZeitspanne(data).then(JSON.parse);
+    }
+  }
+
+  removeTermine(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeTermin(data).then(JSON.parse);
+    }
+  }
+
+  removeKunde(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeKunde(data).then(JSON.parse);
+    }
+  }
+
+  removeTherapeut(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeTherapeut(data).then(JSON.parse);
     }
   }
 }
