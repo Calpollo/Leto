@@ -18,8 +18,6 @@ export default {
 
 <style lang="scss">
 #app {
-  overflow-y: hidden;
-
   font-family: Roboto, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,13 +33,17 @@ export default {
   // --background-accent: #dbd3d8;
   --background-accent: #dadada;
 
+  background-color: var(--background);
+
   --error: #fa8253;
   --warning: #ffbb00;
 
-  background-color: var(--background);
-
   display: flex;
   flex-direction: row;
+}
+
+html {
+  background-color: var(--background);
 }
 
 h2 {

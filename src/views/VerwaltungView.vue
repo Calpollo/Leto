@@ -59,6 +59,24 @@ export default {};
 </script>
 
 <style lang="scss" scoped>
+#Verwaltung {
+  position: relative;
+
+  &::after {
+    content: "";
+    background: url(@/assets/MannSitzend.svg);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    background-size: min(250px, 30%);
+
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+  }
+}
 .boxes {
   display: grid;
   grid-template-columns: 1fr 1fr;

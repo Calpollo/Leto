@@ -1,7 +1,7 @@
 <template>
   <div id="Settings">
     <div class="sideMenu">
-      <h2>Einstellungen</h2>
+      <h2 id="einstellungen">Einstellungen</h2>
 
       <nav>
         <router-link :to="{ name: 'Einstellungen.Konto' }">Konto</router-link>
@@ -33,6 +33,10 @@ export default {};
   padding: 0;
   display: flex;
   flex-direction: row;
+}
+
+#einstellungen {
+  color: var(--primary);
 }
 
 .sideMenu {
