@@ -1,6 +1,6 @@
 <template>
   <div class="arbeitszeitoverview">
-    <h4 class="therapeutname">
+    <h4 v-if="!this.hideName" class="therapeutname">
       {{ therapeut.name }} ({{ therapeut.geschlecht }})
     </h4>
     <div class="timebar" :style="getTimebarStyle()">
@@ -33,6 +33,10 @@ export default {
   props: {
     therapeut: Object,
     hideArrow: {
+      type: Boolean,
+      default: false,
+    },
+    hideName: {
       type: Boolean,
       default: false,
     },

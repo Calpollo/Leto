@@ -32,7 +32,7 @@ import SettingsEditBlock from "@/components/settings/SettingsEditBlock.vue";
 export default {
   data() {
     return {
-      selectedVersion: "Basis",
+      selectedVersion: "Lokal",
       availableVersions: ["Lokal", "Basis", "Premium"],
       kontodata: {
         username: {

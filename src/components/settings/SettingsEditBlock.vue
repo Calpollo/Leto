@@ -56,7 +56,6 @@ export default {
       this.disableEditMode();
     },
     save() {
-      console.log("save", this.tempData);
       this.$emit("input", this.tempData);
       this.disableEditMode();
     },

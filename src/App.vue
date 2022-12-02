@@ -22,24 +22,28 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  color: var(--color);
+
+  background-color: var(--background);
+
+  display: flex;
+  flex-direction: row;
+}
+
+:root {
   --color: #141414;
   color: var(--color);
 
   --primary: #7c45e0;
   --secondary: #064720;
   --accent: #d77a61;
-  --secondary-accent: #1d5834;
+  --secondary-accent: #0a7133;
   --background: #eff1f3;
   // --background-accent: #dbd3d8;
   --background-accent: #dadada;
 
-  background-color: var(--background);
-
   --error: #fa8253;
   --warning: #ffbb00;
-
-  display: flex;
-  flex-direction: row;
 }
 
 html {

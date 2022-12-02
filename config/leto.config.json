@@ -1,6 +1,10 @@
 {
     "version": "local",
     "calendar": {
-        "defaultView": "3"
+        "defaultView": "3",
+        "therapeutColors": {
+            "Anna-Lena Fezer": "var(--primary)",
+            "Erik Weßelborg": "var(--secondary-accent)"
+        }
     }
 }

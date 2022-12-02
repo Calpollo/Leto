@@ -7,7 +7,6 @@ class LocalDbAdapter {
       storage: "./data/database.sqlite",
     });
 
-    console.log(this.seed);
 
     this.up().then(() => this.seed());
   }
@@ -183,7 +182,7 @@ class LocalDbAdapter {
     await testTermin2.setZeitspanne(terminZeit);
 
     await testTermin3.setPraxis(ktWagner);
-    await testTermin3.setTherapeut(anni);
+    await testTermin3.setTherapeut(erik);
     await testTermin3.setRezept(testRezept);
     await testTermin3.setZeitspanne(terminZeit2);
 
@@ -500,7 +499,6 @@ class LocalDbAdapter {
     await this.Zeitspanne.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Zeitspanne);
 
-    console.log(this.Vertrag.associations);
     // #################
     // Synchronisation
     // #################

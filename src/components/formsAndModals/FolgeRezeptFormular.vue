@@ -1,38 +1,80 @@
 <template>
-  <div class="FolgeRezeptFormular">
-    <b-form>
-      <h4>Patientendaten</h4>
-      <label for="kunde" class="mr-2">Patient:</label>
-      <b-form-input id="kunde" type="search" />
+  <div class="NeuesRezeptFormular">
+    <v-stepper v-model="currentStep" :flat="false" :dark="false">
+      <v-stepper-header>
+        <v-stepper-step :complete="currentStep > 1" step="1">
+          Patientendaten
+        </v-stepper-step>
 
-      <hr />
+        <v-divider></v-divider>
 
-      <h4>Rezeptdaten</h4>
+        <v-stepper-step :complete="currentStep > 2" step="2">
+          Terminwahl
+        </v-stepper-step>
+      </v-stepper-header>
 
-      <!-- @click="() => setVersion(typ)" -->
-      <label for="behandlungstyp" class="mr-2">Behandlungsart:</label>
-      <b-dropdown id="behandlungstyp" text="Behandlungsart">
-        <b-dropdown-item
-          v-for="typ in ['MT', 'KGG', 'Spaß mit Faszien']"
-          :key="typ"
-          >{{ typ }}</b-dropdown-item
-        >
-      </b-dropdown>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <label for="patient">Patient:</label>
+          <b-form-input id="patient" type="search" />
 
-      <label for="ausstellungsdatum">Ausstellungsdatum:</label>
-      <b-form-input id="ausstellungsdatum" type="date" />
+          <b-dropdown id="rezept" text="Rezeptwahl" disabled>
+            <b-dropdown-item
+              v-for="typ in ['MT', 'KGG', 'Spaß mit Faszien']"
+              :key="typ"
+            >
+              {{ typ }}
+            </b-dropdown-item>
+          </b-dropdown>
 
-      <hr />
+          <label for="ausstellungsdatum">Ausstellungsdatum:</label>
+          <b-form-input id="ausstellungsdatum" type="date" disabled />
 
-      <b-form-checkbox id="skipchecks">
-        Formular-Checks überspringen
-      </b-form-checkbox>
-    </b-form>
+          <b-button class="mt-2" @click="currentStep = 3"> Weiter </b-button>
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <b-button class="mt-2"> Überspringen </b-button>
+          <b-button class="mt-2" @click="currentStep = 1"> Weiter </b-button>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      currentStep: 1,
+    };
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 .dropdown {
   display: block;
+}
+</style>
+
+<style lang="scss">
+.v-stepper__step {
+  .v-stepper__step__step {
+    margin-right: 4pt;
+  }
+}
+
+.v-stepper__step--active {
+  .v-stepper__step__step {
+    color: white;
+    background-color: var(--primary) !important;
+  }
+}
+
+.v-stepper__step--complete {
+  .v-stepper__step__step {
+    background-color: var(--secondary-accent) !important;
+  }
 }
 </style>

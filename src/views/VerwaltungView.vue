@@ -51,6 +51,15 @@
         <b>24%</b> der Termine enstehen durch ein Folgerezept
       </div>
     </div>
+
+    <b-row>
+      <b-col class="exports">
+        <b-button class="my-1">Patientenübersicht generieren</b-button>
+        <b-button class="my-1">Gehaltsübersicht generieren</b-button>
+        <b-button class="my-1">Patientenübersicht generieren</b-button>
+        <b-button class="my-1">Zur Gesamtstatistik</b-button>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -68,6 +77,8 @@ export default {};
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(250px, 30%);
+
+    pointer-events: none;
 
     width: 100%;
     height: 100%;
@@ -132,6 +143,14 @@ export default {};
       font-size: xx-large;
       display: block;
     }
+  }
+}
+
+.exports {
+  max-width: 70%;
+  .btn {
+    display: block;
+    width: 100%;
   }
 }
 </style>

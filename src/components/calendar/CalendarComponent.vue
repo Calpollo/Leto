@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import ConfigService from "@/services/ConfigService";
 import CalendarDay from "./CalendarDay.vue";
 export default {
   name: "CalendarComponent",
@@ -27,11 +26,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    length: {
+      type: [String, Number],
+    },
   },
-  data() {
-    return {
-      length: ConfigService.getCalendar("defaultView"),
-    };
+  computed: {
+    numberOfDays() {
+      return this.calculateNumberOfDays();
+    },
   },
   methods: {
     relevantEvents(daysAfterStart) {
@@ -50,16 +52,18 @@ export default {
       );
     },
     earliestEvent() {
+      // TODO: filter only the shown days
       return [...this.events]?.sort(this.sortByStartTime)[0];
     },
     latestEvent() {
+      // TODO: filter only the shown days
       return [...this.events]?.sort(this.sortByStartTime)[
         this.events.length - 1
       ];
     },
-  },
-  computed: {
-    numberOfDays() {
+    calculateNumberOfDays() {
+      if (typeof this.length == "number") return this.length;
+
       switch (this.length) {
         case "1": {
           return 1;
@@ -78,7 +82,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .calendar {
   width: 100%;
   margin: 0;

@@ -1,10 +1,14 @@
 <template>
   <div id="TherpaeutenDetails" v-if="therapeut">
-    <h2>Erika Schmidt</h2>
+    <h2>{{ therapeut.name }}</h2>
 
-    <ArbeitszeitOverview :therapeut="therapeut" :hideArrow="true" />
+    <ArbeitszeitOverview
+      :therapeut="therapeut"
+      :hideArrow="true"
+      :hideName="true"
+    />
 
-    <div>
+    <div class="my-2">
       <div>
         <b-button>T</b-button>
         <b-button>W</b-button>
@@ -13,7 +17,7 @@
       </div>
 
       <div id="calendar">
-        <p>Platzhalter für den Kalendar</p>
+        <p>Platzhalter für den Kalender</p>
       </div>
     </div>
   </div>
@@ -42,7 +46,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #calendar {
   margin-top: 200px;
   font-size: xx-large;

@@ -41,6 +41,12 @@ class DatabaseService {
     }
   }
 
+  getPraxis(data) {
+    if (this.isLocal()) {
+      return window.ipc.getPraxis(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Create Instances in the database
   // ############################

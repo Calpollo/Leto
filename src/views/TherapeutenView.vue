@@ -52,6 +52,8 @@ export default {
     background-repeat: no-repeat;
     background-size: min(250px, 30%);
 
+    pointer-events: none;
+
     width: 100%;
     height: 100%;
     opacity: 0.3;

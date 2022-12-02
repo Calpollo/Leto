@@ -53,6 +53,11 @@ export default {
         gridTemplateRows: `repeat(${dayLengthInHours * 4}, ${
           this.pixelPerHour / 4
         }px)`,
+        background: `repeating-linear-gradient(
+          transparent,
+          transparent ${this.pixelPerHour / 4 - 1}px,
+          rgba(128, 128, 128, 0.267) ${this.pixelPerHour / 4}px
+        )`,
       };
       return result;
     },
@@ -80,15 +85,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .calendarday {
   display: grid;
-  background-size: 40px 40px;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(128, 128, 128, 0.267) 1px,
-    transparent 1px
-  );
   border: 1px rgba(128, 128, 128, 0.267) solid;
 }
 
