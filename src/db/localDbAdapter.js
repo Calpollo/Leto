@@ -1,12 +1,13 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const fs = require("fs");
 
 class LocalDbAdapter {
   constructor() {
+    fs.mkdirSync("./data", { recursive: true });
     this.sequelize = new Sequelize("database", null, null, {
       dialect: "sqlite",
       storage: "./data/database.sqlite",
     });
-
 
     this.up().then(() => this.seed());
   }

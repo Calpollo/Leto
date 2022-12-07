@@ -4,6 +4,10 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       preload: "src/preload.js",
+      chainWebpackRendererProcess(config) {
+        config.plugins.delete("workbox");
+        config.plugins.delete("pwa");
+      },
     },
   },
 });
