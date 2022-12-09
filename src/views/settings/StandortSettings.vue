@@ -14,7 +14,17 @@
           <b-icon-info-circle></b-icon-info-circle>
         </span>
       </h3>
-      <p>{{ praxis.address }}</p>
+      <p>
+        <b-icon-house-fill class="mr-2"></b-icon-house-fill>{{ praxis.address }}
+      </p>
+      <p>
+        <b-icon-envelope-fill class="mr-2"></b-icon-envelope-fill
+        >{{ praxis.email }}
+      </p>
+      <p>
+        <b-icon-telephone-fill class="mr-2"></b-icon-telephone-fill
+        >{{ praxis.phone }}
+      </p>
 
       <h4>Öffnungszeiten:</h4>
       <b-container id="oeffnungszeitenList">

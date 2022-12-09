@@ -109,6 +109,8 @@ class LocalDbAdapter {
       where: {
         name: "Körpertherapie Wagner",
         address: "Friedensstraße 9, 73072 Donzdorf",
+        email: "kontakt@koerpertherapie-wagner.de",
+        phone: "+4971622068788",
       },
     });
 
@@ -397,6 +399,16 @@ class LocalDbAdapter {
       address: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: { isEmail: true },
+      },
+      phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: { is: /[?:+][0-9]*/i },
       },
     });
 
