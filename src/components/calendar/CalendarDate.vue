@@ -15,8 +15,13 @@
     <p class="therapeutname">{{ this.event.Therapeut.name }}</p>
 
     <b-icon-info-circle
+      class="mx-2"
       :id="`tooltip-target-${this.event.id}`"
     ></b-icon-info-circle>
+
+    <b-button class="mx-2" @click="deleteDate()" variant="transparent">
+      <b-icon-trash-fill></b-icon-trash-fill>
+    </b-button>
 
     <b-tooltip
       :target="`tooltip-target-${this.event.id}`"
@@ -69,6 +74,11 @@ export default {
       let colors = ConfigService.getCalendar()?.therapeutColors;
       if (!colors) return "grey";
       else return colors[name];
+    },
+    deleteDate() {
+      console.log(this.event.id);
+      DatabaseService.removeTermine({ id: this.event.id });
+      // TODO: update date list
     },
   },
   mounted() {
