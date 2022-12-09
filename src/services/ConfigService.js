@@ -22,6 +22,10 @@ class ConfigService {
     if (key) return config.calendar[key];
     return config.calendar;
   }
+
+  getPraxis() {
+    return config.praxis;
+  }
 }
 
 export default new ConfigService();

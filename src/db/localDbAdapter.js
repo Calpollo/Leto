@@ -515,7 +515,7 @@ class LocalDbAdapter {
     // #################
     // Synchronisation
     // #################
-    return this.sequelize.sync({ force: true });
+    return this.sequelize.sync({ force: false });
   }
 
   get(table, { id, where, include } = {}) {

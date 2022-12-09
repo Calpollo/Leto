@@ -6,8 +6,6 @@
       :events="relevantEvents(day)?.sort(sortByStartTime)"
       :date="new Date().setDate(new Date().getDate() + day)"
       :style="{ width: (1 / numberOfDays) * 100 + '%' }"
-      :earliestEvent="earliestEvent()"
-      :latestEvent="latestEvent()"
     />
   </b-row>
 </template>
@@ -50,16 +48,6 @@ export default {
         b.Zeitspanne.startStunde +
         (a.Zeitspanne.startMinute - b.Zeitspanne.startMinute) / 60
       );
-    },
-    earliestEvent() {
-      // TODO: filter only the shown days
-      return [...this.events]?.sort(this.sortByStartTime)[0];
-    },
-    latestEvent() {
-      // TODO: filter only the shown days
-      return [...this.events]?.sort(this.sortByStartTime)[
-        this.events.length - 1
-      ];
     },
     calculateNumberOfDays() {
       if (typeof this.length == "number") return this.length;

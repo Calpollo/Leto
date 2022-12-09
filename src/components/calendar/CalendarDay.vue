@@ -1,15 +1,29 @@
 <template>
-  <div class="calendarday" :style="getDayStyle()">
-    <p class="datum" :style="{ gridColumn: '1/' + (maxConcurrentEvents + 1) }">
-      {{ new Date(this.date).toLocaleDateString("de-DE") }}
-    </p>
+  <div>
+    <div
+      class="calendarday"
+      :style="getDayStyle()"
+      v-if="openingHours?.Zeitspanne"
+    >
+      <p
+        class="datum"
+        :style="{ gridColumn: '1/' + (maxConcurrentEvents + 1) }"
+      >
+        {{ new Date(this.date).toLocaleDateString("de-DE") }}
+      </p>
 
-    <CalendarDate
-      v-for="event in this.events"
-      :key="event.id"
-      :event="event"
-      :style="getDateStyle(event)"
-    />
+      <CalendarDate
+        v-for="event in this.events"
+        :key="event.id"
+        :event="event"
+        :style="getDateStyle(event)"
+      />
+    </div>
+    <div class="calendarday" v-else-if="openingHours?.weekend">
+      <p class="datum">{{ new Date(this.date).toLocaleDateString("de-DE") }}</p>
+      <p class="datum">Wochende</p>
+    </div>
+    <SpinnerLogo v-else />
   </div>
 </template>
 
@@ -22,12 +36,16 @@ import {
   fullDayHours,
 } from "@/utils/events";
 import CalendarDate from "./CalendarDate.vue";
+import DatabaseService from "@/services/DatabaseService";
+import SpinnerLogo from "../SpinnerLogo.vue";
+import ConfigService from "@/services/ConfigService";
 
 export default {
   name: "CalendarDay",
   data() {
     return {
       pixelPerHour: 160,
+      openingHours: null,
     };
   },
   props: {
@@ -39,15 +57,36 @@ export default {
       type: Number,
       required: true,
     },
-    earliestEvent: Object,
-    latestEvent: Object,
   },
-  components: { CalendarDate },
+  mounted() {
+    DatabaseService.getPraxis({
+      include: { all: true },
+      id: ConfigService.getPraxis(),
+    }).then((praxis) => {
+      const dayOfTheWeek = new Date(this.date).getDay();
+      const week = [
+        null, // Sunday
+        praxis.montagsZeit, // Monday
+        praxis.dienstagsZeit, // Tuesday
+        praxis.mittwochsZeit, // Wednesday
+        praxis.donnerstagsZeit, // Thursday
+        praxis.freitagsZeit, // Friday
+        null, // Saturday
+      ];
+      const hours = week[dayOfTheWeek];
+      if (!hours) {
+        this.openingHours = { weekend: true };
+      } else {
+        this.openingHours = { Zeitspanne: week[dayOfTheWeek] };
+      }
+    });
+  },
+  components: { CalendarDate, SpinnerLogo },
   methods: {
     getDayStyle() {
       const dayLengthInHours = fullDayHours(
-        this.earliestEvent,
-        this.latestEvent
+        this.openingHours,
+        this.openingHours
       );
       const result = {
         gridTemplateRows: `repeat(${dayLengthInHours * 4}, ${
@@ -62,8 +101,8 @@ export default {
       return result;
     },
     getDateStyle(event) {
-      const rowStart = dateRowStart(event, this.earliestEvent);
-      const rowEnd = dateRowEnd(event, this.earliestEvent);
+      const rowStart = dateRowStart(event, this.openingHours);
+      const rowEnd = dateRowEnd(event, this.openingHours);
       const concurrentEvents = eventListToConcurringEventnumber(this.events);
       const result = {
         height: eventHours(event) * this.pixelPerHour + "px",

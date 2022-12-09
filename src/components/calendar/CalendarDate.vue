@@ -19,7 +19,7 @@
       :id="`tooltip-target-${this.event.id}`"
     ></b-icon-info-circle>
 
-    <b-button class="mx-2" @click="deleteDate()" variant="transparent">
+    <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
       <b-icon-trash-fill></b-icon-trash-fill>
     </b-button>
 

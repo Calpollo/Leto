@@ -46,21 +46,21 @@ export function eventListToConcurringEventnumber(eventList) {
   );
 }
 
-export function fullDayHours(earliestEvent, latestEvent) {
-  if (!earliestEvent || !latestEvent) return 0;
-  const earlyHour = earliestEvent.Zeitspanne.startStunde;
-  const earlyMinute = earliestEvent.Zeitspanne.startMinute;
-  const lateHour = latestEvent.Zeitspanne.endStunde;
-  const lateMinute = latestEvent.Zeitspanne.endMinute;
+export function fullDayHours(earlyEvent, lateEvent) {
+  if (!earlyEvent || !lateEvent) return 0;
+  const earlyHour = earlyEvent.Zeitspanne.startStunde;
+  const earlyMinute = earlyEvent.Zeitspanne.startMinute;
+  const lateHour = lateEvent.Zeitspanne.endStunde;
+  const lateMinute = lateEvent.Zeitspanne.endMinute;
 
   return lateHour - earlyHour + (lateMinute - earlyMinute) / 60;
 }
 
-export function dateRowStart(event, earliestEvent) {
-  return startHoursDifference(earliestEvent, event) * 4 + 2;
+export function dateRowStart(event, earlyEvent) {
+  return startHoursDifference(earlyEvent, event) * 4 + 2;
 }
 
-export function dateRowEnd(event, earliestEvent) {
-  const result = dateRowStart(event, earliestEvent) + eventHours(event) * 4;
+export function dateRowEnd(event, earlyEvent) {
+  const result = dateRowStart(event, earlyEvent) + eventHours(event) * 4;
   return result;
 }
