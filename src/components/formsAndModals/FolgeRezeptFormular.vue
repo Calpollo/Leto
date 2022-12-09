@@ -35,7 +35,7 @@
 
         <v-stepper-content step="2">
           <b-button class="mt-2"> Überspringen </b-button>
-          <b-button class="mt-2" @click="currentStep = 1"> Weiter </b-button>
+          <b-button class="mt-2" @click="currentStep = 1"> Zurück </b-button>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>

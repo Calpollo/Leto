@@ -37,9 +37,9 @@
           <label for="phone">Telefonnummer:</label>
           <b-form-input id="phone" type="tel" placeholder="0123 456789" />
 
-          <b-button class="mt-2" color="primary" @click="currentStep = 2">
-            Weiter
-          </b-button>
+          <b-button class="mt-2" color="primary" @click="currentStep = 2"
+            >Weiter</b-button
+          >
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -55,12 +55,13 @@
           <label for="ausstellungsdatum">Ausstellungsdatum:</label>
           <b-form-input id="ausstellungsdatum" type="date" />
 
+          <b-button class="mt-2" @click="currentStep = 1"> Zurück </b-button>
           <b-button class="mt-2" @click="currentStep = 3"> Weiter </b-button>
         </v-stepper-content>
 
         <v-stepper-content step="3">
           <b-button class="mt-2"> Überspringen </b-button>
-          <b-button class="mt-2" @click="currentStep = 1"> Weiter </b-button>
+          <b-button class="mt-2" @click="currentStep = 2"> Zurück </b-button>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
