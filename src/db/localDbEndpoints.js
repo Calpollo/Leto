@@ -6,7 +6,7 @@ let {
   Datum,
   Vertrag,
   Therapeut,
-  Behandlungsart,
+  Heilmittel,
   Praxis,
   Kunde,
   Termin,
@@ -32,8 +32,8 @@ ipcMain.handle("getTherapeut", async (event, data) => {
   return JSON.stringify(await localDB.get(Therapeut, data));
 });
 
-ipcMain.handle("getBehandlungsart", async (event, data) => {
-  return JSON.stringify(await localDB.get(Behandlungsart, data));
+ipcMain.handle("getHeilmittel", async (event, data) => {
+  return JSON.stringify(await localDB.get(Heilmittel, data));
 });
 
 ipcMain.handle("getPraxis", async (event, data) => {
@@ -67,8 +67,8 @@ ipcMain.handle("createTherapeut", async (event, data) => {
   return JSON.stringify(await localDB.create(Therapeut, data));
 });
 
-ipcMain.handle("createBehandlungsart", async (event, data) => {
-  return JSON.stringify(await localDB.create(Behandlungsart, data));
+ipcMain.handle("createHeilmittel", async (event, data) => {
+  return JSON.stringify(await localDB.create(Heilmittel, data));
 });
 
 ipcMain.handle("createPraxis", async (event, data) => {
@@ -102,8 +102,8 @@ ipcMain.handle("removeTherapeut", async (event, data) => {
   return JSON.stringify(await localDB.remove(Therapeut, data));
 });
 
-ipcMain.handle("removeBehandlungsart", async (event, data) => {
-  return JSON.stringify(await localDB.remove(Behandlungsart, data));
+ipcMain.handle("removeHeilmittel", async (event, data) => {
+  return JSON.stringify(await localDB.remove(Heilmittel, data));
 });
 
 ipcMain.handle("removePraxis", async (event, data) => {

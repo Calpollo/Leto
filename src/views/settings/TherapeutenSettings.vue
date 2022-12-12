@@ -2,8 +2,8 @@
   <div id="TherapeutenSettings">
     <h2>Therapeuten</h2>
     <p>
-      Deine Therapeuten können nur bestimmte Behandlungen ausführen und nur zu
-      den festgelegten Arbeitszeiten. Diese Daten kannst du hier festlegen.
+      Deine Therapeuten können nur bestimmte Heilmittel anwenden und nur zu den
+      festgelegten Arbeitszeiten. Diese Daten kannst du hier festlegen.
     </p>
 
     <b-button class="my-2">

@@ -1,7 +1,7 @@
 <template>
   <div class="calendardate" :style="getDateStyles()">
     <p class="datename" v-show="this.kunde">
-      {{ this.event.Rezept.BehandlungsartAbk }}: {{ this.kunde?.firstname }}
+      {{ this.event.Rezept.HeilmittelAbk }}: {{ this.kunde?.firstname }}
       {{ this.kunde?.lastname }}
     </p>
     <p class="timestring">
@@ -35,7 +35,7 @@
       </p>
       <p>
         Patient: {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
-        {{ this.event.Rezept.BehandlungsartAbk }}
+        {{ this.event.Rezept.HeilmittelAbk }}
       </p>
       <p>Praxis: {{ this.event.Praxis.name }}</p>
       <!-- <p>Rezept-ID: {{ this.event.RezeptId }}</p>
@@ -67,13 +67,13 @@ export default {
     },
     getDateStyles() {
       return {
-        backgroundColor: this.therapeutToColor(this.event.Therapeut.name),
+        backgroundColor: this.therapeutToColor(this.event.Therapeut.id),
       };
     },
-    therapeutToColor(name) {
+    therapeutToColor(id) {
       let colors = ConfigService.getCalendar()?.therapeutColors;
       if (!colors) return "grey";
-      else return colors[name];
+      else return colors[id];
     },
     deleteDate() {
       console.log(this.event.id);

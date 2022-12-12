@@ -54,14 +54,14 @@ class LocalDbAdapter {
       vertrag.addUrlaub([tagDerDeutschenEinheit, christmasEve]),
     ]);
 
-    const [mt] = await this.Behandlungsart.findOrCreate({
+    const [mt] = await this.Heilmittel.findOrCreate({
       where: {
         abk: "MT",
         name: "Manuelle Therapie",
       },
     });
 
-    const [kgg] = await this.Behandlungsart.findOrCreate({
+    const [kgg] = await this.Heilmittel.findOrCreate({
       where: {
         abk: "KGG",
         name: "Krankengymanstik am Gerät",
@@ -82,9 +82,9 @@ class LocalDbAdapter {
       },
     });
 
-    await erik.addBehandlungsart([mt]);
+    await erik.addHeilmittel([mt]);
 
-    await anni.addBehandlungsart([mt, kgg]);
+    await anni.addHeilmittel([mt, kgg]);
     await anni.setVertrag(vertrag);
 
     const [ottoNormal] = await this.Kunde.findOrCreate({
@@ -103,7 +103,7 @@ class LocalDbAdapter {
     });
 
     await testRezept.setKunde(ottoNormal);
-    await testRezept.setBehandlungsart(mt);
+    await testRezept.setHeilmittel(mt);
 
     const [ktWagner] = await this.Praxis.findOrCreate({
       where: {
@@ -310,7 +310,7 @@ class LocalDbAdapter {
       },
     });
 
-    this.Behandlungsart = this.sequelize.define("Behandlungsart", {
+    this.Heilmittel = this.sequelize.define("Heilmittel", {
       abk: {
         type: DataTypes.STRING(10),
         allowNull: false,
@@ -429,7 +429,7 @@ class LocalDbAdapter {
       this.Zeitspannen,
       this.Datum,
       this.Vertrag,
-      this.Behandlungsart,
+      this.Heilmittel,
       this.Therapeut,
       this.Rezept,
       this.Praxis,
@@ -464,12 +464,12 @@ class LocalDbAdapter {
     await this.Vertrag.hasMany(this.Datum, { as: "Urlaub" });
     await this.Datum.belongsTo(this.Vertrag);
 
-    // gelernte Behandlungen: Therapeut - Behandlungsart
-    await this.Therapeut.belongsToMany(this.Behandlungsart, {
-      through: "TherapeutBehandlungsart",
+    // gelernte Heilmittel: Therapeut - Heilmittel
+    await this.Therapeut.belongsToMany(this.Heilmittel, {
+      through: "TherapeutHeilmittel",
     });
-    await this.Behandlungsart.belongsToMany(this.Therapeut, {
-      through: "TherapeutBehandlungsart",
+    await this.Heilmittel.belongsToMany(this.Therapeut, {
+      through: "TherapeutHeilmittel",
     });
 
     // Arbeitsvertrag: Therapeut - Vertrag
@@ -477,10 +477,10 @@ class LocalDbAdapter {
     await this.Vertrag.belongsTo(this.Therapeut);
 
     // Patientenrezept: Rezept - Kunde
-    await this.Behandlungsart.hasMany(this.Behandlungsart);
-    await this.Rezept.belongsTo(this.Behandlungsart);
+    await this.Heilmittel.hasMany(this.Heilmittel);
+    await this.Rezept.belongsTo(this.Heilmittel);
 
-    // Rezeptinhalt: Rezept - Behandlungsart
+    // Rezeptinhalt: Rezept - Heilmittel
     await this.Kunde.hasMany(this.Rezept);
     await this.Rezept.belongsTo(this.Kunde);
 

@@ -43,8 +43,8 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <label for="behandlungstyp" class="mr-2">Behandlungsart:</label>
-          <b-dropdown id="behandlungstyp" text="Behandlungsart">
+          <label for="heilmitteltyp" class="mr-2">Heilmittel:</label>
+          <b-dropdown id="heilmitteltyp" text="Heilmittel">
             <b-dropdown-item
               v-for="typ in ['MT', 'KGG', 'Spaß mit Faszien']"
               :key="typ"
