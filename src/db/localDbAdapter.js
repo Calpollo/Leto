@@ -36,6 +36,13 @@ class LocalDbAdapter {
       },
     });
 
+    const [christmasVacation] = await this.Datum.findOrCreate({
+      where: {
+        datum: "2022-12-23",
+        yearlyRepetition: false,
+      },
+    });
+
     const [vertrag] = await this.Vertrag.findOrCreate({
       where: {
         wochenstunden: 35,
@@ -51,7 +58,7 @@ class LocalDbAdapter {
       vertrag.setDonnerstagsZeit(arbeitszeit),
       vertrag.setFreitagsZeit(arbeitszeit),
 
-      vertrag.addUrlaub([tagDerDeutschenEinheit, christmasEve]),
+      vertrag.addUrlaub([christmasVacation]),
     ]);
 
     const [mt] = await this.Heilmittel.findOrCreate({
@@ -120,6 +127,8 @@ class LocalDbAdapter {
       ktWagner.setMittwochsZeit(arbeitszeit),
       ktWagner.setDonnerstagsZeit(arbeitszeit),
       ktWagner.setFreitagsZeit(arbeitszeit),
+
+      ktWagner.addFeiertage([christmasEve, tagDerDeutschenEinheit]),
     ]);
 
     const [testTermin] = await this.Termin.findOrCreate({
@@ -460,6 +469,10 @@ class LocalDbAdapter {
       as: "freitagsZeit",
     });
 
+    // Feiertage: Praxis - Datum
+    await this.Praxis.hasMany(this.Datum, { as: "Feiertage" });
+    await this.Datum.belongsTo(this.Praxis);
+
     // Urlaubstage: Vertrag - Datum
     await this.Vertrag.hasMany(this.Datum, { as: "Urlaub" });
     await this.Datum.belongsTo(this.Vertrag);
@@ -512,10 +525,15 @@ class LocalDbAdapter {
     await this.Zeitspanne.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Zeitspanne);
 
+    console.log("Association", this.Praxis.associations);
+
     // #################
     // Synchronisation
     // #################
-    return this.sequelize.sync({ force: false });
+    return this.sequelize.sync({
+      force: true,
+      // alter: true,
+    });
   }
 
   get(table, { id, where, include } = {}) {
