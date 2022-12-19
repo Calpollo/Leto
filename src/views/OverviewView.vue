@@ -123,10 +123,10 @@ export default {
     setCalendarLength(n) {
       this.calendarlength = n;
     },
-    therapeutToColor(name) {
+    therapeutToColor(id) {
       let colors = ConfigService.getCalendar()?.therapeutColors;
       if (!colors) return "grey";
-      else return colors[name];
+      else return colors[id];
     },
   },
   components: {
