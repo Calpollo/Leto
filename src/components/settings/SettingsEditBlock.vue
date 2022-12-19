@@ -1,5 +1,5 @@
 <template>
-  <div class="settingseditblock p-2">
+  <div class="settingseditblock neomorph p-2">
     <div v-if="editMode">
       <div v-for="input in tempData" :key="input.name">
         <label class="m-2" :for="input.name">{{ input.name }}:</label>
@@ -66,6 +66,6 @@ export default {
 <style lang="scss" scoped>
 .settingseditblock {
   border-radius: 8px;
-  border: solid 2px var(--secondary-accent);
+  // border: solid 2px var(--secondary-accent);
 }
 </style>

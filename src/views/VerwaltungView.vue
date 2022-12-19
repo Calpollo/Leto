@@ -3,7 +3,7 @@
     <h2>Verwaltung</h2>
 
     <div class="boxes">
-      <div class="warningbox error">
+      <div class="warningbox neomorph error">
         <h3>
           <b-icon-exclamation-circle-fill />
           3 Fehler
@@ -20,7 +20,7 @@
         </router-link>
       </div>
 
-      <div class="warningbox">
+      <div class="warningbox neomorph">
         <h3>
           <b-icon-exclamation-triangle />
           2 Warnungen
@@ -36,8 +36,6 @@
         </router-link>
       </div>
     </div>
-
-    <hr />
 
     <div class="statistics">
       <div class="singlestat">
@@ -96,7 +94,7 @@ export default {};
 }
 
 .warningbox {
-  background-color: var(--background-accent);
+  // background-color: var(--background-accent);
   // display: flex;
   // flex-direction: column;
   display: grid;

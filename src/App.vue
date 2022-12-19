@@ -38,9 +38,9 @@ export default {
   --secondary: #064720;
   --accent: #d77a61;
   --secondary-accent: #0a7133;
-  --background: #eff1f3;
+  --background: #e2e2e2;
   // --background-accent: #dbd3d8;
-  --background-accent: #dadada;
+  --background-accent: #c5c5c5;
 
   --error: #fa8253;
   --warning: #ffbb00;
@@ -68,5 +68,11 @@ h6 {
   display: inline-block;
   width: 100%;
   padding: 20px 50px;
+}
+
+.neomorph {
+  border-radius: 50px;
+  background: var(--background);
+  box-shadow: 30px 30px 36px #c3c3c3, -30px -30px 36px #fdfdfd;
 }
 </style>
