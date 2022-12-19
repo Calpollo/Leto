@@ -525,13 +525,11 @@ class LocalDbAdapter {
     await this.Zeitspanne.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Zeitspanne);
 
-    console.log("Association", this.Praxis.associations);
-
     // #################
     // Synchronisation
     // #################
     return this.sequelize.sync({
-      force: true,
+      // force: true,
       // alter: true,
     });
   }
