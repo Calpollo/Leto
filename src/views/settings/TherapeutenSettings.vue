@@ -16,11 +16,11 @@
       </h3>
       <p>
         Im Unternehmen seit:
-        <em>{{ new Date(therapeut.createdAt).toLocaleDateString("de-DE") }}</em>
+        <em>{{ dateToLocale(therapeut.createdAt) }}</em>
       </p>
       <p>
         Zuletzt geändert:
-        <em>{{ new Date(therapeut.updatedAt).toLocaleDateString("de-DE") }}</em>
+        <em>{{ dateToLocale(therapeut.updatedAt) }}</em>
       </p>
 
       <b-card v-if="therapeut.Vertrag" bg-variant="light">
@@ -83,7 +83,7 @@
                 v-for="tag in therapeut.Vertrag.Urlaub"
                 :key="tag.id"
               >
-                {{ new Date(tag.datum).toLocaleDateString("de-DE") }}
+                {{ dateToLocale(tag.datum) }}
                 <span v-if="tag.yearlyRepetition">(jährl. wiederholend)</span>
               </b-list-group-item>
             </b-list-group>
@@ -96,6 +96,7 @@
 
 <script>
 import DatabaseService from "@/services/DatabaseService";
+import { toLocale } from "@/utils/dates";
 export default {
   data() {
     return {
@@ -108,6 +109,9 @@ export default {
         2,
         "0"
       )} - ${event.endStunde}:${String(event.endMinute).padStart(2, "0")}`;
+    },
+    dateToLocale(date, locale) {
+      return toLocale(date, locale);
     },
   },
   mounted() {

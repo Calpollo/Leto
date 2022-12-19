@@ -67,7 +67,7 @@ export default {
     },
     getDateStyles() {
       return {
-        backgroundColor: this.therapeutToColor(this.event.Therapeut.id),
+        backgroundColor: this.therapeutToColor(this.event.Therapeut.name),
       };
     },
     therapeutToColor(id) {

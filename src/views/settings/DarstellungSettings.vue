@@ -6,13 +6,47 @@
       abändern.
     </p>
 
-    <label for="Acolorpicker">Anna-Lena Fezer:</label>
-    <b-input id="Acolorpicker" type="color" value="#4516AA"></b-input>
-
-    <label for="Ecolorpicker">Erik Weßelborg:</label>
-    <b-input id="Ecolorpicker" type="color" value="#AA0088"></b-input>
+    <!-- TODO: turn into EditBlock -->
+    <div v-for="therapeut in this.therapeuten" :key="therapeut.id">
+      <label for="Acolorpicker">{{ therapeut.name }}</label>
+      <b-input
+        id="Acolorpicker"
+        type="color"
+        :value="therapeut.color ?? '#666666'"
+        @input="onColorChange(therapeut.name, ...arguments)"
+      ></b-input>
+    </div>
   </div>
 </template>
+
+<script>
+import DatabaseService from "@/services/DatabaseService";
+import ConfigService from "@/services/ConfigService";
+export default {
+  name: "DarstellungsSettings",
+  data() {
+    return {
+      therapeuten: [],
+    };
+  },
+  mounted() {
+    // ConfigService.getCalendar("therapeutColors");
+    DatabaseService.getTherapeut().then((therapeuten) => {
+      const colors = ConfigService.getCalendar("therapeutColors");
+      this.therapeuten = therapeuten.map(({ id, name }) => {
+        return { id, name, color: colors[name] };
+      });
+    });
+  },
+  methods: {
+    onColorChange(name, color) {
+      console.log(name, color);
+      //TODO: save color change in config
+      ConfigService.setTherapeutColor(name, color);
+    },
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 #DarstellungSettings {
