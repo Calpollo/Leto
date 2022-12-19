@@ -26,6 +26,11 @@ class ConfigService {
   getPraxis() {
     return config.praxis;
   }
+
+  setTherapeutColor(name, color) {
+    config.calendar.therapeutColors[name] = color;
+    // TODO: actually save it permanently
+  }
 }
 
 export default new ConfigService();
