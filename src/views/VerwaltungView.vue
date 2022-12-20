@@ -52,9 +52,13 @@
 
     <b-row>
       <b-col class="exports">
-        <b-button class="my-1">Patientenübersicht generieren</b-button>
+        <b-button :to="{ name: 'Verwaltung.Patienten' }" class="my-1">
+          Patientenübersicht
+        </b-button>
+        <b-button :to="{ name: 'Verwaltung.Rezepte' }" class="my-1">
+          Rezeptübersicht
+        </b-button>
         <b-button class="my-1">Gehaltsübersicht generieren</b-button>
-        <b-button class="my-1">Patientenübersicht generieren</b-button>
         <b-button class="my-1">Zur Gesamtstatistik</b-button>
       </b-col>
     </b-row>

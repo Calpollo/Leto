@@ -30,6 +30,16 @@ const routes = [
     component: () => import("../views/VerwaltungView.vue"),
   },
   {
+    path: "/patienten",
+    name: "Verwaltung.Patienten",
+    component: () => import("../views/Verwaltung/PatientenView.vue"),
+  },
+  {
+    path: "/rezepte",
+    name: "Verwaltung.Rezepte",
+    component: () => import("../views/Verwaltung/RezeptView.vue"),
+  },
+  {
     path: "/settings",
     name: "Einstellungen",
     redirect: "settings/konto",
