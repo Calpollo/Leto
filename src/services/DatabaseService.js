@@ -12,7 +12,7 @@ class DatabaseService {
     return ConfigService.getVersion() == "local";
   }
 
-  // TODO: instead of parameters data, use specific parameters
+  // TODO: instead of parameter "data", use specific parameters
 
   // ############################
   // Get Instances from the database
@@ -47,6 +47,12 @@ class DatabaseService {
     }
   }
 
+  getRezept(data) {
+    if (this.isLocal()) {
+      return window.ipc.getRezept(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Create Instances in the database
   // ############################
@@ -74,6 +80,12 @@ class DatabaseService {
     }
   }
 
+  createRezept(data) {
+    if (this.isLocal()) {
+      return window.ipc.createRezept(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Remove Instances in the database
   // ############################
@@ -98,6 +110,12 @@ class DatabaseService {
   removeTherapeut(data) {
     if (this.isLocal()) {
       return window.ipc.removeTherapeut(data).then(JSON.parse);
+    }
+  }
+
+  removeRezept(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeRezept(data).then(JSON.parse);
     }
   }
 }

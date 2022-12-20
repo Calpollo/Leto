@@ -10,6 +10,7 @@ let {
   Praxis,
   Kunde,
   Termin,
+  Rezept,
 } = localDB;
 
 // ############################
@@ -48,6 +49,10 @@ ipcMain.handle("getTermin", async (event, data) => {
   return JSON.stringify(await localDB.get(Termin, data));
 });
 
+ipcMain.handle("getRezept", async (event, data) => {
+  return JSON.stringify(await localDB.get(Rezept, data));
+});
+
 // ############################
 // Create Instances in the database
 // ############################
@@ -83,6 +88,10 @@ ipcMain.handle("createTermin", async (event, data) => {
   return JSON.stringify(await localDB.create(Termin, data));
 });
 
+ipcMain.handle("createRezept", async (event, data) => {
+  return JSON.stringify(await localDB.create(Rezept, data));
+});
+
 // ############################
 // remove Instances in the database
 // ############################
@@ -116,4 +125,8 @@ ipcMain.handle("removeKunde", async (event, data) => {
 
 ipcMain.handle("removeTermin", async (event, data) => {
   return JSON.stringify(await localDB.remove(Termin, data));
+});
+
+ipcMain.handle("removeRezept", async (event, data) => {
+  return JSON.stringify(await localDB.remove(Rezept, data));
 });
