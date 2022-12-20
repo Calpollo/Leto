@@ -100,6 +100,7 @@ class LocalDbAdapter {
         lastname: "Normalverbraucher",
         address: "Hauptstraße 1, 96120 Bischberg",
         email: "otto.normalverbraucher@gmail.com",
+        phone: "016090899730",
       },
     });
 
@@ -353,7 +354,7 @@ class LocalDbAdapter {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: { is: /[?:+][0-9]*/i },
+        validate: { is: /[?:+]?[0-9]*/i },
       },
       address: {
         type: DataTypes.STRING,
@@ -417,7 +418,7 @@ class LocalDbAdapter {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        validate: { is: /[?:+][0-9]*/i },
+        validate: { is: /[?:+]?[0-9]*/i },
       },
     });
 
