@@ -21,47 +21,18 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <label for="lastname">Nachname:</label>
-          <b-form-input id="lastname" type="search" placeholder="Nachname" />
-
-          <label for="firstname">Vorname:</label>
-          <b-form-input id="firstname" type="search" placeholder="Vorname" />
-
-          <label for="adress">Adresse:</label>
-          <b-form-input
-            id="adress"
-            type="text"
-            placeholder="Straße Haus-Nr., PLZ Ort"
-          />
-
-          <label for="phone">Telefonnummer:</label>
-          <b-form-input id="phone" type="tel" placeholder="0123 456789" />
-
-          <b-button class="mt-2" color="primary" @click="currentStep = 2"
-            >Weiter</b-button
-          >
+          <kunden-daten v-model="kunde" @save="currentStep = 2" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <label for="heilmitteltyp" class="mr-2">Heilmittel:</label>
-          <b-dropdown id="heilmitteltyp" text="Heilmittel">
-            <b-dropdown-item
-              v-for="typ in ['MT', 'KGG', 'Spaß mit Faszien']"
-              :key="typ"
-              >{{ typ }}</b-dropdown-item
-            >
-          </b-dropdown>
-
-          <label for="ausstellungsdatum">Ausstellungsdatum:</label>
-          <b-form-input id="ausstellungsdatum" type="date" />
-
-          <b-button class="mt-2" @click="currentStep = 1"> Zurück </b-button>
-          <b-button class="mt-2" @click="currentStep = 3"> Weiter </b-button>
+          <rezept-daten v-model="rezept" @save="currentStep = 3" />
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <b-button class="mt-2"> Überspringen </b-button>
-          <b-button class="mt-2" @click="currentStep = 2"> Zurück </b-button>
+          <termin-vorschlaege
+            :heilmittel="rezept.heilmittel"
+            @save="currentStep = 1"
+          />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -69,22 +40,26 @@
 </template>
 
 <script>
+import KundenDaten from "./steps/KundenDaten.vue";
+import RezeptDaten from "./steps/RezeptDaten.vue";
+import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
 export default {
+  components: { KundenDaten, RezeptDaten, TerminVorschlaege },
   data() {
     return {
       currentStep: 1,
+      kunde: {},
+      rezept: {},
     };
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.dropdown {
+<style lang="scss">
+label {
   display: block;
 }
-</style>
 
-<style lang="scss">
 .v-stepper__step {
   .v-stepper__step__step {
     margin-right: 4pt;

@@ -15,25 +15,13 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <label for="patient">Patient:</label>
-          <b-form-input id="patient" type="search" />
-
-          <b-dropdown id="rezept" text="Rezeptwahl" disabled>
-            <b-dropdown-item
-              v-for="typ in ['MT', 'KGG', 'Spaß mit Faszien']"
-              :key="typ"
-            >
-              {{ typ }}
-            </b-dropdown-item>
-          </b-dropdown>
-
-          <label for="ausstellungsdatum">Ausstellungsdatum:</label>
-          <b-form-input id="ausstellungsdatum" type="date" disabled />
+          <folgerezept-daten />
 
           <b-button class="mt-2" @click="currentStep = 3"> Weiter </b-button>
         </v-stepper-content>
 
         <v-stepper-content step="2">
+          <termin-vorschlage />
           <b-button class="mt-2"> Überspringen </b-button>
           <b-button class="mt-2" @click="currentStep = 1"> Zurück </b-button>
         </v-stepper-content>
@@ -43,7 +31,9 @@
 </template>
 
 <script>
+import FolgerezeptDaten from "./steps/FolgerezeptDaten.vue";
 export default {
+  components: { FolgerezeptDaten },
   data() {
     return {
       currentStep: 1,
