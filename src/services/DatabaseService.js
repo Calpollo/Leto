@@ -53,6 +53,12 @@ class DatabaseService {
     }
   }
 
+  getHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.getHeilmittel(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Create Instances in the database
   // ############################
@@ -86,6 +92,12 @@ class DatabaseService {
     }
   }
 
+  createHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.createHeilmittel(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Remove Instances in the database
   // ############################
@@ -116,6 +128,12 @@ class DatabaseService {
   removeRezept(data) {
     if (this.isLocal()) {
       return window.ipc.removeRezept(data).then(JSON.parse);
+    }
+  }
+
+  removeHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeHeilmittel(data).then(JSON.parse);
     }
   }
 }

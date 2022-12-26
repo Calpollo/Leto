@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld("ipc", {
   getTherapeut: (data) => ipcRenderer.invoke("getTherapeut", data),
   getPraxis: (data) => ipcRenderer.invoke("getPraxis", data),
   getRezept: (data) => ipcRenderer.invoke("getRezept", data),
+  getHeilmittel: (data) => ipcRenderer.invoke("getHeilmittel", data),
 
   createZeitspanne: (data) => ipcRenderer.invoke("createZeitspanne", data),
   createTermin: (data) => ipcRenderer.invoke("createTermin", data),
@@ -16,6 +17,7 @@ contextBridge.exposeInMainWorld("ipc", {
   createTherapeut: (data) => ipcRenderer.invoke("createTherapeut", data),
   createPraxis: (data) => ipcRenderer.invoke("createPraxis", data),
   createRezept: (data) => ipcRenderer.invoke("createRezept", data),
+  createHeilmittel: (data) => ipcRenderer.invoke("createHeilmittel", data),
 
   removeZeitspanne: (data) => ipcRenderer.invoke("removeZeitspanne", data),
   removeTermin: (data) => ipcRenderer.invoke("removeTermin", data),
@@ -24,4 +26,5 @@ contextBridge.exposeInMainWorld("ipc", {
   removeTherapeut: (data) => ipcRenderer.invoke("removeTherapeut", data),
   removePraxis: (data) => ipcRenderer.invoke("removePraxis", data),
   removeRezept: (data) => ipcRenderer.invoke("removeRezept", data),
+  removeHeilmittel: (data) => ipcRenderer.invoke("removeHeilmittel", data),
 });

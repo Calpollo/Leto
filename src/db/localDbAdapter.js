@@ -141,21 +141,21 @@ class LocalDbAdapter {
     const [testTermin2] = await this.Termin.findOrCreate({
       where: {
         datum: new Date().setDate(new Date().getDate() + 1),
-        id: "934725a7-220a-46f9-85b0-00f6869d0662",
+        // id: "934725a7-220a-46f9-85b0-00f6869d0662",
       },
     });
 
     const [testTermin3] = await this.Termin.findOrCreate({
       where: {
         datum: new Date().setDate(new Date().getDate() + 1),
-        id: "79c24962-b648-4c87-ac63-79009c69cfe9",
+        // id: "79c24962-b648-4c87-ac63-79009c69cfe9",
       },
     });
 
     const [testTermin4] = await this.Termin.findOrCreate({
       where: {
         datum: new Date().setDate(new Date().getDate() + 1),
-        id: "76b4462b-b2fe-4c99-9484-5da6b2e5fd73",
+        // id: "76b4462b-b2fe-4c99-9484-5da6b2e5fd73",
       },
     });
 
@@ -491,7 +491,7 @@ class LocalDbAdapter {
     await this.Vertrag.belongsTo(this.Therapeut);
 
     // Patientenrezept: Rezept - Kunde
-    await this.Heilmittel.hasMany(this.Heilmittel);
+    await this.Heilmittel.hasMany(this.Rezept);
     await this.Rezept.belongsTo(this.Heilmittel);
 
     // Rezeptinhalt: Rezept - Heilmittel
