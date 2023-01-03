@@ -1,11 +1,11 @@
 {
-    "version": "local",
-    "praxis": "059be834-3955-48ce-9807-e1c919d5077b",
-    "calendar": {
-        "defaultView": "3",
-        "therapeutColors": {
-            "Anna-Lena Fezer": "#5e24bb",
-            "Erik Weßelborg": "#098121"
-        }
+  "version": "local",
+  "calendar": {
+    "defaultView": "3",
+    "therapeutColors": {
+      "Anna-Lena Fezer": "#430c9d",
+      "Erik Weßelborg": "#814309"
     }
+  },
+  "praxis": "6c1db6e0-44bb-4a0e-91e1-9d2b282950b3"
 }

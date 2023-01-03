@@ -1,4 +1,15 @@
 const { contextBridge, ipcRenderer } = require("electron");
+const fs = require("fs");
+
+contextBridge.exposeInMainWorld("fileWriter", {
+  saveConfig: (config) => {
+    fs.writeFile(
+      "./config/leto.config.json",
+      JSON.stringify(config, null, 2),
+      () => {}
+    );
+  },
+});
 
 contextBridge.exposeInMainWorld("ipc", {
   getZeitspanne: (data) => ipcRenderer.invoke("getZeitspanne", data),

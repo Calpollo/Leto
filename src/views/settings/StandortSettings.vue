@@ -3,16 +3,31 @@
     <h2>Standort</h2>
     <p>Hier kannst du die Daten deiner Praxis festlegen.</p>
 
-    <div v-if="!praxis" id="test">
+    <b-button disabled class="mb-4">
+      <b-icon-plus />
+      Neue Praxis anlegen
+    </b-button>
+
+    <div v-if="praxisList?.length < 1">
       <spinner-logo />
     </div>
 
-    <div v-else>
+    <div v-else v-for="praxis in praxisList" :key="praxis.id">
       <h3 class="p-2 px-4">
         {{ praxis.name }}
         <span class="ml-2" v-b-tooltip.hover :title="praxis.id">
           <b-icon-info-circle></b-icon-info-circle>
         </span>
+        <b-button
+          v-if="selectedPraxisId !== praxis.id"
+          class="ml-4"
+          @click="choosePraxis(praxis.id)"
+          variant="transparent"
+          v-b-tooltip.hover
+          :title="`${praxis.name} als aktive Praxis festlegen`"
+        >
+          <b-icon-check-circle color="white" font-scale="1.75" />
+        </b-button>
       </h3>
 
       <p>
@@ -33,11 +48,11 @@
             </p>
             <p>
               <b-icon-envelope-fill class="mr-2"></b-icon-envelope-fill
-              >{{ praxis.email }}
+              ><a :href="'mailto:' + praxis.email">{{ praxis.email }}</a>
             </p>
             <p>
               <b-icon-telephone-fill class="mr-2"></b-icon-telephone-fill
-              >{{ praxis.phone }}
+              ><a :href="'tel:' + praxis.phone">{{ praxis.phone }}</a>
             </p>
           </b-tab>
           <b-tab class="m-2" title="Öffnungszeiten">
@@ -88,7 +103,7 @@
             <b-list-group>
               <b-list-group-item
                 class="d-flex justify-content-between align-items-center"
-                v-for="feiertag in this.praxis.Feiertage"
+                v-for="feiertag in praxis.Feiertage"
                 :key="feiertag.id"
                 >{{ dateToLocale(feiertag.datum) }}
                 <b-badge variant="primary" pill v-if="feiertag.yearlyRepetition"
@@ -106,13 +121,16 @@
 <script>
 import DatabaseService from "@/services/DatabaseService";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import ConfigService from "@/services/ConfigService";
 import { toLocale } from "@/utils/dates";
+import ConfigService from "@/services/ConfigService";
 export default {
   name: "StandortSettings",
   components: { SpinnerLogo },
   data() {
-    return { praxis: null };
+    return {
+      praxisList: [],
+      selectedPraxisId: null,
+    };
   },
   mounted() {
     DatabaseService.getPraxis({
@@ -124,14 +142,18 @@ export default {
         "freitagsZeit",
         "Feiertage",
       ],
-      id: ConfigService.getPraxis(),
-    }).then((praxis) => {
-      this.praxis = praxis;
+    }).then((praxisList) => {
+      this.praxisList = praxisList;
     });
+
+    this.selectedPraxisId = ConfigService.getPraxis();
   },
   methods: {
     dateToLocale(date, locale) {
       return toLocale(date, locale);
+    },
+    choosePraxis(id) {
+      ConfigService.setPraxis(id);
     },
   },
 };

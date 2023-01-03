@@ -14,6 +14,10 @@ class ConfigService {
       );
   }
 
+  save() {
+    window.fileWriter.saveConfig(config);
+  }
+
   getVersion() {
     return config.version;
   }
@@ -29,7 +33,12 @@ class ConfigService {
 
   setTherapeutColor(name, color) {
     config.calendar.therapeutColors[name] = color;
-    // TODO: actually save it permanently
+    this.save();
+  }
+
+  setPraxis(id) {
+    config.praxis = id;
+    this.save();
   }
 }
 

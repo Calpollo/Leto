@@ -1,18 +1,58 @@
+template
 <template>
   <div id="app">
     <SideMenu />
     <router-view class="view" />
+
+    <b-modal
+      id="praxisSelect"
+      title="Die aktive Praxis auswählen"
+      :modal-footer="{ visible: false }"
+      no-close-on-esc
+      no-close-on-backdrop
+      hide-header-close
+    >
+      <praxis-selection v-model="selectedPraxisId" />
+      <template #modal-footer>
+        <b-button @click="ok">Speichern</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import DatabaseService from "./services/DatabaseService";
 import SideMenu from "./components/SideMenu.vue";
+import ConfigService from "./services/ConfigService";
+import PraxisSelection from "./components/formsAndModals/PraxisSelection.vue";
 export default {
+  data() {
+    return {
+      selectedPraxisId: null,
+    };
+  },
   mounted() {
     console.log(DatabaseService);
+    const id = ConfigService.getPraxis();
+    console.log("id", id);
+    if (!id) this.openPraxisSelectionModal();
+    else {
+      DatabaseService.getPraxis({ id }).then((praxis) => {
+        console.log("Praxis", praxis);
+        if (!praxis) this.openPraxisSelectionModal();
+      });
+    }
   },
-  components: { SideMenu },
+  components: { SideMenu, PraxisSelection },
+  methods: {
+    openPraxisSelectionModal() {
+      this.$bvModal.show("praxisSelect");
+    },
+    ok() {
+      ConfigService.setPraxis(this.selectedPraxisId);
+      this.$bvModal.hide("praxisSelect");
+    },
+  },
 };
 </script>
 
