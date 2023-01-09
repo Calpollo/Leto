@@ -32,13 +32,10 @@ export default {
     };
   },
   mounted() {
-    console.log(DatabaseService);
     const id = ConfigService.getPraxis();
-    console.log("id", id);
     if (!id) this.openPraxisSelectionModal();
     else {
       DatabaseService.getPraxis({ id }).then((praxis) => {
-        console.log("Praxis", praxis);
         if (!praxis) this.openPraxisSelectionModal();
       });
     }

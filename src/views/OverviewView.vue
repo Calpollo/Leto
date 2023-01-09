@@ -3,10 +3,16 @@
     <h2>Übersicht</h2>
 
     <div class="rezept-button-row">
-      <b-button v-b-modal.neuesRezept>Neues Rezept</b-button>
-      <b-button v-b-modal.folgeRezept>Folgerezept</b-button>
-      <b-button disabled>Neuer Einzeltermin</b-button>
-      <b-button v-b-modal.terminAbsage>Patient nicht erschienen</b-button>
+      <b-button v-b-modal.neuesRezept
+        ><b-icon-file-earmark-plus /> Neues Rezept</b-button
+      >
+      <b-button v-b-modal.folgeRezept
+        ><b-icon-files-alt /> Folgerezept</b-button
+      >
+      <b-button disabled><b-icon-plus /> Neuer Einzeltermin</b-button>
+      <b-button v-b-modal.terminAbsage>
+        <b-icon-person-dash /> Patient nicht erschienen</b-button
+      >
     </div>
 
     <div>
@@ -43,7 +49,7 @@
       </b-button-group>
 
       <div>
-        <div
+        <span
           id="calendarColorLegend"
           v-for="therapeut in this.therapeuten"
           :key="therapeut.id"
@@ -58,7 +64,7 @@
             />
           </svg>
           <span>{{ therapeut.name }}</span>
-        </div>
+        </span>
 
         <div id="calendar">
           <CalendarComponent :events="this.events" :length="calendarlength" />
@@ -151,7 +157,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-svg {
+svg:not(.bi) {
   height: 40px;
   width: 40px;
 }
