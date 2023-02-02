@@ -1,5 +1,5 @@
 <template>
-  <b-form class="kundendaten">
+  <b-form class="kundendaten" @submit="save">
     <b-form-group id="lastname-group" label="Nachname:" label-for="lastname">
       <b-form-input
         id="lastname"
@@ -46,12 +46,8 @@
       />
     </b-form-group>
 
-    <b-button
-      :disabled="!isValid"
-      v-if="showSaveButton"
-      type="submit"
-      @click="save"
-      >Speichern</b-button
+    <b-button :disabled="!isValid" v-if="showSaveButton" type="submit"
+      >Weiter</b-button
     >
   </b-form>
 </template>

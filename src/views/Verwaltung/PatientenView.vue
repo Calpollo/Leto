@@ -46,7 +46,7 @@
 
 <script>
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import DatabaseService from "@/services/DatabaseService";
+import KundenService from "@/services/KundenService";
 
 export default {
   name: "PatientenView",
@@ -57,10 +57,10 @@ export default {
   },
   components: { SpinnerLogo },
   mounted() {
-    DatabaseService.getKunde({
+    KundenService.getAll({
       include: { association: "Rezepts", include: "Termins" },
     }).then((patientList) => {
-      console.table(patientList);
+      // console.table(patientList);
       this.patients = patientList;
     });
   },

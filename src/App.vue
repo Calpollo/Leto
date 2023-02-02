@@ -21,10 +21,11 @@ template
 </template>
 
 <script>
-import DatabaseService from "./services/DatabaseService";
+import PraxisService from "./services/PraxisService";
 import SideMenu from "./components/SideMenu.vue";
 import ConfigService from "./services/ConfigService";
 import PraxisSelection from "./components/formsAndModals/PraxisSelection.vue";
+
 export default {
   data() {
     return {
@@ -35,7 +36,7 @@ export default {
     const id = ConfigService.getPraxis();
     if (!id) this.openPraxisSelectionModal();
     else {
-      DatabaseService.getPraxis({ id }).then((praxis) => {
+      PraxisService.getOne(id).then((praxis) => {
         if (!praxis) this.openPraxisSelectionModal();
       });
     }

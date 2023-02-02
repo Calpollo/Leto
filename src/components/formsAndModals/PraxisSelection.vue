@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
+import PraxisService from "@/services/PraxisService";
 export default {
   name: "PraxisSelection",
   props: {
@@ -29,7 +29,7 @@ export default {
     };
   },
   mounted() {
-    DatabaseService.getPraxis().then((praxisList) => {
+    PraxisService.getAll().then((praxisList) => {
       this.options = praxisList;
     });
   },

@@ -15,10 +15,8 @@ class LocalDbAdapter {
   async seed() {
     const [arbeitszeit] = await this.Zeitspanne.findOrCreate({
       where: {
-        startStunde: 8,
-        startMinute: 0,
-        endStunde: 19,
-        endMinute: 30,
+        start: new Date().setHours(8, 0),
+        end: new Date().setHours(19, 30),
       },
     });
 
@@ -134,22 +132,14 @@ class LocalDbAdapter {
 
     const [testTermin] = await this.Termin.findOrCreate({
       where: {
-        datum: new Date(),
-      },
-    });
-
-    const [terminZeit] = await this.Zeitspanne.findOrCreate({
-      where: {
-        startStunde: 12,
-        endStunde: 18,
-        endMinute: 15,
+        start: new Date().setHours(12, 0, 0, 0),
+        minutes: 345,
       },
     });
 
     await testTermin.setPraxis(ktWagner);
     await testTermin.setTherapeut(anni);
     await testTermin.setRezept(testRezept);
-    await testTermin.setZeitspanne(terminZeit);
 
     console.log("Modelle:", Object.keys(this.sequelize.models));
   }
@@ -167,53 +157,22 @@ class LocalDbAdapter {
           defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
-        startStunde: {
-          type: DataTypes.INTEGER,
-          defaultValue: 0,
+        start: {
+          type: DataTypes.TIME,
           allowNull: false,
-          validate: {
-            min: 0,
-            max: 23,
-          },
         },
-        startMinute: {
-          type: DataTypes.INTEGER,
-          defaultValue: 0,
+        end: {
+          type: DataTypes.TIME,
           allowNull: false,
-          validate: {
-            min: 0,
-            max: 59,
-          },
-        },
-        endStunde: {
-          type: DataTypes.INTEGER,
-          defaultValue: 0,
-          allowNull: false,
-          validate: {
-            min: 0,
-            max: 23,
-          },
-        },
-        endMinute: {
-          type: DataTypes.INTEGER,
-          defaultValue: 0,
-          allowNull: false,
-          validate: {
-            min: 0,
-            max: 59,
-          },
         },
       },
+
       {
         validate: {
           startBeforeEnd() {
-            if (
-              this.endStunde < this.startStunde ||
-              (this.endStunde == this.startStunde &&
-                this.endMinute <= this.startMinute)
-            ) {
+            if (new Date(this.start) > new Date(this.end)) {
               throw new Error(
-                `Die angegebene Startzeit ist nach oder gleichzeitig mit der Endzeit ${this.startStunde}:${this.startMinute} - ${this.endStunde}:${this.endMinute}`
+                `Die angegebene Startzeit ist nach oder gleichzeitig mit der Endzeit ${this.start} - ${this.end}`
               );
             }
           },
@@ -221,7 +180,7 @@ class LocalDbAdapter {
         indexes: [
           {
             unique: true,
-            fields: ["startStunde", "startMinute", "endStunde", "endMinute"],
+            fields: ["start", "end"],
           },
         ],
       }
@@ -375,15 +334,20 @@ class LocalDbAdapter {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      datum: {
-        type: DataTypes.DATEONLY,
+      start: {
+        type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+      },
+      minutes: {
+        type: DataTypes.INTEGER,
+        defaultValue: 15,
+        allowNull: false,
       },
     });
 
     await Promise.all([
-      this.Zeitspannen,
+      this.Zeitspanne,
       this.Datum,
       this.Vertrag,
       this.Heilmittel,
@@ -470,14 +434,15 @@ class LocalDbAdapter {
     await this.Termin.belongsTo(this.Rezept);
     await this.Therapeut.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Therapeut);
-    await this.Zeitspanne.hasMany(this.Termin);
-    await this.Termin.belongsTo(this.Zeitspanne);
+
+    console.log("Rezeptassociations", this.Rezept.associations);
+    console.log("Therapeutassociations", this.Rezept.associations);
 
     // #################
     // Synchronisation
     // #################
     return this.sequelize.sync({
-      // force: true,
+      force: true,
       // alter: true,
     });
   }

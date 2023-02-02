@@ -17,6 +17,7 @@
         :key="event.id"
         :event="event"
         :style="getDateStyle(event)"
+        @triggerUpdate="triggerUpdate"
       />
     </div>
     <div class="calendarday" v-else-if="openingHours?.weekend">
@@ -36,7 +37,7 @@ import {
   fullDayHours,
 } from "@/utils/events";
 import CalendarDate from "./CalendarDate.vue";
-import DatabaseService from "@/services/DatabaseService";
+import PraxisService from "@/services/PraxisService";
 import SpinnerLogo from "../SpinnerLogo.vue";
 import ConfigService from "@/services/ConfigService";
 import { toLocale } from "@/utils/dates";
@@ -60,9 +61,8 @@ export default {
     },
   },
   mounted() {
-    DatabaseService.getPraxis({
+    PraxisService.getOne(ConfigService.getPraxis(), {
       include: { all: true },
-      id: ConfigService.getPraxis(),
     }).then((praxis) => {
       const dayOfTheWeek = new Date(this.date).getDay();
       const week = [
@@ -88,10 +88,7 @@ export default {
       return toLocale(date, locale);
     },
     getDayStyle() {
-      const dayLengthInHours = fullDayHours(
-        this.openingHours,
-        this.openingHours
-      );
+      const dayLengthInHours = fullDayHours(this.openingHours);
       const result = {
         gridTemplateRows: `repeat(${dayLengthInHours * 4}, ${
           this.pixelPerHour / 4
@@ -117,6 +114,9 @@ export default {
             : "auto",
       };
       return result;
+    },
+    triggerUpdate() {
+      this.$emit("triggerUpdate");
     },
   },
   computed: {

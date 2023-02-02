@@ -95,8 +95,8 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
 import { toLocale } from "@/utils/dates";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   data() {
     return {
@@ -105,17 +105,21 @@ export default {
   },
   methods: {
     zeitZuString(event) {
-      return `${event.startStunde}:${String(event.startMinute).padStart(
-        2,
-        "0"
-      )} - ${event.endStunde}:${String(event.endMinute).padStart(2, "0")}`;
+      return `${this.pad(new Date(event.start).getHours())}:${this.pad(
+        new Date(event.start).getMinutes()
+      )}- ${this.pad(new Date(event.end).getHours())}:${this.pad(
+        new Date(event.end).getMinutes()
+      )}`;
     },
     dateToLocale(date, locale) {
       return toLocale(date, locale);
     },
+    pad(number) {
+      return String(number).padStart(2, "0");
+    },
   },
   mounted() {
-    DatabaseService.getTherapeut({
+    TherapeutService.getAll({
       include: {
         association: "Vertrag",
         include: [

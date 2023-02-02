@@ -52,6 +52,7 @@ nav {
 
     &:hover {
       color: var(--secondary);
+      background-color: var(--background-accent);
     }
   }
 }

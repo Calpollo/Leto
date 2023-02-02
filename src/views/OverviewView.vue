@@ -67,7 +67,11 @@
         </span>
 
         <div id="calendar">
-          <CalendarComponent :events="this.events" :length="calendarlength" />
+          <CalendarComponent
+            :events="this.events"
+            :length="calendarlength"
+            @triggerUpdate="updateEventList"
+          />
         </div>
       </div>
     </div>
@@ -115,7 +119,8 @@ import FolgeRezeptFormular from "@/components/formsAndModals/FolgeRezeptFormular
 import NeuesRezeptFormular from "@/components/formsAndModals/NeuesRezeptFormular.vue";
 import TerminAbsage from "@/components/formsAndModals/TerminAbsage.vue";
 import ConfigService from "@/services/ConfigService";
-import DatabaseService from "@/services/DatabaseService";
+import TerminService from "@/services/TerminService";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   name: "OverviewView",
   data() {
@@ -134,6 +139,13 @@ export default {
       if (!colors) return "grey";
       else return colors[id];
     },
+    updateEventList() {
+      TerminService.getAll({
+        include: ["Therapeut", "Rezept", "Praxis"],
+      }).then((termine) => {
+        this.events = termine;
+      });
+    },
   },
   components: {
     CalendarComponent,
@@ -142,14 +154,8 @@ export default {
     TerminAbsage,
   },
   mounted() {
-    DatabaseService.getTermine({
-      include: ["Zeitspanne", "Therapeut", "Rezept", "Praxis"],
-    }).then((termine) => {
-      this.events = termine;
-    });
-    DatabaseService.getTherapeut({
-      all: true,
-    }).then((therapeuten) => {
+    this.updateEventList();
+    TherapeutService.getAll().then((therapeuten) => {
       this.therapeuten = therapeuten;
     });
   },

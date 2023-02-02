@@ -27,7 +27,7 @@
 <script>
 import ArbeitszeitOverview from "@/components/therapeut/ArbeitszeitOverview.vue";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import DatabaseService from "@/services/DatabaseService";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   components: { ArbeitszeitOverview, SpinnerLogo },
   data() {
@@ -36,9 +36,8 @@ export default {
     };
   },
   mounted() {
-    DatabaseService.getTherapeut({
-      id: this.$route.params.therapeutId,
-      include: [{ association: "Termins", include: "Zeitspanne" }, "Vertrag"],
+    TherapeutService.getOne(this.$route.params.therapeutId, {
+      include: ["Termins", "Vertrag"],
     }).then((therapeut) => {
       this.therapeut = therapeut;
     });

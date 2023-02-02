@@ -6,6 +6,7 @@
       :events="relevantEvents(day)?.sort(sortByStartTime)"
       :date="new Date().setDate(new Date().getDate() + day)"
       :style="{ width: (1 / numberOfDays) * 100 + '%' }"
+      @triggerUpdate="triggerUpdate"
     />
   </b-row>
 </template>
@@ -39,15 +40,11 @@ export default {
         return new Date(d1).getDate() - new Date(d2).getDate();
       }
       return this.events.filter(
-        (e) => dayDiff(e.datum, this.startDay) == daysAfterStart
+        (e) => dayDiff(e.start, this.startDay) == daysAfterStart
       );
     },
     sortByStartTime(a, b) {
-      return (
-        a.Zeitspanne.startStunde -
-        b.Zeitspanne.startStunde +
-        (a.Zeitspanne.startMinute - b.Zeitspanne.startMinute) / 60
-      );
+      return a.start - b.start;
     },
     calculateNumberOfDays() {
       if (typeof this.length == "number") return this.length;
@@ -64,6 +61,9 @@ export default {
         default:
           return 3;
       }
+    },
+    triggerUpdate() {
+      this.$emit("triggerUpdate");
     },
   },
   components: { CalendarDay },

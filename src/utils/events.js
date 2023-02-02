@@ -1,42 +1,31 @@
+const millisecondsPerHour = 3600000;
+
 export function eventHours(event) {
   if (!event) return 0;
-  return (
-    event.Zeitspanne.endStunde -
-    event.Zeitspanne.startStunde +
-    (event.Zeitspanne.endMinute - event.Zeitspanne.startMinute) / 60
-  );
+  return event.minutes / 60;
 }
 
 export function eventsAtTheSameTime(event, events) {
-  return events.filter(
-    (e) =>
-      !(
-        e.Zeitspanne.endStunde < event.Zeitspanne.startStunde ||
-        (e.Zeitspanne.endStunde == event.Zeitspanne.StartStunde &&
-          e.Zeitspanne.endMinute < event.Zeitspanne.startMinute) ||
-        e.Zeitspanne.startStunde > event.Zeitspanne.endStunde ||
-        (e.Zeitspanne.startStunde == event.Zeitspanne.endStunde &&
-          e.Zeitspanne.startMinute < event.Zeitspanne.endMinute)
-      )
-  ).length;
+  const eventStart = new Date(event.start).valueOf();
+  const eventEnd = new Date(event.start).setMinutes(
+    new Date(eventStart).getMinutes() + event.minutes
+  );
+  return events.filter((e) => {
+    const eStart = new Date(e.start).valueOf();
+    const eEnd = new Date(e.start).setMinutes(
+      new Date(eStart).getMinutes() + e.minutes
+    );
+    return (
+      eStart == eventStart ||
+      eEnd == eventEnd ||
+      (eventStart <= eEnd && eventEnd >= eEnd) ||
+      (eventStart <= eStart && eventEnd >= eStart)
+    );
+  }).length;
 }
 
 export function startHoursDifference(earlyEvent, lateEvent) {
-  return (
-    lateEvent.Zeitspanne.startStunde -
-    earlyEvent.Zeitspanne.startStunde +
-    (lateEvent.Zeitspanne.startMinute - earlyEvent.Zeitspanne.startMinute) / 60
-  );
-}
-
-export function hoursBetween(earlyEvent, lateEvent) {
-  if (earlyEvent.id == lateEvent.id) return 0;
-  const earlyHour = earlyEvent.Zeitspanne.endStunde;
-  const earlyMinute = earlyEvent.Zeitspanne.endMinute;
-  const lateHour = lateEvent.Zeitspanne.startStunde;
-  const lateMinute = lateEvent.Zeitspanne.startMinute;
-
-  const result = lateHour - earlyHour + (lateMinute - earlyMinute) / 60;
+  const result = lateEvent.start - earlyEvent.start;
   return result;
 }
 
@@ -46,21 +35,22 @@ export function eventListToConcurringEventnumber(eventList) {
   );
 }
 
-export function fullDayHours(earlyEvent, lateEvent) {
-  if (!earlyEvent || !lateEvent) return 0;
-  const earlyHour = earlyEvent.Zeitspanne.startStunde;
-  const earlyMinute = earlyEvent.Zeitspanne.startMinute;
-  const lateHour = lateEvent.Zeitspanne.endStunde;
-  const lateMinute = lateEvent.Zeitspanne.endMinute;
-
-  return lateHour - earlyHour + (lateMinute - earlyMinute) / 60;
+export function fullDayHours(openingHours) {
+  const { start, end } = openingHours.Zeitspanne;
+  return Math.ceil((end - start) / millisecondsPerHour);
 }
 
-export function dateRowStart(event, earlyEvent) {
-  return startHoursDifference(earlyEvent, event) * 4 + 2;
+export function dateRowStart(event, openingHours) {
+  const timeDiff =
+    new Date(event.start) - new Date(openingHours.Zeitspanne.start);
+  const millisecondsPerHour = 3600000;
+  return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 
-export function dateRowEnd(event, earlyEvent) {
-  const result = dateRowStart(event, earlyEvent) + eventHours(event) * 4;
-  return result;
+export function dateRowEnd(event, openingHours) {
+  const timeDiff =
+    new Date(event.start).setMinutes(
+      new Date(event.start).getMinutes() + event.minutes
+    ) - new Date(openingHours.Zeitspanne.start);
+  return Math.round((timeDiff / millisecondsPerHour) * 4);
 }

@@ -9,7 +9,7 @@
         <v-divider></v-divider>
 
         <v-stepper-step :complete="currentStep > 2" step="2">
-          Patientendaten
+          Rezeptdaten
         </v-stepper-step>
 
         <v-divider></v-divider>
@@ -29,10 +29,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <termin-vorschlaege
-            :heilmittel="rezept.heilmittel"
-            @save="currentStep = 1"
-          />
+          <termin-vorschlaege :heilmittel="rezept.heilmittel" @save="done" />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -40,9 +37,11 @@
 </template>
 
 <script>
+import KundenService from "@/services/KundenService";
 import KundenDaten from "./steps/KundenDaten.vue";
 import RezeptDaten from "./steps/RezeptDaten.vue";
 import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
+import RezeptService from "@/services/RezeptService";
 export default {
   components: { KundenDaten, RezeptDaten, TerminVorschlaege },
   data() {
@@ -51,6 +50,28 @@ export default {
       kunde: {},
       rezept: {},
     };
+  },
+  methods: {
+    done(terminVorschlagsList) {
+      console.log(this.kunde, this.rezept);
+      console.log(terminVorschlagsList);
+
+      const { lastname, firstname, email, phone, address } = this.kunde;
+      KundenService.create(lastname, firstname, email, phone, address).then(
+        ([createdKunde, kundeSuccess]) => {
+          console.log(createdKunde, kundeSuccess);
+          const { ausstellungsdatum, aussteller, HeilmittelAbk } = this.rezept;
+          RezeptService.create(
+            ausstellungsdatum,
+            aussteller,
+            HeilmittelAbk,
+            createdKunde.id
+          ).then(([createdRezept, rezeptSuccess]) => {
+            console.log(createdRezept, rezeptSuccess);
+          });
+        }
+      );
+    },
   },
 };
 </script>

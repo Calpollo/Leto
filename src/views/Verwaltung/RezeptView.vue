@@ -38,8 +38,8 @@
 
 <script>
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import DatabaseService from "@/services/DatabaseService";
 import { toLocale } from "@/utils/dates";
+import RezeptService from "@/services/RezeptService";
 
 export default {
   name: "PatientenView",
@@ -50,7 +50,7 @@ export default {
   },
   components: { SpinnerLogo },
   mounted() {
-    DatabaseService.getRezept({ include: ["Kunde", "Termins"] }).then(
+    RezeptService.getAll({ include: ["Kunde", "Termins"] }).then(
       (rezeptList) => {
         // console.table(rezeptList);
         this.rezepte = rezeptList;

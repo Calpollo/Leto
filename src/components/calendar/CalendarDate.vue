@@ -5,12 +5,9 @@
       {{ this.kunde?.lastname }}
     </p>
     <p class="timestring">
-      {{ this.event.Zeitspanne.startStunde }}:{{
-        pad(this.event.Zeitspanne.startMinute)
-      }}
-      - {{ this.event.Zeitspanne.endStunde }}:{{
-        pad(this.event.Zeitspanne.endMinute)
-      }}
+      {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
+      -
+      {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
     </p>
     <p class="therapeutname">{{ this.event.Therapeut.name }}</p>
 
@@ -47,7 +44,8 @@
 
 <script>
 import ConfigService from "@/services/ConfigService";
-import DatabaseService from "@/services/DatabaseService";
+import KundenService from "@/services/KundenService";
+import TerminService from "@/services/TerminService";
 export default {
   name: "CalendarDate",
   props: {
@@ -59,6 +57,12 @@ export default {
   data() {
     return {
       kunde: null,
+      startDate: new Date(this.event.start),
+      endDate: new Date(
+        new Date(this.event.start).setMinutes(
+          new Date(this.event.start).getMinutes() + this.event.minutes
+        )
+      ),
     };
   },
   methods: {
@@ -76,13 +80,13 @@ export default {
       else return colors[id];
     },
     deleteDate() {
-      console.log(this.event.id);
-      DatabaseService.removeTermine({ id: this.event.id });
-      // TODO: update date list
+      // console.log(this.event.id);
+      TerminService.remove(this.event.id);
+      this.$emit("triggerUpdate");
     },
   },
   mounted() {
-    DatabaseService.getKunde({ id: this.event.Rezept.KundeId }).then((k) => {
+    KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
       return (this.kunde = k);
     });
   },

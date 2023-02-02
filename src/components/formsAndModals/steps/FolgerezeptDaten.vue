@@ -1,73 +1,108 @@
 <template>
-  <b-form class="PatientenDaten">
-    <b-form-group id="patient-group" label="Patient:" label-for="patient">
-      <b-form-input id="patient" list="patient-list" />
-      <b-form-datalist
-        id="patient-list"
-        :options="kunden.map((k) => `${k.lastname}, ${k.firstname}`)"
-      ></b-form-datalist>
-    </b-form-group>
+  <b-form class="FolgerezeptDaten" @submit="save">
+    <b-form-group id="kundenwahl-group" label="Name:" label-for="kundenwahl">
+      <b-form-input
+        id="kundenwahl"
+        type="search"
+        list="kundenlist"
+        placeholder="Nachname, Vorname"
+        v-model="selectedKunde"
+        required
+        @change="changedKunde"
+      ></b-form-input>
 
-    <b-form-group
-      id="heilmittel-group"
-      label="Heilmittel:"
-      label-for="heilmittel"
-    >
-      <b-dropdown id="heilmittel" :text="rezept.heilmittel || 'auswählen'">
-        <b-dropdown-item
-          v-for="typ in heilmittel"
-          :key="typ.id"
-          @click="rezept = { ...rezept, heilmittel: typ.abk }"
-          >{{ typ.abk }}</b-dropdown-item
+      <datalist id="kundenlist">
+        <option
+          v-for="kunde in kunden"
+          :key="kunde.id"
+          :value="kunde.lastname + ', ' + kunde.firstname"
         >
-      </b-dropdown>
+          {{ kunde.lastname }}, {{ kunde.firstname }}
+        </option>
+      </datalist>
     </b-form-group>
 
-    <b-form-group
-      id="ausstellungsdatum-group"
-      label="Ausstellungsdatum:"
-      label-for="ausstellungsdatum"
-    >
-      <b-form-input id="ausstellungsdatum" type="date" />
+    <b-form-group id="rezeptwahl-group" label="Rezept:" label-for="rezeptwahl">
+      <b-form-input
+        id="rezeptwahl"
+        type="search"
+        list="rezeptlist"
+        v-model="selectedRezept"
+        required
+      ></b-form-input>
+
+      <datalist id="rezeptlist">
+        <option
+          v-for="rezept in rezepte"
+          :key="rezept.id"
+          :value="
+            rezept.HeilmittelAbk +
+            ': ' +
+            dateToLocale(rezept.ausstellungsdatum) +
+            ', ' +
+            rezept.aussteller
+          "
+        >
+          {{ rezept.HeilmittelAbk }}:
+          {{ dateToLocale(rezept.ausstellungsdatum) }}, {{ rezept.aussteller }}
+        </option>
+      </datalist>
     </b-form-group>
+
+    <b-button :disabled="!selectedRezept" type="submit">Weiter</b-button>
   </b-form>
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
+import KundenService from "@/services/KundenService";
+import RezeptService from "@/services/RezeptService";
+import { toLocale } from "@/utils/dates";
 export default {
-  name: "PatientenDaten",
+  name: "FolgerezeptDaten",
   props: {
     value: {
       type: Object,
-      default: () => {
-        return {
-          heilmittel: null,
-          ausstellungsDatum: new Date(),
-        };
-      },
     },
   },
   data() {
     return {
-      rezept: this.value,
-      heilmittel: [],
+      rezepte: [],
       kunden: [],
+      selectedKunde: null,
+      selectedRezept: null,
+      rezept: this.value,
     };
   },
   mounted() {
-    DatabaseService.getHeilmittel().then((heilmittelList) => {
-      console.table(heilmittelList);
-      this.heilmittel = heilmittelList;
-    });
-
-    DatabaseService.getKunde().then((kundeList) => {
-      console.table(kundeList);
+    KundenService.getAll().then((kundeList) => {
       this.kunden = kundeList;
     });
-
-    if (!this.rezept?.ausstellungsDatum)
-      this.rezept.ausstellungsDatum = new Date().toISOString().split("T")[0];
+  },
+  methods: {
+    changedKunde() {
+      const [lastname, firstname] = this.selectedKunde.split(", ");
+      RezeptService.getByLastnameAndFirstname(lastname, firstname).then(
+        (rezeptList) => {
+          this.rezepte = rezeptList;
+        }
+      );
+    },
+    dateToLocale(date, locale) {
+      return toLocale(date, locale);
+    },
+    save() {
+      const [HeilmittelAbk, rest] = this.selectedRezept.split(": ");
+      const [ausstellungsdatum, aussteller] = rest.split(", ");
+      const rezept = this.rezepte.find(
+        (r) =>
+          r.HeilmittelAbk == HeilmittelAbk &&
+          this.dateToLocale(r.ausstellungsdatum) == ausstellungsdatum &&
+          r.aussteller == aussteller
+      );
+      this.rezept = rezept;
+      this.$emit("input", this.rezept);
+      this.$emit("save");
+    },
   },
 };
 </script>

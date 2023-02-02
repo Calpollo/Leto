@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
+import PraxisService from "@/services/PraxisService";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import { toLocale } from "@/utils/dates";
 import ConfigService from "@/services/ConfigService";
@@ -133,7 +133,7 @@ export default {
     };
   },
   mounted() {
-    DatabaseService.getPraxis({
+    PraxisService.getAll({
       include: [
         "montagsZeit",
         "dienstagsZeit",

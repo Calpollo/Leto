@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
 import { eventHours } from "@/utils/events";
+import TerminService from "@/services/TerminService";
 export default {
   name: "ArbeitszeitOverview",
   props: {
@@ -61,14 +61,13 @@ export default {
       };
     },
     updatetermineZeitSumme() {
-      return DatabaseService.getTermine({
-        where: { TherapeutId: this.therapeut.id },
-        include: "Zeitspanne",
-      }).then((termine) => {
-        return termine
-          .map((event) => eventHours(event))
-          .reduce((a, b) => a + b, 0);
-      });
+      return TerminService.getByTherapeut(this.therapeut.id, {}).then(
+        (termine) => {
+          return termine
+            .map((event) => eventHours(event))
+            .reduce((a, b) => a + b, 0);
+        }
+      );
     },
   },
   async mounted() {

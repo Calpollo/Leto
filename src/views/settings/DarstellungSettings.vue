@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
 import ConfigService from "@/services/ConfigService";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   name: "DarstellungsSettings",
   data() {
@@ -30,8 +30,7 @@ export default {
     };
   },
   mounted() {
-    // ConfigService.getCalendar("therapeutColors");
-    DatabaseService.getTherapeut().then((therapeuten) => {
+    TherapeutService.getAll().then((therapeuten) => {
       const colors = ConfigService.getCalendar("therapeutColors");
       this.therapeuten = therapeuten.map(({ id, name }) => {
         return { id, name, color: colors[name] };
@@ -40,8 +39,7 @@ export default {
   },
   methods: {
     onColorChange(name, color) {
-      console.log(name, color);
-      //TODO: save color change in config
+      // console.log(name, color);
       ConfigService.setTherapeutColor(name, color);
     },
   },

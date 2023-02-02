@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import DatabaseService from "@/services/DatabaseService";
 import ArbeitszeitOverview from "@/components/therapeut/ArbeitszeitOverview.vue";
 import AusgebuchtListe from "@/components/therapeut/AusgebuchtListe.vue";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   data() {
     return {
@@ -31,11 +31,9 @@ export default {
     };
   },
   mounted() {
-    DatabaseService.getTherapeut({ include: { all: true } }).then(
-      (therapeuten) => {
-        this.therapeuten = therapeuten;
-      }
-    );
+    TherapeutService.getAll({ include: { all: true } }).then((therapeuten) => {
+      this.therapeuten = therapeuten;
+    });
   },
   components: { ArbeitszeitOverview, AusgebuchtListe },
 };

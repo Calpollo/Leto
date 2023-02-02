@@ -3,7 +3,7 @@
     <v-stepper v-model="currentStep" :flat="false" :dark="false">
       <v-stepper-header>
         <v-stepper-step :complete="currentStep > 1" step="1">
-          Patientendaten
+          Rezeptdaten
         </v-stepper-step>
 
         <v-divider></v-divider>
@@ -15,15 +15,11 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <folgerezept-daten />
-
-          <b-button class="mt-2" @click="currentStep = 3"> Weiter </b-button>
+          <folgerezept-daten v-model="rezept" @save="currentStep = 2" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <termin-vorschlage />
-          <b-button class="mt-2"> Überspringen </b-button>
-          <b-button class="mt-2" @click="currentStep = 1"> Zurück </b-button>
+          <termin-vorschlaege :heilmittel="rezept.heilmittel" @save="done" />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -32,12 +28,20 @@
 
 <script>
 import FolgerezeptDaten from "./steps/FolgerezeptDaten.vue";
+import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
 export default {
-  components: { FolgerezeptDaten },
+  components: { FolgerezeptDaten, TerminVorschlaege },
   data() {
     return {
       currentStep: 1,
+      rezept: {},
     };
+  },
+  methods: {
+    done(terminVorschlagsList) {
+      // TODO: trigger rezept erstellung und termin erstellung
+      console.log(this.rezept, terminVorschlagsList);
+    },
   },
 };
 </script>
@@ -46,9 +50,6 @@ export default {
 .dropdown {
   display: block;
 }
-</style>
-
-<style lang="scss">
 .v-stepper__step {
   .v-stepper__step__step {
     margin-right: 4pt;

@@ -12,8 +12,6 @@ class DatabaseService {
     return ConfigService.getVersion() == "local";
   }
 
-  // TODO: instead of parameter "data", use specific parameters
-
   // ############################
   // Get Instances from the database
   // ############################
