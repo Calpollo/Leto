@@ -10,7 +10,9 @@
       :disabled="!vorschlag.selected && selectionCount == maxSelectionNum"
       @click="selectVorschlag(vorschlag)"
     >
-      {{ vorschlag.text }}
+      {{ vorschlag.date.toLocaleString("de-DE", { weekday: "short" }) }},
+      {{ vorschlag.date.toLocaleDateString("de-DE") }},
+      {{ vorschlag.date.getHours() }}:{{ pad(vorschlag.date.getMinutes()) }}
     </b-button>
 
     <br />
@@ -43,18 +45,49 @@ export default {
   data() {
     return {
       maxSelectionNum: 3,
+      // TODO: generate Terminvorschläge more efficiently and automatically
+      // TODO: load number of appointments and duration from config
       vorschlaege: [
-        { text: "Mo. 13-15h", selected: true },
-        { text: "Mo. 15-16h", selected: true },
-        { text: "Mo. 16-17h", selected: false },
-        { text: "Mo. 17-18h", selected: false },
-        { text: "Mo. 18-19h", selected: false },
+        {
+          date: this.roundToFullHour(new Date()),
+          selected: true,
+        },
+        {
+          date: this.roundToFullHour(
+            new Date(new Date().getTime() + 2 * 60 * 60 * 1000)
+          ),
+          selected: true,
+        },
+        {
+          date: this.roundToFullHour(
+            new Date(new Date().getTime() + 4 * 60 * 60 * 1000)
+          ),
+          selected: true,
+        },
+        {
+          date: this.roundToFullHour(
+            new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+          ),
+          selected: false,
+        },
+        {
+          date: this.roundToFullHour(
+            new Date(new Date().getTime() + 26 * 60 * 60 * 1000)
+          ),
+          selected: false,
+        },
       ],
     };
   },
   methods: {
+    roundToFullHour(date) {
+      return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
+    },
+    pad(number) {
+      return String(number).padStart(2, "0");
+    },
     selectVorschlag(vorschlag) {
-      let found_v = this.vorschlaege.find((v) => v.text == vorschlag.text);
+      let found_v = this.vorschlaege.find((v) => v.date == vorschlag.date);
 
       if (found_v.selected) found_v.selected = !found_v.selected;
       else if (this.selectionCount < this.maxSelectionNum)
@@ -63,7 +96,7 @@ export default {
     save() {
       this.$emit(
         "save",
-        this.vorschlaege.filter((v) => v.selected)
+        this.vorschlaege.filter((v) => v.selected).map((v) => v.date)
       );
     },
   },

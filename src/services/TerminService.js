@@ -16,6 +16,39 @@ class TerminService {
   getByTherapeut(tID, { include = [] } = {}) {
     return DatabaseService.getTermine({ where: { TherapeutId: tID }, include });
   }
+
+  create(start, minutes, PraxisId, RezeptId, TherapeutId) {
+    console.log("Creating new Termin with", {
+      start,
+      minutes,
+      PraxisId,
+      RezeptId,
+      TherapeutId,
+    });
+    return DatabaseService.createTermine({
+      where: {
+        start: start,
+        minutes,
+        PraxisId,
+        RezeptId,
+        TherapeutId,
+      },
+    });
+  }
+
+  // each item in the list is an object with keys:
+  // - start
+  // - minutes
+  // - PraxisId
+  // - RezeptId
+  // - TherapeutId
+  bulkCreate(dataList) {
+    console.log("Creating Termine in bulk:", dataList);
+    return DatabaseService.createTermine({
+      where: dataList,
+      bulkCreate: true,
+    });
+  }
 }
 
 export default new TerminService();

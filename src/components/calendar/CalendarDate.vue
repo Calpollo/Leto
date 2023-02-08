@@ -8,36 +8,38 @@
       {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
       -
       {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
+
+      <b-icon-info-circle
+        class="mx-2"
+        :id="`tooltip-target-${this.event.id}`"
+      ></b-icon-info-circle>
     </p>
-    <p class="therapeutname">{{ this.event.Therapeut.name }}</p>
+    <!-- <p class="therapeutname">{{ this.event.Therapeut.name }}</p> -->
 
-    <b-icon-info-circle
-      class="mx-2"
-      :id="`tooltip-target-${this.event.id}`"
-    ></b-icon-info-circle>
-
-    <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
+    <!-- <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
       <b-icon-trash-fill></b-icon-trash-fill>
-    </b-button>
+    </b-button> -->
 
     <b-tooltip
       :target="`tooltip-target-${this.event.id}`"
-      triggers="hover"
-      placement="left"
+      v-b-tooltip.focus
+      placement="bottom"
     >
       <p>
-        Therapeut: {{ this.event.Therapeut.name }} ({{
-          this.event.Therapeut.geschlecht
-        }})
+        {{ this.event.Therapeut.name }} ({{ this.event.Therapeut.geschlecht }})
       </p>
       <p>
-        Patient: {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
+        {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
         {{ this.event.Rezept.HeilmittelAbk }}
       </p>
-      <p>Praxis: {{ this.event.Praxis.name }}</p>
+      <p>{{ this.event.Praxis.name }}</p>
       <!-- <p>Rezept-ID: {{ this.event.RezeptId }}</p>
       <p>Event-ID: {{ this.event.id }}</p> -->
-      <p>Therapeut-ID: {{ this.event.TherapeutId }}</p>
+      <!-- <p>Therapeut-ID: {{ this.event.TherapeutId }}</p> -->
+
+      <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
+        <b-icon-trash-fill></b-icon-trash-fill>
+      </b-button>
     </b-tooltip>
   </div>
 </template>
@@ -97,10 +99,21 @@ export default {
 .calendardate {
   color: white;
   display: inline-block;
+
+  font-size: small;
+
   text-align: left;
-  padding: 15px;
+  padding: 10px;
   border-radius: 12px;
   overflow: hidden;
   margin: 1px 1px 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-size: smaller;
 }
 </style>

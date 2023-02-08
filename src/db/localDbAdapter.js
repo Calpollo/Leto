@@ -453,7 +453,11 @@ class LocalDbAdapter {
     return table.findAll({ include });
   }
 
-  create(table, { where, findIfExists = true }) {
+  create(table, { where, findIfExists = true, bulkCreate = false }) {
+    if (bulkCreate) {
+      return table.bulkCreate(where);
+    }
+
     if (findIfExists) {
       return table.findOrCreate({ where });
     } else {

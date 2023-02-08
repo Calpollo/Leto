@@ -10,13 +10,13 @@ class KundenService {
   }
 
   create(lastname, firstname, email, phone, address) {
-    console.log("Creating new Kunde with", {
-      lastname,
-      firstname,
-      email,
-      phone,
-      address,
-    });
+    // console.log("Creating new Kunde with", {
+    //   lastname,
+    //   firstname,
+    //   email,
+    //   phone,
+    //   address,
+    // });
     return DatabaseService.createKunde({
       where: {
         lastname,

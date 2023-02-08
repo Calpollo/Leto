@@ -5,7 +5,10 @@
       label="Heilmittel:"
       label-for="heilmittel"
     >
-      <b-dropdown id="heilmitteltyp" text="Heilmittel">
+      <b-dropdown
+        id="heilmitteltyp"
+        :text="rezept.HeilmittelAbk || 'auswählen'"
+      >
         <b-dropdown-item
           v-for="typ in heilmittel"
           :key="typ.id"
@@ -13,7 +16,6 @@
           >{{ typ.abk }}</b-dropdown-item
         >
       </b-dropdown>
-      ausgewählt: {{ rezept.HeilmittelAbk }}
     </b-form-group>
 
     <b-form-group

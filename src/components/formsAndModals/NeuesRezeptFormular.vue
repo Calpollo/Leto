@@ -42,6 +42,9 @@ import KundenDaten from "./steps/KundenDaten.vue";
 import RezeptDaten from "./steps/RezeptDaten.vue";
 import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
 import RezeptService from "@/services/RezeptService";
+import TerminService from "@/services/TerminService";
+import ConfigService from "@/services/ConfigService";
+import TherapeutService from "@/services/TherapeutService";
 export default {
   components: { KundenDaten, RezeptDaten, TerminVorschlaege },
   data() {
@@ -61,14 +64,31 @@ export default {
         ([createdKunde, kundeSuccess]) => {
           console.log(createdKunde, kundeSuccess);
           const { ausstellungsdatum, aussteller, HeilmittelAbk } = this.rezept;
-          RezeptService.create(
+          const tQuery = TherapeutService.getAll();
+          const rQuery = RezeptService.create(
             ausstellungsdatum,
             aussteller,
             HeilmittelAbk,
             createdKunde.id
-          ).then(([createdRezept, rezeptSuccess]) => {
-            console.log(createdRezept, rezeptSuccess);
-          });
+          );
+
+          Promise.all([tQuery, rQuery]).then(
+            ([therapeutList, [createdRezept, rezeptSuccess]]) => {
+              console.log(therapeutList[0], createdRezept, rezeptSuccess);
+              const PraxisId = ConfigService.getPraxis();
+              TerminService.bulkCreate(
+                terminVorschlagsList.map((termin) => {
+                  return {
+                    start: termin,
+                    minutes: 20,
+                    PraxisId,
+                    RezeptId: createdRezept.id,
+                    TherapeutId: therapeutList[0].id,
+                  };
+                })
+              ).then(console.log);
+            }
+          );
         }
       );
     },
