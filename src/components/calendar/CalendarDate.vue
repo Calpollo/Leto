@@ -1,24 +1,19 @@
 <template>
   <div class="calendardate" :style="getDateStyles()">
     <p class="datename" v-show="this.kunde">
-      {{ this.event.Rezept.HeilmittelAbk }}: {{ this.kunde?.firstname }}
+      <b-icon-info-circle
+        class="mx-2"
+        :id="`tooltip-target-${this.event.id}`"
+      />
+
+      {{ this.event.Rezept.Heilmittel.abk }}: {{ this.kunde?.firstname }}
       {{ this.kunde?.lastname }}
     </p>
     <p class="timestring">
       {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
       -
       {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
-
-      <b-icon-info-circle
-        class="mx-2"
-        :id="`tooltip-target-${this.event.id}`"
-      ></b-icon-info-circle>
     </p>
-    <!-- <p class="therapeutname">{{ this.event.Therapeut.name }}</p> -->
-
-    <!-- <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
-      <b-icon-trash-fill></b-icon-trash-fill>
-    </b-button> -->
 
     <b-tooltip
       :target="`tooltip-target-${this.event.id}`"
@@ -30,15 +25,12 @@
       </p>
       <p>
         {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
-        {{ this.event.Rezept.HeilmittelAbk }}
+        {{ this.event.Rezept.Heilmittel.abk }}
       </p>
       <p>{{ this.event.Praxis.name }}</p>
-      <!-- <p>Rezept-ID: {{ this.event.RezeptId }}</p>
-      <p>Event-ID: {{ this.event.id }}</p> -->
-      <!-- <p>Therapeut-ID: {{ this.event.TherapeutId }}</p> -->
 
       <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
-        <b-icon-trash-fill></b-icon-trash-fill>
+        <b-icon-trash-fill />
       </b-button>
     </b-tooltip>
   </div>
@@ -82,7 +74,7 @@ export default {
       else return colors[id];
     },
     deleteDate() {
-      // console.log(this.event.id);
+      // TODO: confirm deletion
       TerminService.remove(this.event.id);
       this.$emit("triggerUpdate");
     },

@@ -19,14 +19,13 @@
           params: { therapeutId: therapeut.id },
         }"
       >
-        <b-icon-arrow-right font-scale="2"></b-icon-arrow-right>
+        <b-icon-arrow-right font-scale="2" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
-import { eventHours } from "@/utils/events";
 import TerminService from "@/services/TerminService";
 export default {
   name: "ArbeitszeitOverview",
@@ -63,15 +62,15 @@ export default {
     updatetermineZeitSumme() {
       return TerminService.getByTherapeut(this.therapeut.id, {}).then(
         (termine) => {
-          return termine
-            .map((event) => eventHours(event))
-            .reduce((a, b) => a + b, 0);
+          return termine.map((t) => t.minutes / 60).reduce((a, b) => a + b, 0);
         }
       );
     },
   },
   async mounted() {
-    this.updatetermineZeitSumme().then((sum) => (this.termineZeitSumme = sum));
+    this.updatetermineZeitSumme().then(
+      (sum) => (this.termineZeitSumme = Math.round(sum * 100) / 100)
+    );
   },
 };
 </script>

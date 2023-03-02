@@ -30,6 +30,15 @@ contextBridge.exposeInMainWorld("ipc", {
   createRezept: (data) => ipcRenderer.invoke("createRezept", data),
   createHeilmittel: (data) => ipcRenderer.invoke("createHeilmittel", data),
 
+  updateZeitspanne: (data) => ipcRenderer.invoke("updateZeitspanne", data),
+  updateTermin: (data) => ipcRenderer.invoke("updateTermin", data),
+  updateVertrag: (data) => ipcRenderer.invoke("updateVertrag", data),
+  updateKunde: (data) => ipcRenderer.invoke("updateKunde", data),
+  updateTherapeut: (data) => ipcRenderer.invoke("updateTherapeut", data),
+  updatePraxis: (data) => ipcRenderer.invoke("updatePraxis", data),
+  updateRezept: (data) => ipcRenderer.invoke("updateRezept", data),
+  updateHeilmittel: (data) => ipcRenderer.invoke("updateHeilmittel", data),
+
   removeZeitspanne: (data) => ipcRenderer.invoke("removeZeitspanne", data),
   removeTermin: (data) => ipcRenderer.invoke("removeTermin", data),
   removeVertrag: (data) => ipcRenderer.invoke("removeVertrag", data),

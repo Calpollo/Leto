@@ -1,5 +1,27 @@
 <template>
   <b-form class="kundendaten" @submit="save">
+    <b-form-group label="Kundendaten laden:" label-for="kunde-search">
+      <b-form-input
+        id="kunde-search"
+        type="search"
+        list="kundenlist"
+        placeholder="Nachname, Vorname"
+        @change="loadKundenDaten"
+      ></b-form-input>
+
+      <hr class="my-4" />
+
+      <datalist id="kundenlist">
+        <option
+          v-for="kunde in kunden"
+          :key="kunde.id"
+          :value="kunde.lastname + ', ' + kunde.firstname"
+        >
+          {{ kunde.lastname }}, {{ kunde.firstname }}
+        </option>
+      </datalist>
+    </b-form-group>
+
     <b-form-group id="lastname-group" label="Nachname:" label-for="lastname">
       <b-form-input
         id="lastname"
@@ -53,6 +75,7 @@
 </template>
 
 <script>
+import KundenService from "@/services/KundenService";
 export default {
   name: "KundenDaten",
   props: {
@@ -76,12 +99,26 @@ export default {
   data() {
     return {
       kunde: this.value,
+      kunden: [],
     };
   },
   methods: {
     save() {
       this.$emit("save", this.kunde);
     },
+    loadKundenDaten(lastFirstName) {
+      const [lastname, firstname] = lastFirstName.split(", ");
+      const found = this.kunden.find(
+        (k) => k.lastname == lastname && k.firstname == firstname
+      );
+      if (!found) return;
+      else this.kunde = found;
+    },
+  },
+  mounted() {
+    KundenService.getAll().then((kundenList) => {
+      this.kunden = kundenList;
+    });
   },
   computed: {
     isValid() {

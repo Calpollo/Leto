@@ -40,7 +40,7 @@
 export default {
   name: "TerminVorschlaege",
   props: {
-    heimittel: String,
+    heilmittel: Object,
   },
   data() {
     return {

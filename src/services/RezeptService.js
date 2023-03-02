@@ -9,7 +9,10 @@ class RezeptService {
     return DatabaseService.getRezept({ id, include });
   }
 
-  getByLastnameAndFirstname(lastname, firstname, { include = ["Kunde"] } = {}) {
+  getByLastnameAndFirstname(lastname, firstname, { include = [] } = {}) {
+    if (!Array.isArray(include)) include = [include];
+    include.push("Kunde");
+    include = [...new Set(include)];
     return DatabaseService.getRezept({
       where: {
         "$Kunde.lastname$": lastname,
@@ -19,18 +22,18 @@ class RezeptService {
     });
   }
 
-  create(ausstellungsdatum, aussteller, HeilmittelAbk, KundeId) {
+  create(ausstellungsdatum, aussteller, HeilmittelId, KundeId) {
     // console.log("Creating new Rezept with", {
     //   ausstellungsdatum,
     //   aussteller,
-    //   HeilmittelAbk,
+    //   HeilmittelId,
     //   KundeId,
     // });
     return DatabaseService.createRezept({
       where: {
         ausstellungsdatum,
         aussteller,
-        HeilmittelAbk,
+        HeilmittelId,
         KundeId,
       },
     });

@@ -63,12 +63,12 @@ export default {
       KundenService.create(lastname, firstname, email, phone, address).then(
         ([createdKunde, kundeSuccess]) => {
           console.log(createdKunde, kundeSuccess);
-          const { ausstellungsdatum, aussteller, HeilmittelAbk } = this.rezept;
+          const { ausstellungsdatum, aussteller, Heilmittel } = this.rezept;
           const tQuery = TherapeutService.getAll();
           const rQuery = RezeptService.create(
             ausstellungsdatum,
             aussteller,
-            HeilmittelAbk,
+            Heilmittel.id,
             createdKunde.id
           );
 

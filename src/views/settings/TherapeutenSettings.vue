@@ -7,8 +7,9 @@
     </p>
 
     <b-button class="my-2">
-      <b-icon-plus aria-hidden="true"></b-icon-plus>Neuer Therapeut</b-button
-    >
+      <b-icon-plus aria-hidden="true" />
+      Neuer Therapeut
+    </b-button>
 
     <div class="my-3" v-for="therapeut in this.therapeuten" :key="therapeut.id">
       <h3 class="p-2 px-4">

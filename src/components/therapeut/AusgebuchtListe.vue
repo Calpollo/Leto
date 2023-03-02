@@ -5,7 +5,7 @@
         {{ therapeut.name }}:
         <!-- TODO: update to a more exact method -->
         {{
-          therapeut.Termins?.map((t) => new Date(t.datum))
+          therapeut.Termins?.map((t) => new Date(t.start))
             .sort()[0]
             ?.toLocaleDateString("de-DE") || "braucht Termine"
         }}

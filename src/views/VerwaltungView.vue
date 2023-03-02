@@ -3,7 +3,7 @@
     <h2>Verwaltung</h2>
 
     <div class="boxes">
-      <div class="warningbox neomorph error">
+      <div class="warningbox error">
         <h3>
           <b-icon-exclamation-circle-fill />
           3 Fehler
@@ -20,7 +20,7 @@
         </router-link>
       </div>
 
-      <div class="warningbox neomorph">
+      <div class="warningbox">
         <h3>
           <b-icon-exclamation-triangle />
           2 Warnungen
@@ -58,8 +58,8 @@
         <b-button :to="{ name: 'Verwaltung.Rezepte' }" class="my-1">
           Rezeptübersicht
         </b-button>
-        <b-button class="my-1">Gehaltsübersicht generieren</b-button>
-        <b-button class="my-1">Zur Gesamtstatistik</b-button>
+        <b-button class="my-1" disabled>Gehaltsübersicht generieren</b-button>
+        <b-button class="my-1" disabled>Zur Gesamtstatistik</b-button>
       </b-col>
     </b-row>
   </div>
@@ -105,6 +105,7 @@ export default {};
   grid-template-rows: max-content 1fr max-content;
   gap: 16px;
   border-radius: 12px;
+  box-shadow: 0 0 20px #55555550;
   padding: 20px;
 
   .r-arrow {

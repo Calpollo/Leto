@@ -19,7 +19,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <termin-vorschlaege :heilmittel="rezept.heilmittel" @save="done" />
+          <termin-vorschlaege :heilmittel="rezept.Heilmittel" @save="done" />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>

@@ -7,12 +7,12 @@
     >
       <b-dropdown
         id="heilmitteltyp"
-        :text="rezept.HeilmittelAbk || 'auswählen'"
+        :text="rezept.Heilmittel?.abk || 'auswählen'"
       >
         <b-dropdown-item
           v-for="typ in heilmittel"
           :key="typ.id"
-          @click="setHeilmittel(typ.abk)"
+          @click="setHeilmittel(typ.id)"
           >{{ typ.abk }}</b-dropdown-item
         >
       </b-dropdown>
@@ -53,7 +53,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          HeilmittelAbk: null,
+          Heilmittel: {},
           ausstellungsdatum: new Date(),
         };
       },
@@ -73,14 +73,19 @@ export default {
     save() {
       this.$emit("save", this.rezept);
     },
-    setHeilmittel(HeilmittelAbk) {
-      this.rezept = { ...this.rezept, HeilmittelAbk };
+    setHeilmittel(HeilmittelId) {
+      const hm = this.heilmittel.find((hm) => hm.id == HeilmittelId);
+      this.rezept = { ...this.rezept, Heilmittel: hm };
       this.$emit("input", this.rezept);
     },
   },
   computed: {
     isValid() {
-      return this.rezept.HeilmittelAbk && this.rezept.ausstellungsdatum;
+      return (
+        this.rezept.Heilmittel &&
+        this.rezept.ausstellungsdatum &&
+        this.rezept.aussteller
+      );
     },
   },
   mounted() {

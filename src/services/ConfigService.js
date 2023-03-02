@@ -1,7 +1,8 @@
-import config from "@/../config/leto.config.json";
+// import config from "@/../config/leto.config.json";
 
 class ConfigService {
   constructor() {
+    this.config = require("@/../config/leto.config.json");
     this.checkConfig();
   }
 
@@ -15,29 +16,42 @@ class ConfigService {
   }
 
   save() {
-    window.fileWriter.saveConfig(config);
+    window.fileWriter.saveConfig(this.config);
   }
 
   getVersion() {
-    return config.version;
+    return this.config.version;
   }
 
   getCalendar(key = null) {
-    if (key) return config.calendar[key];
-    return config.calendar;
+    if (key) return this.config.calendar[key];
+    return this.config.calendar;
   }
 
   getPraxis() {
-    return config.praxis;
+    return this.config.praxis;
+  }
+
+  getHeilmittelTermine() {
+    return this.config.heilmittelTermine || [];
+  }
+
+  getDefaultPause() {
+    return this.config.defaultPause;
   }
 
   setTherapeutColor(name, color) {
-    config.calendar.therapeutColors[name] = color;
+    this.config.calendar.therapeutColors[name] = color;
     this.save();
   }
 
   setPraxis(id) {
-    config.praxis = id;
+    this.config.praxis = id;
+    this.save();
+  }
+
+  setHeilmittelTermine(hmTermine) {
+    this.config.heilmittelTermine = hmTermine;
     this.save();
   }
 }

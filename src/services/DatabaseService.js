@@ -97,6 +97,45 @@ class DatabaseService {
   }
 
   // ############################
+  // Update Instances in the database
+  // ############################
+  updateZeitspanne(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateZeitspanne(data).then(JSON.parse);
+    }
+  }
+
+  updateTermine(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateTermin(data).then(JSON.parse);
+    }
+  }
+
+  updateKunde(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateKunde(data).then(JSON.parse);
+    }
+  }
+
+  updateTherapeut(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateTherapeut(data).then(JSON.parse);
+    }
+  }
+
+  updateRezept(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateRezept(data).then(JSON.parse);
+    }
+  }
+
+  updateHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateHeilmittel(data).then(JSON.parse);
+    }
+  }
+
+  // ############################
   // Remove Instances in the database
   // ############################
   removeZeitspanne(data) {

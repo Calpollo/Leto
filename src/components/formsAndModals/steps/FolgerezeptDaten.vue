@@ -28,6 +28,7 @@
         type="search"
         list="rezeptlist"
         v-model="selectedRezept"
+        @input="changeRezept"
         required
       ></b-form-input>
 
@@ -36,20 +37,26 @@
           v-for="rezept in rezepte"
           :key="rezept.id"
           :value="
-            rezept.HeilmittelAbk +
+            rezept.Heilmittel.abk +
             ': ' +
             dateToLocale(rezept.ausstellungsdatum) +
             ', ' +
             rezept.aussteller
           "
         >
-          {{ rezept.HeilmittelAbk }}:
+          {{ rezept.Heilmittel.abk }}:
           {{ dateToLocale(rezept.ausstellungsdatum) }}, {{ rezept.aussteller }}
         </option>
       </datalist>
     </b-form-group>
 
-    <b-button :disabled="!selectedRezept" type="submit">Weiter</b-button>
+    <rezept-daten
+      v-if="showRezeptDaten"
+      v-model="rezept"
+      :showSaveButton="false"
+    />
+
+    <b-button :disabled="!rezept?.HeilmittelId" type="submit">Weiter</b-button>
   </b-form>
 </template>
 
@@ -57,8 +64,10 @@
 import KundenService from "@/services/KundenService";
 import RezeptService from "@/services/RezeptService";
 import { toLocale } from "@/utils/dates";
+import RezeptDaten from "@/components/formsAndModals/steps/RezeptDaten.vue";
 export default {
   name: "FolgerezeptDaten",
+  components: { RezeptDaten },
   props: {
     value: {
       type: Object,
@@ -71,6 +80,7 @@ export default {
       selectedKunde: null,
       selectedRezept: null,
       rezept: this.value,
+      showRezeptDaten: false,
     };
   },
   mounted() {
@@ -81,26 +91,51 @@ export default {
   methods: {
     changedKunde() {
       const [lastname, firstname] = this.selectedKunde.split(", ");
-      RezeptService.getByLastnameAndFirstname(lastname, firstname).then(
-        (rezeptList) => {
-          this.rezepte = rezeptList;
-        }
-      );
+      RezeptService.getByLastnameAndFirstname(lastname, firstname, {
+        include: "Heilmittel",
+      }).then((rezeptList) => {
+        this.rezepte = rezeptList;
+        this.selectedRezept = null;
+        this.rezept = {};
+        this.showRezeptDaten = false;
+        this.$emit("input", this.rezept);
+      });
     },
     dateToLocale(date, locale) {
       return toLocale(date, locale);
     },
-    save() {
+    changeRezept() {
+      if (!this.selectedRezept) {
+        this.rezept = {};
+        this.showRezeptDaten = false;
+        this.$emit("input", this.rezept);
+        return;
+      }
       const [HeilmittelAbk, rest] = this.selectedRezept.split(": ");
       const [ausstellungsdatum, aussteller] = rest.split(", ");
-      const rezept = this.rezepte.find(
+      const found = this.rezepte.find(
         (r) =>
-          r.HeilmittelAbk == HeilmittelAbk &&
+          r.Heilmittel.abk == HeilmittelAbk &&
           this.dateToLocale(r.ausstellungsdatum) == ausstellungsdatum &&
           r.aussteller == aussteller
       );
-      this.rezept = rezept;
-      this.$emit("input", this.rezept);
+      if (found) {
+        // eslint-disable-next-line
+        const { id, createdAt, updatedAt, Kunde, ...rest } = found;
+        this.rezept = rest;
+        this.showRezeptDaten = true;
+        this.$emit("input", this.rezept);
+      } else {
+        this.rezept = {};
+        this.showRezeptDaten = false;
+        this.$emit("input", this.rezept);
+      }
+    },
+    save() {
+      this.$emit("input", {
+        ...this.rezept,
+        HeilmittelId: this.rezept.Heilmittel.id,
+      });
       this.$emit("save");
     },
   },

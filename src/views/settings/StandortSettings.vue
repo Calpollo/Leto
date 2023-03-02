@@ -16,7 +16,7 @@
       <h3 class="p-2 px-4">
         {{ praxis.name }}
         <span class="ml-2" v-b-tooltip.hover :title="praxis.id">
-          <b-icon-info-circle></b-icon-info-circle>
+          <b-icon-info-circle />
         </span>
         <b-button
           v-if="selectedPraxisId !== praxis.id"
@@ -43,16 +43,16 @@
         <b-tabs>
           <b-tab class="m-2" title="Kontaktinformationen">
             <p>
-              <b-icon-house-fill class="mr-2"></b-icon-house-fill
+              <b-icon-house-fill class="mr-2" />
               >{{ praxis.address }}
             </p>
             <p>
-              <b-icon-envelope-fill class="mr-2"></b-icon-envelope-fill
-              ><a :href="'mailto:' + praxis.email">{{ praxis.email }}</a>
+              <b-icon-envelope-fill class="mr-2" />
+              <a :href="'mailto:' + praxis.email">{{ praxis.email }}</a>
             </p>
             <p>
-              <b-icon-telephone-fill class="mr-2"></b-icon-telephone-fill
-              ><a :href="'tel:' + praxis.phone">{{ praxis.phone }}</a>
+              <b-icon-telephone-fill class="mr-2" />
+              <a :href="'tel:' + praxis.phone">{{ praxis.phone }}</a>
             </p>
           </b-tab>
           <b-tab class="m-2" title="Öffnungszeiten">
