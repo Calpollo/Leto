@@ -93,6 +93,45 @@ ipcMain.handle("createRezept", async (event, data) => {
 });
 
 // ############################
+// Update Instances in the database
+// ############################
+ipcMain.handle("updateZeitspanne", async (event, data) => {
+  return JSON.stringify(await localDB.update(Zeitspanne, data));
+});
+
+ipcMain.handle("updateVertrag", async (event, data) => {
+  return JSON.stringify(await localDB.update(Vertrag, data));
+});
+
+ipcMain.handle("updateDatum", async (event, data) => {
+  return JSON.stringify(await localDB.update(Datum, data));
+});
+
+ipcMain.handle("updateTherapeut", async (event, data) => {
+  return JSON.stringify(await localDB.update(Therapeut, data));
+});
+
+ipcMain.handle("updateHeilmittel", async (event, data) => {
+  return JSON.stringify(await localDB.update(Heilmittel, data));
+});
+
+ipcMain.handle("updatePraxis", async (event, data) => {
+  return JSON.stringify(await localDB.update(Praxis, data));
+});
+
+ipcMain.handle("updateKunde", async (event, data) => {
+  return JSON.stringify(await localDB.update(Kunde, data));
+});
+
+ipcMain.handle("updateTermin", async (event, data) => {
+  return JSON.stringify(await localDB.update(Termin, data));
+});
+
+ipcMain.handle("updateRezept", async (event, data) => {
+  return JSON.stringify(await localDB.update(Rezept, data));
+});
+
+// ############################
 // remove Instances in the database
 // ############################
 ipcMain.handle("removeZeitspanne", async (event, data) => {

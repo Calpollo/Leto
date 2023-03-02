@@ -1,3 +1,5 @@
+import { INTEGER } from "sequelize";
+
 const { Sequelize, DataTypes } = require("sequelize");
 const fs = require("fs");
 
@@ -59,10 +61,21 @@ class LocalDbAdapter {
       vertrag.addUrlaub([christmasVacation]),
     ]);
 
-    const [mt] = await this.Heilmittel.findOrCreate({
+    const [mt6] = await this.Heilmittel.findOrCreate({
       where: {
-        abk: "MT",
+        abk: "MT-6",
         name: "Manuelle Therapie",
+        terminNumber: 6,
+        terminMinutes: 20,
+      },
+    });
+
+    const [mt10] = await this.Heilmittel.findOrCreate({
+      where: {
+        abk: "MT-10",
+        name: "Manuelle Therapie",
+        terminNumber: 10,
+        terminMinutes: 20,
       },
     });
 
@@ -87,9 +100,9 @@ class LocalDbAdapter {
       },
     });
 
-    await erik.addHeilmittel([mt]);
+    await erik.addHeilmittel([mt6, mt10]);
 
-    await anni.addHeilmittel([mt, kgg]);
+    await anni.addHeilmittel([mt6, kgg]);
     await anni.setVertrag(vertrag);
 
     const [ottoNormal] = await this.Kunde.findOrCreate({
@@ -109,7 +122,7 @@ class LocalDbAdapter {
     });
 
     await testRezept.setKunde(ottoNormal);
-    await testRezept.setHeilmittel(mt);
+    await testRezept.setHeilmittel(mt6);
 
     const [ktWagner] = await this.Praxis.findOrCreate({
       where: {
@@ -227,13 +240,32 @@ class LocalDbAdapter {
     });
 
     this.Heilmittel = this.sequelize.define("Heilmittel", {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       abk: {
         type: DataTypes.STRING(10),
         allowNull: false,
-        primaryKey: true,
       },
       name: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      terminNumber: {
+        type: INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
+      terminMinutes: {
+        type: INTEGER,
+        defaultValue: 20,
+        allowNull: false,
+      },
+      kundenbeteiligung: {
+        type: Float32Array,
+        defaultValue: 20,
         allowNull: false,
       },
     });
@@ -447,7 +479,7 @@ class LocalDbAdapter {
     });
   }
 
-  get(table, { id, where, include } = {}) {
+  get(table, { id, where, include = [] } = {}) {
     if (id) return table.findByPk(id, { include });
     if (where) return table.findAll({ where, include });
     return table.findAll({ include });
@@ -463,6 +495,19 @@ class LocalDbAdapter {
     } else {
       return table.create(where);
     }
+  }
+
+  update(table, { id, instance }) {
+    console.log(table, id, instance);
+    return this.get(table, { id }).then((found) => {
+      console.log(found);
+      if (found) {
+        found.set(instance);
+        return found.save();
+      } else {
+        return this.create(table, { where: instance, findIfExists: false });
+      }
+    });
   }
 
   remove(table, { id }) {
