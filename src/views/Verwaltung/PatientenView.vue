@@ -128,6 +128,25 @@
           </b-button>
         </template>
       </b-modal>
+
+      <DeletionConfirmation
+        ref="deletionConfirmation"
+        @confirm="confirmableFunction"
+      >
+        <p>
+          Bist du sicher, dass du diesen Therapeuten entfernen willst? Du kannst
+          diese Entscheidung nicht mehr rückgängig machen!
+        </p>
+        <p>
+          <b
+            >{{ selectedEditKunde?.firstname }}
+            {{ selectedEditKunde?.lastname }}</b
+          ><br />
+          {{ selectedEditKunde?.address }}<br />
+          {{ selectedEditKunde?.email }}<br />
+          {{ selectedEditKunde?.phone }}<br />
+        </p>
+      </DeletionConfirmation>
     </div>
   </div>
 </template>
@@ -137,6 +156,7 @@ import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import KundenService from "@/services/KundenService";
 import HeilmittelService from "@/services/HeilmittelService";
 import PatientEditFormular from "@/components/formsAndModals/PatientEditFormular.vue";
+import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 
 export default {
   name: "PatientenView",
@@ -148,6 +168,7 @@ export default {
       selectedKundeId: null,
       selectedHeilmittelId: null,
       selectedEditKunde: null,
+      confirmableFunction: () => {},
     };
   },
   methods: {
@@ -208,10 +229,16 @@ export default {
       this.$bvModal.show("editModal");
     },
     remove(patient) {
-      KundenService.remove(patient.id);
+      this.selectedEditKunde = patient;
+      this.confirmableFunction = () => {
+        KundenService.remove(patient.id).then(() => {
+          this.loadKunden();
+        });
+      };
+      this.$refs.deletionConfirmation.show();
     },
   },
-  components: { SpinnerLogo, PatientEditFormular },
+  components: { SpinnerLogo, PatientEditFormular, DeletionConfirmation },
   mounted() {
     this.loadKunden();
     this.loadHeilmittel();

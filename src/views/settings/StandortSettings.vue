@@ -44,7 +44,7 @@
           <b-tab class="m-2" title="Kontaktinformationen">
             <p>
               <b-icon-house-fill class="mr-2" />
-              >{{ praxis.address }}
+              {{ praxis.address }}
             </p>
             <p>
               <b-icon-envelope-fill class="mr-2" />
@@ -58,44 +58,24 @@
           <b-tab class="m-2" title="Öffnungszeiten">
             <b-container id="oeffnungszeitenList">
               <p>
-                Montag: {{ praxis.montagsZeit.startStunde }}:{{
-                  praxis.montagsZeit.startMinute
-                }}
-                - {{ praxis.montagsZeit.endStunde }}:{{
-                  praxis.montagsZeit.endMinute
-                }}
+                Montag: {{ toLocaleTime(praxis.montagsZeit.start) }} -
+                {{ toLocaleTime(praxis.montagsZeit.end) }}
               </p>
               <p>
-                Dienstag: {{ praxis.dienstagsZeit.startStunde }}:{{
-                  praxis.dienstagsZeit.startMinute
-                }}
-                - {{ praxis.dienstagsZeit.endStunde }}:{{
-                  praxis.dienstagsZeit.endMinute
-                }}
+                Dienstag: {{ toLocaleTime(praxis.dienstagsZeit.start) }} -
+                {{ toLocaleTime(praxis.dienstagsZeit.end) }}
               </p>
               <p>
-                Mittwoch: {{ praxis.mittwochsZeit.startStunde }}:{{
-                  praxis.mittwochsZeit.startMinute
-                }}
-                - {{ praxis.mittwochsZeit.endStunde }}:{{
-                  praxis.mittwochsZeit.endMinute
-                }}
+                Mittwoch: {{ toLocaleTime(praxis.mittwochsZeit.start) }} -
+                {{ toLocaleTime(praxis.mittwochsZeit.end) }}
               </p>
               <p>
-                Donnerstag: {{ praxis.donnerstagsZeit.startStunde }}:{{
-                  praxis.donnerstagsZeit.startMinute
-                }}
-                - {{ praxis.donnerstagsZeit.endStunde }}:{{
-                  praxis.donnerstagsZeit.endMinute
-                }}
+                Donnerstag: {{ toLocaleTime(praxis.donnerstagsZeit.start) }} -
+                {{ toLocaleTime(praxis.donnerstagsZeit.end) }}
               </p>
               <p>
-                Freitag: {{ praxis.freitagsZeit.startStunde }}:{{
-                  praxis.freitagsZeit.startMinute
-                }}
-                - {{ praxis.freitagsZeit.endStunde }}:{{
-                  praxis.freitagsZeit.endMinute
-                }}
+                Freitag: {{ toLocaleTime(praxis.freitagsZeit.start) }} -
+                {{ toLocaleTime(praxis.freitagsZeit.end) }}
               </p>
             </b-container>
           </b-tab>
@@ -107,7 +87,7 @@
                 :key="feiertag.id"
                 >{{ dateToLocale(feiertag.datum) }}
                 <b-badge variant="primary" pill v-if="feiertag.yearlyRepetition"
-                  >(jährl. wiederholend)</b-badge
+                  >(jährl. wiederholend))</b-badge
                 >
               </b-list-group-item>
             </b-list-group>
@@ -121,7 +101,7 @@
 <script>
 import PraxisService from "@/services/PraxisService";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import { toLocale } from "@/utils/dates";
+import { toLocale, toLocaleTime } from "@/utils/dates";
 import ConfigService from "@/services/ConfigService";
 export default {
   name: "StandortSettings",
@@ -152,6 +132,7 @@ export default {
     dateToLocale(date, locale) {
       return toLocale(date, locale);
     },
+    toLocaleTime,
     choosePraxis(id) {
       ConfigService.setPraxis(id);
     },
