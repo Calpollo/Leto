@@ -32,6 +32,7 @@
       <b-input
         id="heilmittel-number"
         type="number"
+        min="0"
         v-model="heilmittelConf.terminNumber"
       ></b-input>
     </b-form-group>
@@ -45,7 +46,21 @@
         id="heilmittel-dauer"
         type="number"
         step="5"
+        min="0"
         v-model="heilmittelConf.terminMinutes"
+      ></b-input>
+    </b-form-group>
+
+    <b-form-group
+      id="heilmittelkundenbeteiligung-group"
+      label="Kundenbeteiligung (€):"
+      label-for="heilmittel-kundenbeteiligung"
+    >
+      <b-input
+        id="heilmittel-kundenbeteiligung"
+        type="number"
+        min="0"
+        v-model="heilmittelConf.kundenbeteiligung"
       ></b-input>
     </b-form-group>
   </b-form>

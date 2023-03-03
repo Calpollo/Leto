@@ -26,19 +26,19 @@
             <b-row>
               <b-col class="anschrift">
                 <p>
-                  {{ Rezept?.Kunde.firstname }} {{ Rezept?.Kunde.lastname }}
+                  {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
                 </p>
-                <p>{{ Rezept?.Kunde.address }}</p>
+                <p>{{ Rezept?.Kunde?.address }}</p>
                 <p>
                   Tel:
-                  <a :href="'tel:' + Rezept?.Kunde.phone">
-                    {{ Rezept?.Kunde.phone }}
+                  <a :href="'tel:' + Rezept?.Kunde?.phone">
+                    {{ Rezept?.Kunde?.phone }}
                   </a>
                 </p>
                 <p>
                   Email:
-                  <a :href="'mailto:' + Rezept?.Kunde.email">
-                    {{ Rezept?.Kunde.email }}
+                  <a :href="'mailto:' + Rezept?.Kunde?.email">
+                    {{ Rezept?.Kunde?.email }}
                   </a>
                 </p>
               </b-col>
@@ -59,7 +59,7 @@
 
             <h2 id="betreff">Rechnung</h2>
 
-            <p>Hallo {{ Rezept?.Kunde.firstname }},</p>
+            <p>Hallo {{ Rezept?.Kunde?.firstname }},</p>
             <p>
               für deine erhaltenen und kommenden Leistungen erhälst du diese
               Rechnung von uns. Bei Terminausfall o.ä. kann sich der entgültige
@@ -72,17 +72,17 @@
               striped
               :items="[
                 {
-                  Heilmittel: `${Rezept?.Heilmittel.abk}: ${Rezept?.Heilmittel.name}`,
-                  Termine: Rezept?.Heilmittel.terminNumber,
-                  Dauer: Rezept?.Heilmittel.terminMinutes,
-                  Preis: Rezept?.Heilmittel.kundenbeteiligung + ' €',
+                  Heilmittel: `${Rezept?.Heilmittel?.abk}: ${Rezept?.Heilmittel?.name}`,
+                  Termine: Rezept?.Heilmittel?.terminNumber,
+                  Dauer: Rezept?.Heilmittel?.terminMinutes,
+                  Preis: Rezept?.Heilmittel?.kundenbeteiligung + ' €',
                 },
               ]"
             ></b-table>
 
             <p>
               Bitte überweise den Betrag von
-              <b> {{ Rezept?.Heilmittel.kundenbeteiligung }} € </b>bis zum
+              <b> {{ Rezept?.Heilmittel?.kundenbeteiligung }} € </b>bis zum
               <b>
                 {{ this.dateToLocale(this.PaymentDeadline) }}
               </b>

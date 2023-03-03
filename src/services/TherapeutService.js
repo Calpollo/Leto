@@ -8,6 +8,10 @@ class TherapeutService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getTherapeut({ id, include });
   }
+
+  remove(id) {
+    return DatabaseService.removeTherapeut({ id });
+  }
 }
 
 export default new TherapeutService();

@@ -6,7 +6,29 @@
 
     <div v-else>
       <b-row class="my-2">
-        <b-col>
+        <b-col md="6" lg="4">
+          <b-form-group label="ID:" label-for="id-search">
+            <b-form-input
+              id="od-search"
+              type="search"
+              list="idlist"
+              placeholder="ID"
+              @change="changeId"
+            ></b-form-input>
+
+            <datalist id="idlist">
+              <option
+                v-for="rezept in rezepte"
+                :key="rezept.id"
+                :value="rezept.id"
+              >
+                {{ rezept.id }}
+              </option>
+            </datalist>
+          </b-form-group>
+        </b-col>
+
+        <b-col md="6" lg="4">
           <b-form-group label="Kunde:" label-for="kunde-search">
             <b-form-input
               id="kunde-search"
@@ -28,7 +50,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col>
+        <b-col md="12" lg="4">
           <b-form-group label="Heilmittel:" label-for="heilmittel-search">
             <b-form-input
               id="heilmittel-search"
@@ -97,10 +119,14 @@
           />
 
           <b-button-group>
-            <b-button @click="generateRechnung(rezept.id)">Rechnung</b-button>
-            <b-button @click="generateTermine(rezept.id)"
-              >Terminübersicht</b-button
-            >
+            <b-button @click="generateRechnung(rezept.id)">
+              <b-icon-file-earmark></b-icon-file-earmark>
+              Rechnung
+            </b-button>
+            <b-button @click="generateTermine(rezept.id)">
+              <b-icon-file-earmark></b-icon-file-earmark>
+              Terminübersicht
+            </b-button>
           </b-button-group>
         </b-card-body>
       </b-card>
@@ -122,6 +148,7 @@ export default {
       rezepte: null,
       selectedKundeId: null,
       selectedHeilmittelId: null,
+      selectedRezeptId: null,
     };
   },
   components: { SpinnerLogo, RechnungKundePdf, TerminUebersichtPdf },
@@ -143,6 +170,9 @@ export default {
     },
     dateToLocale(date) {
       return toLocale(date);
+    },
+    changeId(id) {
+      this.selectedRezeptId = id;
     },
     changedKunde(lastFirstName) {
       const [lastname, firstname] = lastFirstName.split(", ");
@@ -167,6 +197,9 @@ export default {
   computed: {
     filteredRezepte() {
       return [...this.rezepte]
+        .filter((r) => {
+          return !this.selectedRezeptId || r.id == this.selectedRezeptId;
+        })
         .filter((r) => {
           return !this.selectedKundeId || r.KundeId == this.selectedKundeId;
         })

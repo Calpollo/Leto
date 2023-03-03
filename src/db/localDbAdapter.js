@@ -82,7 +82,7 @@ class LocalDbAdapter {
     const [kgg] = await this.Heilmittel.findOrCreate({
       where: {
         abk: "KGG",
-        name: "Krankengymanstik am Gerät",
+        name: "Krankengymnastik am Gerät",
       },
     });
 

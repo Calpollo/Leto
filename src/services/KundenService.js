@@ -27,6 +27,15 @@ class KundenService {
       },
     });
   }
+
+  update(kunde) {
+    console.log(kunde);
+    return DatabaseService.updateKunde({ id: kunde.id, instance: kunde });
+  }
+
+  remove(id) {
+    return DatabaseService.removeKunde({ id });
+  }
 }
 
 export default new KundenService();

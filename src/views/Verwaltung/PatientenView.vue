@@ -7,6 +7,28 @@
     <div v-else>
       <b-row class="my-2">
         <b-col>
+          <b-form-group label="ID:" label-for="id-search">
+            <b-form-input
+              id="id-search"
+              type="search"
+              list="idlist"
+              placeholder="ID"
+              @change="changeID"
+            ></b-form-input>
+
+            <datalist id="idlist">
+              <option
+                v-for="patient in patients"
+                :key="patient.id"
+                :value="patient.id"
+              >
+                {{ patient.id }}
+              </option>
+            </datalist>
+          </b-form-group>
+        </b-col>
+
+        <b-col>
           <b-form-group label="Kunde:" label-for="kunde-search">
             <b-form-input
               id="kunde-search"
@@ -59,6 +81,14 @@
           <span class="ml-2" v-b-tooltip.hover :title="patient.id">
             <b-icon-info-circle />
           </span>
+          <b-button-group>
+            <b-button @click="edit(patient)">
+              <b-icon-pencil-fill />
+            </b-button>
+            <b-button @click="remove(patient)">
+              <b-icon-trash-fill />
+            </b-button>
+          </b-button-group>
         </b-card-header>
         <b-card-body>
           <p v-if="patient.address">
@@ -88,6 +118,16 @@
           </p>
         </b-card-body>
       </b-card>
+
+      <b-modal id="editModal" scrollable title="Patienten-informationen">
+        <PatientEditFormular v-model="selectedEditKunde" />
+        <template #modal-footer="{}">
+          <b-button size="sm" variant="success" @click="ok">Speichern</b-button>
+          <b-button size="sm" variant="outline-danger" @click="cancel">
+            Abbrechen
+          </b-button>
+        </template>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -96,6 +136,7 @@
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import KundenService from "@/services/KundenService";
 import HeilmittelService from "@/services/HeilmittelService";
+import PatientEditFormular from "@/components/formsAndModals/PatientEditFormular.vue";
 
 export default {
   name: "PatientenView",
@@ -106,9 +147,13 @@ export default {
       heilmittel: null,
       selectedKundeId: null,
       selectedHeilmittelId: null,
+      selectedEditKunde: null,
     };
   },
   methods: {
+    changeID(id) {
+      this.selectedKundeId = id;
+    },
     changedKunde(lastFirstName) {
       const [lastname, firstname] = lastFirstName.split(", ");
       const found = this.kunden.find(
@@ -122,18 +167,54 @@ export default {
       if (!found) this.selectedHeilmittelId = null;
       else this.selectedHeilmittelId = found.id;
     },
+    loadKunden() {
+      KundenService.getAll({
+        include: { association: "Rezepts", include: "Termins" },
+      }).then((patientList) => {
+        this.kunden = patientList;
+        this.patients = patientList;
+      });
+    },
+    loadHeilmittel() {
+      HeilmittelService.getAll().then(
+        (heilmittelList) => (this.heilmittel = heilmittelList)
+      );
+    },
+    ok() {
+      if (this.selectedEditKunde.id) {
+        KundenService.update(this.selectedEditKunde).then((d) => {
+          console.log(d);
+          this.loadKunden();
+        });
+      } else {
+        KundenService.create(
+          this.selectedEditKunde.abk,
+          this.selectedEditKunde.name,
+          this.selectedEditKunde.terminNumber,
+          this.selectedEditKunde.terminMinutes
+        ).then((d) => {
+          console.log(d);
+          this.loadKunden();
+        });
+      }
+      this.$bvModal.hide("editModal");
+    },
+    cancel() {
+      this.loadKunden();
+      this.$bvModal.hide("editModal");
+    },
+    edit(patient) {
+      this.selectedEditKunde = patient;
+      this.$bvModal.show("editModal");
+    },
+    remove(patient) {
+      KundenService.remove(patient.id);
+    },
   },
-  components: { SpinnerLogo },
+  components: { SpinnerLogo, PatientEditFormular },
   mounted() {
-    KundenService.getAll({
-      include: { association: "Rezepts", include: "Termins" },
-    }).then((patientList) => {
-      this.kunden = patientList;
-      this.patients = patientList;
-    });
-    HeilmittelService.getAll().then(
-      (heilmittelList) => (this.heilmittel = heilmittelList)
-    );
+    this.loadKunden();
+    this.loadHeilmittel();
   },
   computed: {
     filteredPatients() {
@@ -151,3 +232,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.btn-group {
+  margin-left: 8px;
+}
+</style>

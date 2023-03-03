@@ -6,7 +6,6 @@
       abändern.
     </p>
 
-    <!-- TODO: turn into EditBlock -->
     <div v-for="therapeut in this.therapeuten" :key="therapeut.id">
       <label for="Acolorpicker">{{ therapeut.name }}</label>
       <b-input

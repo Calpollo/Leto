@@ -26,19 +26,19 @@
             <b-row>
               <b-col class="anschrift">
                 <p>
-                  {{ Rezept?.Kunde.firstname }} {{ Rezept?.Kunde.lastname }}
+                  {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
                 </p>
-                <p>{{ Rezept?.Kunde.address }}</p>
+                <p>{{ Rezept?.Kunde?.address }}</p>
                 <p>
                   Tel:
-                  <a :href="'tel:' + Rezept?.Kunde.phone">
-                    {{ Rezept?.Kunde.phone }}
+                  <a :href="'tel:' + Rezept?.Kunde?.phone">
+                    {{ Rezept?.Kunde?.phone }}
                   </a>
                 </p>
                 <p>
                   Email:
-                  <a :href="'mailto:' + Rezept?.Kunde.email">
-                    {{ Rezept?.Kunde.email }}
+                  <a :href="'mailto:' + Rezept?.Kunde?.email">
+                    {{ Rezept?.Kunde?.email }}
                   </a>
                 </p>
               </b-col>
@@ -59,7 +59,7 @@
 
             <h2 id="betreff">Terminübersicht</h2>
 
-            <p>Hallo {{ Rezept?.Kunde.firstname }},</p>
+            <p>Hallo {{ Rezept?.Kunde?.firstname }},</p>
             <p>
               du hast folgende Termine bei uns. Bitte erscheine pünktlich und
               wenn möglich mit Puffer bei uns in der Praxis.

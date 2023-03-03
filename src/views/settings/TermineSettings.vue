@@ -38,6 +38,9 @@
         <b-col>
           Termindauer (Min.): <b>{{ terminConf.terminMinutes }}</b>
         </b-col>
+        <b-col>
+          Kundenbeteiligung (€): <b>{{ terminConf.kundenbeteiligung }}</b>
+        </b-col>
       </b-row>
     </div>
 
@@ -47,17 +50,34 @@
       title="Termineinstellungen für Heilmittel"
     >
       <HeilmittelEditFormular v-model="selectedHm" />
-      <template #modal-footer="{ cancel }">
+      <template #modal-footer="{}">
         <b-button size="sm" variant="success" @click="ok">Speichern</b-button>
         <b-button size="sm" variant="outline-danger" @click="cancel">
           Abbrechen
         </b-button>
       </template>
     </b-modal>
+
+    <DeletionConfirmation
+      ref="deletionConfirmation"
+      @confirm="confirmableFunction"
+    >
+      <p>
+        Bist du sicher, dass du dieses Heilmittel entfernen willst? Du kannst
+        diese Entscheidung nicht mehr rückgängig machen!
+      </p>
+      <p>
+        <b>{{ selectedHm?.name }} ({{ selectedHm?.abk }})</b><br />
+        Terminzahl: {{ selectedHm?.terminNumber }}<br />
+        Termindauer: {{ selectedHm?.terminMinutes }}<br />
+        Kundenbeteiligung: {{ selectedHm?.kundenbeteiligung }}
+      </p>
+    </DeletionConfirmation>
   </div>
 </template>
 
 <script>
+import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 import HeilmittelEditFormular from "@/components/formsAndModals/HeilmittelEditFormular.vue";
 import ConfigService from "@/services/ConfigService";
 import HeilmittelService from "@/services/HeilmittelService";
@@ -68,6 +88,7 @@ export default {
       terminConfigs: [],
       defaultPause: ConfigService.getDefaultPause(),
       selectedHm: null,
+      confirmableFunction: () => {},
     };
   },
   mounted() {
@@ -110,18 +131,25 @@ export default {
       this.selectedHm = {};
       this.$bvModal.show("editModal");
     },
+    cancel() {
+      this.loadHeilmittel();
+      this.$bvModal.hide("editModal");
+    },
     edit(terminConf) {
       this.selectedHm = terminConf;
       this.$bvModal.show("editModal");
     },
     remove(terminConf) {
-      // TODO: confirm deletion
-      HeilmittelService.remove(terminConf.id).then(() => {
-        this.loadHeilmittel();
-      });
+      this.selectedHm = terminConf;
+      this.confirmableFunction = () => {
+        HeilmittelService.remove(terminConf.id).then(() => {
+          this.loadHeilmittel();
+        });
+      };
+      this.$refs.deletionConfirmation.show();
     },
   },
-  components: { HeilmittelEditFormular },
+  components: { HeilmittelEditFormular, DeletionConfirmation },
 };
 </script>
 

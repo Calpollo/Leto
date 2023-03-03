@@ -42,7 +42,7 @@
         <b>97%</b> der gebuchten Termine werden von den Patienten wahrgenommen.
       </div>
       <div class="singlestat">
-        <b>124 Termine</b> wurden im Durschnitt pro Woche durchgeführt (bei 3
+        <b>124 Termine</b> wurden im Durchschnitt pro Woche durchgeführt (bei 3
         Therapeuten und 150 versch. Patienten)
       </div>
       <div class="singlestat">
@@ -60,13 +60,28 @@
         </b-button>
         <b-button class="my-1" disabled>Gehaltsübersicht generieren</b-button>
         <b-button class="my-1" disabled>Zur Gesamtstatistik</b-button>
+        <b-button class="my-1" @click="openPdfGeneration">
+          <b-icon-file-earmark></b-icon-file-earmark>
+          PDFs generieren
+        </b-button>
       </b-col>
     </b-row>
+
+    <PdfGenerationAuswahl ref="pdfgeneration" />
   </div>
 </template>
 
 <script>
-export default {};
+import PdfGenerationAuswahl from "@/components/formsAndModals/PdfGenerationAuswahl.vue";
+
+export default {
+  components: { PdfGenerationAuswahl },
+  methods: {
+    openPdfGeneration() {
+      this.$refs.pdfgeneration.show();
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
