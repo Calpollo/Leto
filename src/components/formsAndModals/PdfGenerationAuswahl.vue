@@ -1,5 +1,9 @@
 <template>
-  <b-modal id="editModal" size="lg" title="PDFs zur Generierung auswählen">
+  <b-modal
+    id="PdfGenerationAuswahl"
+    size="lg"
+    title="PDFs zur Generierung auswählen"
+  >
     <b-row>
       <b-col cols="12" lg="6">
         <b-form-group label="Von" label-for="von-auswahl">
@@ -123,7 +127,7 @@ export default {
   },
   methods: {
     show() {
-      this.$bvModal.show("editModal");
+      this.$bvModal.show("PdfGenerationAuswahl");
     },
     ok() {
       for (const rechnung of this.filteredRechnungen) {
@@ -137,10 +141,10 @@ export default {
           this.$refs.terminePdf.generatePdf();
         }
       }
-      this.$bvModal.hide("editModal");
+      this.$bvModal.hide("PdfGenerationAuswahl");
     },
     cancel() {
-      this.$bvModal.hide("editModal");
+      this.$bvModal.hide("PdfGenerationAuswahl");
     },
     changeKunde(lastnamefirstname) {
       const [lastname, firstname] = lastnamefirstname.split(", ");

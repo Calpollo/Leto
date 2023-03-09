@@ -1,0 +1,40 @@
+import DatabaseService from "./DatabaseService";
+
+class ZeitspanneService {
+  getAll({ include = [] } = {}) {
+    return DatabaseService.getZeitspanne({ include });
+  }
+
+  getOne(id, { include = [] } = {}) {
+    return DatabaseService.getZeitspanne({ id, include });
+  }
+
+  create(start, end) {
+    return DatabaseService.createZeitspanne({
+      where: {
+        start: new Date(start),
+        end: new Date(end),
+      },
+    });
+  }
+  bulkCreate(dataList) {
+    return DatabaseService.createZeitspanne({
+      where: dataList.map((z) => {
+        return {
+          start: new Date(z.start),
+          end: new Date(z.end),
+        };
+      }),
+      bulkCreate: true,
+    });
+  }
+
+  update(zeitspanne) {
+    return DatabaseService.updateZeitspanne({
+      id: zeitspanne.id,
+      instance: zeitspanne,
+    });
+  }
+}
+
+export default new ZeitspanneService();

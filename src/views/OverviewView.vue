@@ -2,17 +2,27 @@
   <div id="Overview">
     <h2>Übersicht</h2>
 
-    <b-row align-h="between" class="my-4 mx-0">
-      <b-button v-b-modal.neuesRezept
-        ><b-icon-file-earmark-plus /> Neues Rezept</b-button
-      >
-      <b-button v-b-modal.folgeRezept>
-        <b-icon-files-alt /> Folgerezept
-      </b-button>
-      <b-button disabled><b-icon-plus /> Neuer Einzeltermin</b-button>
-      <b-button v-b-modal.terminAbsage disabled>
-        <b-icon-person-dash /> Patient nicht erschienen</b-button
-      >
+    <b-row class="my-4 mx-0" align-v="stretch">
+      <b-col cols="12" md="6" xl="3">
+        <b-button class="btn-stretch" v-b-modal.neuesRezept>
+          <b-icon-file-earmark-plus />Neues Rezept
+        </b-button>
+      </b-col>
+      <b-col cols="12" md="6" xl="3">
+        <b-button class="btn-stretch" v-b-modal.folgeRezept>
+          <b-icon-files-alt /> Folgerezept
+        </b-button>
+      </b-col>
+      <b-col cols="12" md="6" xl="3">
+        <b-button class="btn-stretch" disabled>
+          <b-icon-plus /> Neuer Einzeltermin
+        </b-button>
+      </b-col>
+      <b-col cols="12" md="6" xl="3">
+        <b-button class="btn-stretch" v-b-modal.terminAbsage>
+          <b-icon-person-dash /> nicht erschienen
+        </b-button>
+      </b-col>
     </b-row>
 
     <div>
@@ -67,40 +77,11 @@
       </div>
     </div>
 
-    <b-modal
-      id="neuesRezept"
-      size="xl"
-      scrollable
-      title="Neues Rezept aufnehmen"
-    >
-      <NeuesRezeptFormular />
-      <template #modal-footer="{ ok, cancel }">
-        <b-button size="sm" variant="success" @click="ok()">Speichern</b-button>
-        <b-button size="sm" variant="outline-danger" @click="cancel()">
-          Abbrechen
-        </b-button>
-      </template>
-    </b-modal>
+    <NeuesRezeptFormular id="neuesRezept" @done="updateEventList" />
 
-    <b-modal id="folgeRezept" scrollable title="Folgerezept aufnehmen">
-      <FolgeRezeptFormular />
-      <template #modal-footer="{ ok, cancel }">
-        <b-button size="sm" variant="success" @click="ok()">Speichern</b-button>
-        <b-button size="sm" variant="outline-danger" @click="cancel()">
-          Abbrechen
-        </b-button>
-      </template>
-    </b-modal>
+    <FolgeRezeptFormular id="folgeRezept" @done="updateEventList" />
 
-    <b-modal id="terminAbsage" scrollable title="Patient nicht erschienen">
-      <TerminAbsage />
-      <template #modal-footer="{ ok, cancel }">
-        <b-button size="sm" variant="success" @click="ok()">Speichern</b-button>
-        <b-button size="sm" variant="outline-danger" @click="cancel()">
-          Abbrechen
-        </b-button>
-      </template>
-    </b-modal>
+    <TerminAbsage id="terminAbsage" />
   </div>
 </template>
 
@@ -153,3 +134,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.btn-stretch {
+  width: 100%;
+  height: 100%;
+}
+</style>

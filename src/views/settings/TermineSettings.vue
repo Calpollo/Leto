@@ -32,14 +32,15 @@
       </h3>
       Beschreibung: <b>{{ terminConf.name }}</b>
       <b-row>
-        <b-col>
-          Terminzahl: <b>{{ terminConf.terminNumber }}</b>
-        </b-col>
-        <b-col>
+        <b-col cols="6">
+          Terminzahl: <b>{{ terminConf.terminNumber }}</b> <br />
           Termindauer (Min.): <b>{{ terminConf.terminMinutes }}</b>
         </b-col>
-        <b-col>
+        <b-col cols="6">
           Kundenbeteiligung (€): <b>{{ terminConf.kundenbeteiligung }}</b>
+          <br />
+          Krankenkassenbeteiligung (€):
+          <b>{{ terminConf.krankenkassenbeteiligung }}</b>
         </b-col>
       </b-row>
     </div>
@@ -70,7 +71,8 @@
         <b>{{ selectedHm?.name }} ({{ selectedHm?.abk }})</b><br />
         Terminzahl: {{ selectedHm?.terminNumber }}<br />
         Termindauer: {{ selectedHm?.terminMinutes }}<br />
-        Kundenbeteiligung: {{ selectedHm?.kundenbeteiligung }}
+        Kundenbeteiligung: {{ selectedHm?.kundenbeteiligung }} <br />
+        Krankenkassenbeteiligung: {{ selectedHm?.krankenkassenbeteiligung }}
       </p>
     </DeletionConfirmation>
   </div>

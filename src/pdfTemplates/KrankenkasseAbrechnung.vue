@@ -14,7 +14,7 @@
       ref="html2Pdf"
       :html-to-pdf-options="{
         margin: [15, 10],
-        filename: 'Rechnung-Patient-' + Rezept?.id,
+        filename: 'Abrechnung',
       }"
     >
       <section slot="pdf-content">
@@ -24,7 +24,7 @@
             <img id="leto-logo" src="@/assets/Leto - Text.png" />
 
             <b-row>
-              <b-col class="anschrift">
+              <!-- <b-col class="anschrift">
                 <p>
                   {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
                 </p>
@@ -41,7 +41,7 @@
                     {{ Rezept?.Kunde?.email }}
                   </a>
                 </p>
-              </b-col>
+              </b-col> -->
               <b-col class="anschrift">
                 <p>{{ Praxis?.name }}</p>
                 <p>{{ Praxis?.address }}</p>
@@ -59,39 +59,30 @@
 
             <h2 id="betreff">Rechnung</h2>
 
-            <p>Hallo {{ Rezept?.Kunde?.firstname }},</p>
+            <p>Sehr geehrte Damen und Herren,</p>
             <p>
-              für deine erhaltenen und kommenden Leistungen erhälst du diese
-              Rechnung von uns. Bei Terminausfall o.ä. kann sich der entgültige
-              Betrag ändern. Für Zahlungsänderungen stellen wir weitere
-              Rechnungen aus.
+              für ausgeführte Leistungen und eingelöste Rezepte berechnen wir
+              Ihnen folgende Rechnungspunkte:
             </p>
 
             <b-table
               id="kostenaufstellung"
               striped
-              :items="[
-                {
-                  Heilmittel: `${Rezept?.Heilmittel?.abk}: ${Rezept?.Heilmittel?.name}`,
-                  Termine: Rezept?.Heilmittel?.terminNumber,
-                  Dauer: Rezept?.Heilmittel?.terminMinutes,
-                  Preis: Rezept?.Heilmittel?.kundenbeteiligung + ' €',
-                },
-              ]"
+              :items="kostenaufstellung"
             ></b-table>
 
-            <p>
+            <!-- <p>
               Bitte überweise den Betrag von
               <b> {{ Rezept?.Heilmittel?.kundenbeteiligung }} € </b>bis zum
               <b>
                 {{ this.dateToLocale(this.PaymentDeadline) }}
               </b>
               an die untenstehende Bankverbindung.
-            </p>
+            </p> -->
 
-            <p>
+            <!-- <p>
               Bei Fragen zu dieser Rechnung kannst du dich gerne bei uns melden!
-            </p>
+            </p> -->
 
             <p>Mit freundlichen Grüßen</p>
 
@@ -111,7 +102,6 @@
 </template>
 
 <script>
-import RezeptService from "@/services/RezeptService";
 import VueHtml2pdf from "vue-html2pdf";
 import PraxisService from "@/services/PraxisService";
 import ConfigService from "@/services/ConfigService";
@@ -121,21 +111,12 @@ export default {
   components: { VueHtml2pdf },
   data() {
     return {
-      Rezept: null,
       Praxis: null,
-      PaymentDeadline: new Date(),
     };
   },
   methods: {
     generatePdf() {
       return this.$refs.html2Pdf.generatePdf();
-    },
-    updateRezept(id) {
-      RezeptService.getOne(id, {
-        include: ["Kunde", "Heilmittel"],
-      }).then((r) => {
-        this.Rezept = r;
-      });
     },
     timeToLocale(date) {
       return toLocaleTime(date);
@@ -145,21 +126,28 @@ export default {
     },
   },
   props: {
-    RezeptId: {
-      type: String,
-      required: true,
+    RezeptList: {
+      type: Array,
+      default: () => [],
     },
   },
   mounted() {
-    this.PaymentDeadline.setDate(new Date().getDate() + 14);
-    this.updateRezept(this.RezeptId);
     PraxisService.getOne(ConfigService.getPraxis()).then((praxis) => {
       this.Praxis = praxis;
     });
   },
-  watch: {
-    RezeptId() {
-      this.updateRezept(this.RezeptId);
+  computed: {
+    kostenaufstellung() {
+      return [...this.RezeptList].map((r) => {
+        return {
+          Patient:
+            r.Kunde.versichertennummer ||
+            `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
+          Heilmittel: `${r.Heilmittel.abk}: ${r.Heilmittel.name}`,
+          Ausstellungsdatum: this.dateToLocale(r.ausstellungsdatum),
+          Preis: r.Heilmittel.krankenkassenbeteiligung + " €",
+        };
+      });
     },
   },
 };

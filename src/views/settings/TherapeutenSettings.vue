@@ -6,7 +6,7 @@
       festgelegten Arbeitszeiten. Diese Daten kannst du hier festlegen.
     </p>
 
-    <b-button disabled class="my-2">
+    <b-button @click="createNewTherapeut" class="my-2">
       <b-icon-plus aria-hidden="true" />
       Neuer Therapeut
     </b-button>
@@ -50,48 +50,22 @@
             ></b-table>
           </b-tab>
           <b-tab title="Arbeitszeiten">
-            <b-table
-              stacked
-              :items="
-                [therapeut.Vertrag].map(
-                  ({
-                    montagsZeit,
-                    dienstagsZeit,
-                    mittwochsZeit,
-                    donnerstagsZeit,
-                    freitagsZeit,
-                  }) => {
-                    return {
-                      Montag: zeitZuString(montagsZeit),
-                      Dienstag: zeitZuString(dienstagsZeit),
-                      Mittwoch: zeitZuString(mittwochsZeit),
-                      Donnerstag: zeitZuString(donnerstagsZeit),
-                      Freitag: zeitZuString(freitagsZeit),
-                    };
-                  }
-                )
-              "
-            ></b-table>
+            <b-table stacked :items="arbeitsZeiten(therapeut)"></b-table>
           </b-tab>
           <b-tab title="Urlaub">
-            <b-table
-              stacked
-              :items="
-                [therapeut.Vertrag].map(({ urlaubstage }) => {
-                  return {
-                    urlaubstage,
-                  };
-                })
-              "
-            ></b-table>
-
             <b-list-group>
               <b-list-group-item
-                v-for="tag in therapeut.Vertrag.Urlaub"
-                :key="tag.id"
+                v-for="tag in sortedUrlaubstage(therapeut.Vertrag.Urlaub)"
+                :key="tag.datum"
               >
-                {{ dateToLocale(tag.datum) }}
-                <span v-if="tag.yearlyRepetition">(jährl. wiederholend)</span>
+                {{ dateToLocale(tag.datum, tag.yearlyRepetition) }}
+                <b-badge
+                  v-if="tag.yearlyRepetition"
+                  variant="primary"
+                  class="ml-2"
+                >
+                  (jährl. wiederholend)
+                </b-badge>
               </b-list-group-item>
             </b-list-group>
           </b-tab>
@@ -152,30 +126,43 @@ export default {
             "Urlaub",
           ],
         },
-      }).then((tList) => (this.therapeuten = tList));
+      }).then((tList) => {
+        console.log(tList);
+        this.therapeuten = tList;
+      });
     },
     edit(therapeut) {
       this.selectedTh = therapeut;
+      this.$bvModal.show("editModal");
+    },
+    createNewTherapeut() {
+      this.selectedTh = {
+        Vertrag: {
+          montagsZeit: {},
+          dienstagsZeit: {},
+          mittwochsZeit: {},
+          donnerstagsZeit: {},
+          freitagsZeit: {},
+        },
+      };
       this.$bvModal.show("editModal");
     },
     ok() {
       if (this.selectedTh.id) {
         TherapeutService.update(this.selectedTh).then((d) => {
           console.log(d);
-          this.loadHeilmittel();
+          this.loadTherapeuten();
         });
       } else {
-        TherapeutService
-          .create
-          // this.selectedTh.abk,
-          // this.selectedTh.name,
-          // this.selectedTh.terminNumber,
-          // this.selectedTh.terminMinutes
-          ()
-          .then((d) => {
-            console.log(d);
-            this.loadHeilmittel();
-          });
+        console.log(this.selectedTh);
+        TherapeutService.create(
+          this.selectedTh.name,
+          this.selectedTh.geschlecht,
+          this.selectedTh.Vertrag
+        ).then((d) => {
+          console.log(d);
+          this.loadTherapeuten();
+        });
       }
       this.$bvModal.hide("editModal");
     },
@@ -199,11 +186,55 @@ export default {
         new Date(event.end).getMinutes()
       )}`;
     },
-    dateToLocale(date, locale) {
-      return toLocale(date, locale);
+    dateToLocale(date, repeating = false, locale) {
+      const options = {
+        month: "2-digit",
+        day: "2-digit",
+      };
+      if (!repeating) options.year = "numeric";
+      return toLocale(date, {
+        locale,
+        options,
+      });
     },
     pad(number) {
       return String(number).padStart(2, "0");
+    },
+    sortedUrlaubstage(urlaub) {
+      if (urlaub.length <= 0) return [];
+      return [...urlaub].sort((a, b) => {
+        if (a.yearlyRepetition && !b.yearlyRepetition) return -1;
+        return new Date(a.datum) - new Date(b.datum);
+      });
+    },
+    arbeitsZeiten(therapeut) {
+      return [therapeut.Vertrag].map(
+        ({
+          montagsZeit,
+          dienstagsZeit,
+          mittwochsZeit,
+          donnerstagsZeit,
+          freitagsZeit,
+        }) => {
+          if (
+            ![
+              montagsZeit,
+              dienstagsZeit,
+              mittwochsZeit,
+              donnerstagsZeit,
+              freitagsZeit,
+            ].every((e) => e)
+          )
+            return null;
+          return {
+            Montag: this.zeitZuString(montagsZeit),
+            Dienstag: this.zeitZuString(dienstagsZeit),
+            Mittwoch: this.zeitZuString(mittwochsZeit),
+            Donnerstag: this.zeitZuString(donnerstagsZeit),
+            Freitag: this.zeitZuString(freitagsZeit),
+          };
+        }
+      );
     },
   },
   mounted() {

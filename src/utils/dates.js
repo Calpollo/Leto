@@ -1,5 +1,5 @@
-export function toLocale(date, locale = "de-DE") {
-  return new Date(date).toLocaleDateString(locale);
+export function toLocale(date, { locale = "de-DE", options = {} } = {}) {
+  return new Date(date).toLocaleDateString(locale, options);
 }
 
 export function toLocaleTime(date, locale = "de-DE") {

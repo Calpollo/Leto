@@ -75,7 +75,7 @@ export default {
     },
     setHeilmittel(HeilmittelId) {
       const hm = this.heilmittel.find((hm) => hm.id == HeilmittelId);
-      this.rezept = { ...this.rezept, Heilmittel: hm };
+      this.rezept = { ...this.rezept, Heilmittel: hm, HeilmittelId: hm.id };
       this.$emit("input", this.rezept);
     },
   },

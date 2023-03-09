@@ -1,3 +1,9 @@
+import ConfigService from "@/services/ConfigService";
+import KundenService from "@/services/KundenService";
+import RezeptService from "@/services/RezeptService";
+import TerminService from "@/services/TerminService";
+import TherapeutService from "@/services/TherapeutService";
+
 const millisecondsPerHour = 3600000;
 
 export function eventHours(event) {
@@ -53,4 +59,60 @@ export function dateRowEnd(event, openingHours) {
       new Date(event.start).getMinutes() + event.minutes
     ) - new Date(openingHours.Zeitspanne.start);
   return Math.round((timeDiff / millisecondsPerHour) * 4);
+}
+
+export async function createNewRezept(
+  kunde,
+  rezept,
+  termine,
+  createKunde = true,
+  kundeId = null
+) {
+  // console.log(kunde, rezept);
+  // console.log(termine);
+
+  const { lastname, firstname, email, phone, address } = kunde;
+  let createdKunde = null;
+  let kundeSuccess = false;
+  if (createKunde) {
+    // eslint-disable-next-line no-unused-vars
+    [createdKunde, kundeSuccess] = await KundenService.create(
+      lastname,
+      firstname,
+      email,
+      phone,
+      address
+    );
+  } else {
+    createdKunde = await KundenService.getOne(kundeId);
+    // kundeSuccess = true;
+  }
+  // console.log(createdKunde, kundeSuccess);
+  const { ausstellungsdatum, aussteller, Heilmittel } = rezept;
+  const tQuery = TherapeutService.getAll();
+  const rQuery = RezeptService.create(
+    ausstellungsdatum,
+    aussteller,
+    Heilmittel.id,
+    createdKunde.id
+  );
+
+  return Promise.all([tQuery, rQuery]).then(
+    // eslint-disable-next-line no-unused-vars
+    ([therapeutList, [createdRezept, rezeptSuccess]]) => {
+      // console.log(therapeutList[0], createdRezept, rezeptSuccess);
+      const PraxisId = ConfigService.getPraxis();
+      return TerminService.bulkCreate(
+        termine.map((termin) => {
+          return {
+            start: termin,
+            minutes: 20,
+            PraxisId,
+            RezeptId: createdRezept.id,
+            TherapeutId: therapeutList[0].id,
+          };
+        })
+      ).then((termine) => [termine, createdKunde, createdRezept]);
+    }
+  );
 }

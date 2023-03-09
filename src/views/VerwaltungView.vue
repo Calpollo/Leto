@@ -60,25 +60,34 @@
         </b-button>
         <b-button class="my-1" disabled>Gehaltsübersicht generieren</b-button>
         <b-button class="my-1" disabled>Zur Gesamtstatistik</b-button>
-        <b-button class="my-1" @click="openPdfGeneration">
+        <b-button class="my-1" @click="openPdfGenerationKunde">
           <b-icon-file-earmark></b-icon-file-earmark>
-          PDFs generieren
+          PDFs generieren (Kunde)
+        </b-button>
+        <b-button class="my-1" @click="openPdfGenerationKrankenkasse">
+          <b-icon-file-earmark></b-icon-file-earmark>
+          PDFs generieren (Krankenkasse)
         </b-button>
       </b-col>
     </b-row>
 
-    <PdfGenerationAuswahl ref="pdfgeneration" />
+    <PdfGenerationAuswahl ref="pdfgenerationKunde" />
+    <PdfGenerationKrankenkasse ref="pdfgenerationKrankenkasse" />
   </div>
 </template>
 
 <script>
 import PdfGenerationAuswahl from "@/components/formsAndModals/PdfGenerationAuswahl.vue";
+import PdfGenerationKrankenkasse from "@/components/formsAndModals/PdfGenerationKrankenkasse.vue";
 
 export default {
-  components: { PdfGenerationAuswahl },
+  components: { PdfGenerationAuswahl, PdfGenerationKrankenkasse },
   methods: {
-    openPdfGeneration() {
-      this.$refs.pdfgeneration.show();
+    openPdfGenerationKunde() {
+      this.$refs.pdfgenerationKunde.show();
+    },
+    openPdfGenerationKrankenkasse() {
+      this.$refs.pdfgenerationKrankenkasse.show();
     },
   },
 };

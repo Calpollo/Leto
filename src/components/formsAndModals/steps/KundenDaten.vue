@@ -112,7 +112,10 @@ export default {
         (k) => k.lastname == lastname && k.firstname == firstname
       );
       if (!found) return;
-      else this.kunde = found;
+      else {
+        this.kunde = found;
+        this.$emit("input", found);
+      }
     },
   },
   mounted() {

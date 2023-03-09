@@ -55,6 +55,18 @@
         v-model="patient.address"
       ></b-input>
     </b-form-group>
+
+    <b-form-group
+      id="patientversichertennummer-group"
+      label="Adresse:"
+      label-for="patient-versichertennummer"
+    >
+      <b-input
+        id="patient-versichertennummer"
+        type="text"
+        v-model="patient.versichertennummer"
+      ></b-input>
+    </b-form-group>
   </b-form>
 </template>
 

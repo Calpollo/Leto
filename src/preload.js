@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld("fileWriter", {
     fs.writeFile(
       "./config/leto.config.json",
       JSON.stringify(config, null, 2),
-      () => {}
+      () => { }
     );
   },
 });
@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld("ipc", {
   getPraxis: (data) => ipcRenderer.invoke("getPraxis", data),
   getRezept: (data) => ipcRenderer.invoke("getRezept", data),
   getHeilmittel: (data) => ipcRenderer.invoke("getHeilmittel", data),
+  getDatum: (data) => ipcRenderer.invoke("getDatum", data),
 
   createZeitspanne: (data) => ipcRenderer.invoke("createZeitspanne", data),
   createTermin: (data) => ipcRenderer.invoke("createTermin", data),
@@ -29,6 +30,7 @@ contextBridge.exposeInMainWorld("ipc", {
   createPraxis: (data) => ipcRenderer.invoke("createPraxis", data),
   createRezept: (data) => ipcRenderer.invoke("createRezept", data),
   createHeilmittel: (data) => ipcRenderer.invoke("createHeilmittel", data),
+  createDatum: (data) => ipcRenderer.invoke("createDatum", data),
 
   updateZeitspanne: (data) => ipcRenderer.invoke("updateZeitspanne", data),
   updateTermin: (data) => ipcRenderer.invoke("updateTermin", data),
@@ -38,6 +40,7 @@ contextBridge.exposeInMainWorld("ipc", {
   updatePraxis: (data) => ipcRenderer.invoke("updatePraxis", data),
   updateRezept: (data) => ipcRenderer.invoke("updateRezept", data),
   updateHeilmittel: (data) => ipcRenderer.invoke("updateHeilmittel", data),
+  updateDatum: (data) => ipcRenderer.invoke("updateDatum", data),
 
   removeZeitspanne: (data) => ipcRenderer.invoke("removeZeitspanne", data),
   removeTermin: (data) => ipcRenderer.invoke("removeTermin", data),
@@ -47,4 +50,5 @@ contextBridge.exposeInMainWorld("ipc", {
   removePraxis: (data) => ipcRenderer.invoke("removePraxis", data),
   removeRezept: (data) => ipcRenderer.invoke("removeRezept", data),
   removeHeilmittel: (data) => ipcRenderer.invoke("removeHeilmittel", data),
+  removeDatum: (data) => ipcRenderer.invoke("removeDatum", data),
 });

@@ -15,7 +15,31 @@ class LocalDbAdapter {
   }
 
   async seed() {
-    const [arbeitszeit] = await this.Zeitspanne.findOrCreate({
+    const [arbeitszeitMo] = await this.Zeitspanne.findOrCreate({
+      where: {
+        start: new Date().setHours(8, 0),
+        end: new Date().setHours(19, 30),
+      },
+    });
+    const [arbeitszeitDi] = await this.Zeitspanne.findOrCreate({
+      where: {
+        start: new Date().setHours(8, 0),
+        end: new Date().setHours(19, 30),
+      },
+    });
+    const [arbeitszeitMi] = await this.Zeitspanne.findOrCreate({
+      where: {
+        start: new Date().setHours(8, 0),
+        end: new Date().setHours(19, 30),
+      },
+    });
+    const [arbeitszeitDo] = await this.Zeitspanne.findOrCreate({
+      where: {
+        start: new Date().setHours(8, 0),
+        end: new Date().setHours(19, 30),
+      },
+    });
+    const [arbeitszeitFR] = await this.Zeitspanne.findOrCreate({
       where: {
         start: new Date().setHours(8, 0),
         end: new Date().setHours(19, 30),
@@ -52,11 +76,11 @@ class LocalDbAdapter {
     });
 
     await Promise.all([
-      vertrag.setMontagsZeit(arbeitszeit),
-      vertrag.setDienstagsZeit(arbeitszeit),
-      vertrag.setMittwochsZeit(arbeitszeit),
-      vertrag.setDonnerstagsZeit(arbeitszeit),
-      vertrag.setFreitagsZeit(arbeitszeit),
+      vertrag.setMontagsZeit(arbeitszeitMo),
+      vertrag.setDienstagsZeit(arbeitszeitDi),
+      vertrag.setMittwochsZeit(arbeitszeitMi),
+      vertrag.setDonnerstagsZeit(arbeitszeitDo),
+      vertrag.setFreitagsZeit(arbeitszeitFR),
 
       vertrag.addUrlaub([christmasVacation]),
     ]);
@@ -112,6 +136,7 @@ class LocalDbAdapter {
         address: "Hauptstraße 1, 96120 Bischberg",
         email: "otto.normalverbraucher@gmail.com",
         phone: "016090899730",
+        versichertennummer: "G213456789N20",
       },
     });
 
@@ -134,11 +159,11 @@ class LocalDbAdapter {
     });
 
     await Promise.all([
-      ktWagner.setMontagsZeit(arbeitszeit),
-      ktWagner.setDienstagsZeit(arbeitszeit),
-      ktWagner.setMittwochsZeit(arbeitszeit),
-      ktWagner.setDonnerstagsZeit(arbeitszeit),
-      ktWagner.setFreitagsZeit(arbeitszeit),
+      ktWagner.setMontagsZeit(arbeitszeitMo),
+      ktWagner.setDienstagsZeit(arbeitszeitDi),
+      ktWagner.setMittwochsZeit(arbeitszeitMi),
+      ktWagner.setDonnerstagsZeit(arbeitszeitDo),
+      ktWagner.setFreitagsZeit(arbeitszeitFR),
 
       ktWagner.addFeiertage([christmasEve, tagDerDeutschenEinheit]),
     ]);
@@ -190,12 +215,6 @@ class LocalDbAdapter {
             }
           },
         },
-        indexes: [
-          {
-            unique: true,
-            fields: ["start", "end"],
-          },
-        ],
       }
     );
 
@@ -268,6 +287,11 @@ class LocalDbAdapter {
         defaultValue: 20,
         allowNull: false,
       },
+      krankenkassenbeteiligung: {
+        type: Float32Array,
+        defaultValue: 200,
+        allowNull: false,
+      },
     });
 
     this.Kunde = this.sequelize.define("Kunde", {
@@ -295,6 +319,10 @@ class LocalDbAdapter {
         validate: { is: /[?:+]?[0-9]*/i },
       },
       address: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      versichertennummer: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -396,21 +424,27 @@ class LocalDbAdapter {
     // Arbeitszeiten: Vertrag - Zeitspannen
     this.Zeitspanne.hasMany(this.Vertrag, {
       as: "VertragsArbeitszeiten",
+      onDelete: "CASCADE",
     });
     this.Vertrag.belongsTo(this.Zeitspanne, {
       as: "montagsZeit",
+      onDelete: "CASCADE",
     });
     this.Vertrag.belongsTo(this.Zeitspanne, {
       as: "dienstagsZeit",
+      onDelete: "CASCADE",
     });
     this.Vertrag.belongsTo(this.Zeitspanne, {
       as: "mittwochsZeit",
+      onDelete: "CASCADE",
     });
     this.Vertrag.belongsTo(this.Zeitspanne, {
       as: "donnerstagsZeit",
+      onDelete: "CASCADE",
     });
     this.Vertrag.belongsTo(this.Zeitspanne, {
       as: "freitagsZeit",
+      onDelete: "CASCADE",
     });
 
     // Feiertage: Praxis - Datum
@@ -430,8 +464,8 @@ class LocalDbAdapter {
     });
 
     // Arbeitsvertrag: Therapeut - Vertrag
-    await this.Therapeut.hasOne(this.Vertrag);
-    await this.Vertrag.belongsTo(this.Therapeut);
+    await this.Therapeut.hasOne(this.Vertrag, { onDelete: "CASCADE" });
+    await this.Vertrag.belongsTo(this.Therapeut, { onDelete: "CASCADE" });
 
     // Patientenrezept: Rezept - Kunde
     await this.Heilmittel.hasMany(this.Rezept);
@@ -498,16 +532,17 @@ class LocalDbAdapter {
   }
 
   update(table, { id, instance }) {
-    console.log(table, id, instance);
-    return this.get(table, { id }).then((found) => {
-      console.log(found);
-      if (found) {
-        found.set(instance);
-        return found.save();
-      } else {
-        return this.create(table, { where: instance, findIfExists: false });
-      }
-    });
+    console.log("Update", table, id, instance);
+    return table.update(instance, { where: { id } });
+    // return this.get(table, { id }).then((found) => {
+    //   console.log(found);
+    //   if (found) {
+    //     found.set(instance);
+    //     return found.save();
+    //   } else {
+    //     return this.create(table, { where: instance, findIfExists: false });
+    //   }
+    // });
   }
 
   remove(table, { id }) {

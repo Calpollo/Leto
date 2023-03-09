@@ -23,12 +23,6 @@ class RezeptService {
   }
 
   create(ausstellungsdatum, aussteller, HeilmittelId, KundeId) {
-    // console.log("Creating new Rezept with", {
-    //   ausstellungsdatum,
-    //   aussteller,
-    //   HeilmittelId,
-    //   KundeId,
-    // });
     return DatabaseService.createRezept({
       where: {
         ausstellungsdatum,

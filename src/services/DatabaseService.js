@@ -57,6 +57,18 @@ class DatabaseService {
     }
   }
 
+  getVertrag(data) {
+    if (this.isLocal()) {
+      return window.ipc.getVertrag(data).then(JSON.parse);
+    }
+  }
+
+  getDatum(data) {
+    if (this.isLocal()) {
+      return window.ipc.getDatum(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Create Instances in the database
   // ############################
@@ -93,6 +105,18 @@ class DatabaseService {
   createHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.createHeilmittel(data).then(JSON.parse);
+    }
+  }
+
+  createVertrag(data) {
+    if (this.isLocal()) {
+      return window.ipc.createVertrag(data).then(JSON.parse);
+    }
+  }
+
+  createDatum(data) {
+    if (this.isLocal()) {
+      return window.ipc.createDatum(data).then(JSON.parse);
     }
   }
 
@@ -135,6 +159,18 @@ class DatabaseService {
     }
   }
 
+  updateVertrag(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateVertrag(data).then(JSON.parse);
+    }
+  }
+
+  updateDatum(data) {
+    if (this.isLocal()) {
+      return window.ipc.updateDatum(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Remove Instances in the database
   // ############################
@@ -171,6 +207,18 @@ class DatabaseService {
   removeHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.removeHeilmittel(data).then(JSON.parse);
+    }
+  }
+
+  removeVertrag(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeVertrag(data).then(JSON.parse);
+    }
+  }
+
+  removeDatum(data) {
+    if (this.isLocal()) {
+      return window.ipc.removeDatum(data).then(JSON.parse);
     }
   }
 }

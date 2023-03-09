@@ -71,13 +71,12 @@
 
     <b-form-group
       id="therapeutvertragurlaub-group"
-      label="Urlaube:"
       label-for="therapeutvertrag-urlaub"
     >
       <b-row
-        v-for="urlaub in therapeut.Vertrag.Urlaub"
+        v-for="(urlaub, index) in value.Vertrag.Urlaub"
         :key="urlaub.id"
-        align-h="center"
+        align-v="center"
       >
         <b-col>
           <b-input
@@ -89,14 +88,24 @@
 
         <b-col>
           <b-form-checkbox
-            id="therapeutvertrag-urlaubrep"
+            :id="'therapeutvertrag-urlaubrep-' + index"
+            switch
             v-model="urlaub.yearlyRepetition"
           >
-            Jährlich wiederholend</b-form-checkbox
-          >
+            Jährlich wiederholend
+          </b-form-checkbox>
         </b-col>
-        <!-- TODO: remove and add -->
+
+        <b-col cols="2">
+          <b-button class="my-2" @click="removeUrlaub(urlaub)">
+            <b-icon-trash />
+          </b-button>
+        </b-col>
       </b-row>
+
+      <b-button class="my-2" @click="addUrlaub">
+        <b-icon-plus />
+      </b-button>
     </b-form-group>
 
     <hr />
@@ -313,7 +322,7 @@
     <!-- Freitag -->
     <b-form-group
       id="therapeutarbeitszeiten-fr-group"
-      label="Montag:"
+      label="Freitag:"
       label-for="therapeut-arbeitszeiten-fr"
     >
       <b-row>
@@ -392,10 +401,23 @@ export default {
     updateTime(variable, value) {
       const [hours, minutes] = value.split(":");
 
-      let newDate = new Date(variable);
+      let newDate = new Date(variable || null);
       newDate.setHours(hours);
       newDate.setMinutes(minutes);
       return newDate.valueOf();
+    },
+    removeUrlaub(urlaub) {
+      this.therapeut.Vertrag.Urlaub.splice(
+        this.therapeut.Vertrag.Urlaub.indexOf(urlaub),
+        1
+      );
+    },
+    addUrlaub() {
+      this.therapeut.Vertrag.Urlaub.push({
+        datum: new Date().toString(),
+        yearlyRepetition: false,
+        VertragId: this.therapeut.Vertrag.id,
+      });
     },
   },
 };

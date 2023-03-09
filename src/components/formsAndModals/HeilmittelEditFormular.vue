@@ -63,6 +63,19 @@
         v-model="heilmittelConf.kundenbeteiligung"
       ></b-input>
     </b-form-group>
+
+    <b-form-group
+      id="heilmittelkrankenkassenbeteiligung-group"
+      label="Kundenbeteiligung (€):"
+      label-for="heilmittel-krankenkassenbeteiligung"
+    >
+      <b-input
+        id="heilmittel-krankenkassenbeteiligung"
+        type="number"
+        min="0"
+        v-model="heilmittelConf.krankenkassenbeteiligung"
+      ></b-input>
+    </b-form-group>
   </b-form>
 </template>
 

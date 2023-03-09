@@ -50,13 +50,19 @@
       </datalist>
     </b-form-group>
 
-    <rezept-daten
+    <RezeptDaten
       v-if="showRezeptDaten"
       v-model="rezept"
+      @input="updateRezept"
       :showSaveButton="false"
     />
 
-    <b-button :disabled="!rezept?.HeilmittelId" type="submit">Weiter</b-button>
+    <b-button
+      :disabled="!rezept?.HeilmittelId"
+      type="submit"
+      v-if="showSaveButton"
+      >Weiter</b-button
+    >
   </b-form>
 </template>
 
@@ -71,6 +77,10 @@ export default {
   props: {
     value: {
       type: Object,
+    },
+    showSaveButton: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -137,6 +147,10 @@ export default {
         HeilmittelId: this.rezept.Heilmittel.id,
       });
       this.$emit("save");
+    },
+    updateRezept(value) {
+      this.rezept = value;
+      this.$emit("input", value);
     },
   },
 };

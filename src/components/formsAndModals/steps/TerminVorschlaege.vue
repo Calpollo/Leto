@@ -1,5 +1,15 @@
 <template>
   <div class="Terminvorschlaege">
+    <p>
+      <b-icon-exclamation-octagon
+        v-if="!(selectionCount == maxSelectionNum)"
+        variant="danger"
+      />
+      <b-icon-check-circle v-else variant="success" />
+
+      {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
+    </p>
+
     <b-button
       v-for="[vorschlag, id] in vorschlaege.map((v) => {
         return [v, vorschlaege.indexOf(v)];
@@ -18,6 +28,7 @@
     <br />
 
     <b-button
+      v-if="showSaveButton"
       class="mr-2"
       :disabled="!(selectionCount == maxSelectionNum)"
       type="submit"
@@ -26,13 +37,15 @@
       Speichern
     </b-button>
 
-    <b-icon-exclamation-octagon
-      v-if="!(selectionCount == maxSelectionNum)"
-      variant="danger"
-    />
-    <b-icon-check-circle v-else variant="success" />
+    <p>
+      <b-icon-exclamation-octagon
+        v-if="!(selectionCount == maxSelectionNum)"
+        variant="danger"
+      />
+      <b-icon-check-circle v-else variant="success" />
 
-    {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
+      {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
+    </p>
   </div>
 </template>
 
@@ -41,45 +54,31 @@ export default {
   name: "TerminVorschlaege",
   props: {
     heilmittel: Object,
+    showSaveButton: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      maxSelectionNum: 3,
-      // TODO: generate Terminvorschläge more efficiently and automatically
-      // TODO: load number of appointments and duration from config
-      vorschlaege: [
-        {
-          date: this.roundToFullHour(new Date()),
-          selected: true,
-        },
-        {
-          date: this.roundToFullHour(
-            new Date(new Date().getTime() + 2 * 60 * 60 * 1000)
-          ),
-          selected: true,
-        },
-        {
-          date: this.roundToFullHour(
-            new Date(new Date().getTime() + 4 * 60 * 60 * 1000)
-          ),
-          selected: true,
-        },
-        {
-          date: this.roundToFullHour(
-            new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
-          ),
-          selected: false,
-        },
-        {
-          date: this.roundToFullHour(
-            new Date(new Date().getTime() + 26 * 60 * 60 * 1000)
-          ),
-          selected: false,
-        },
-      ],
+      maxSelectionNum: this.heilmittel.terminNumber,
+      vorschlaege: this.generateVorschläge(),
     };
   },
   methods: {
+    // TODO: improve
+    generateVorschläge() {
+      return [...Array(this.heilmittel.terminNumber + 24)].map(
+        (item, index) => {
+          return {
+            date: this.roundToFullHour(
+              new Date(new Date().getTime() + 2 * index * 60 * 60 * 1000)
+            ),
+            selected: index < this.heilmittel.terminNumber,
+          };
+        }
+      );
+    },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
     },
@@ -92,10 +91,15 @@ export default {
       if (found_v.selected) found_v.selected = !found_v.selected;
       else if (this.selectionCount < this.maxSelectionNum)
         found_v.selected = !found_v.selected;
+      this.save();
     },
     save() {
       this.$emit(
         "save",
+        this.vorschlaege.filter((v) => v.selected).map((v) => v.date)
+      );
+      this.$emit(
+        "input",
         this.vorschlaege.filter((v) => v.selected).map((v) => v.date)
       );
     },
@@ -104,6 +108,9 @@ export default {
     selectionCount() {
       return this.vorschlaege.filter((v) => v.selected).length;
     },
+  },
+  mounted() {
+    this.save();
   },
 };
 </script>

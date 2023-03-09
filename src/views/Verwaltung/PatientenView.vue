@@ -103,6 +103,10 @@
             <b-icon-telephone-fill class="mr-2" />
             <a :href="'tel:' + patient.phone">{{ patient.phone }}</a>
           </p>
+          <p v-if="patient.phone">
+            <b-icon-hash class="mr-2" />
+            {{ patient.versichertennummer }}
+          </p>
           <p v-if="patient.Rezepts">
             <b-icon-newspaper class="mr-2" />
             {{ patient.Rezepts.length }} Rezept{{
@@ -134,7 +138,7 @@
         @confirm="confirmableFunction"
       >
         <p>
-          Bist du sicher, dass du diesen Therapeuten entfernen willst? Du kannst
+          Bist du sicher, dass du diesen Patienten entfernen willst? Du kannst
           diese Entscheidung nicht mehr rückgängig machen!
         </p>
         <p>
@@ -145,6 +149,7 @@
           {{ selectedEditKunde?.address }}<br />
           {{ selectedEditKunde?.email }}<br />
           {{ selectedEditKunde?.phone }}<br />
+          {{ selectedEditKunde?.versichertennummer }}
         </p>
       </DeletionConfirmation>
     </div>

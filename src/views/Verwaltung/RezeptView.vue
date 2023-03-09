@@ -211,7 +211,14 @@ export default {
         });
     },
     kunden() {
-      return [...this.rezepte].map((r) => r.Kunde);
+      let temp = [];
+      [...this.rezepte]
+        .map((r) => r.Kunde)
+        .forEach((k) => {
+          const found = temp.find((t) => t.id == k.id);
+          if (!found) temp.push(k);
+        });
+      return temp;
     },
     heilmittel() {
       let temp = [];

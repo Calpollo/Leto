@@ -1,5 +1,5 @@
 <template>
-  <div class="NeuesRezeptFormular">
+  <b-modal id="neuesRezept" size="lg" scrollable title="Neues Rezept aufnehmen">
     <v-stepper v-model="currentStep" :flat="false" :dark="false">
       <v-stepper-header>
         <v-stepper-step :complete="currentStep > 1" step="1">
@@ -17,80 +17,147 @@
         <v-stepper-step :complete="currentStep > 3" step="3">
           Terminwahl
         </v-stepper-step>
+
+        <v-divider></v-divider>
+
+        <v-stepper-step :complete="currentStep > 4" step="4">
+          PDF
+        </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <kunden-daten v-model="kunde" @save="currentStep = 2" />
+          <kunden-daten v-model="kunde" :showSaveButton="false" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <rezept-daten v-model="rezept" @save="currentStep = 3" />
+          <rezept-daten v-model="rezept" :showSaveButton="false" />
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <termin-vorschlaege :heilmittel="rezept.heilmittel" @save="done" />
+          <termin-vorschlaege
+            v-if="currentStep == 3"
+            :heilmittel="rezept.Heilmittel"
+            v-model="terminvorschlaege"
+            :showSaveButton="false"
+          />
+        </v-stepper-content>
+
+        <v-stepper-content step="4">
+          <b-button-group>
+            <b-button @click="terminuebersichtGenerieren">
+              Terminübersicht
+            </b-button>
+            <b-button @click="rechnungGenerieren">Rechnung</b-button>
+          </b-button-group>
+
+          <TerminUebersichtPdf
+            v-if="currentStep == 4"
+            ref="termine"
+            :RezeptId="rezept.id"
+          />
+          <RechnungKundePdf
+            v-if="currentStep == 4"
+            ref="rechnungen"
+            :RezeptId="rezept.id"
+          />
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-  </div>
+
+    <template #modal-footer="{ cancel }">
+      <b-button-group>
+        <b-button
+          :disabled="currentStep == 1 || currentStep == 4"
+          @click="currentStep--"
+        >
+          zurück
+        </b-button>
+        <b-button
+          variant="success"
+          @click="weiter"
+          :disabled="!currentStepIsValid"
+          >{{ currentStep < 4 ? "Weiter" : "Fertig" }}</b-button
+        >
+      </b-button-group>
+      <b-button variant="outline-danger" @click="cancel()">
+        Abbrechen
+      </b-button>
+    </template>
+  </b-modal>
 </template>
 
 <script>
-import KundenService from "@/services/KundenService";
 import KundenDaten from "./steps/KundenDaten.vue";
 import RezeptDaten from "./steps/RezeptDaten.vue";
 import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
-import RezeptService from "@/services/RezeptService";
-import TerminService from "@/services/TerminService";
-import ConfigService from "@/services/ConfigService";
-import TherapeutService from "@/services/TherapeutService";
+import TerminUebersichtPdf from "@/pdfTemplates/TerminUebersichtPdf.vue";
+import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
+import { createNewRezept } from "@/utils/events";
 export default {
-  components: { KundenDaten, RezeptDaten, TerminVorschlaege },
+  components: {
+    KundenDaten,
+    RezeptDaten,
+    TerminVorschlaege,
+    TerminUebersichtPdf,
+    RechnungKundePdf,
+  },
   data() {
     return {
       currentStep: 1,
       kunde: {},
       rezept: {},
+      terminvorschlaege: [],
     };
   },
   methods: {
     done(terminVorschlagsList) {
-      console.log(this.kunde, this.rezept);
-      console.log(terminVorschlagsList);
-
-      const { lastname, firstname, email, phone, address } = this.kunde;
-      KundenService.create(lastname, firstname, email, phone, address).then(
-        ([createdKunde, kundeSuccess]) => {
-          console.log(createdKunde, kundeSuccess);
-          const { ausstellungsdatum, aussteller, Heilmittel } = this.rezept;
-          const tQuery = TherapeutService.getAll();
-          const rQuery = RezeptService.create(
-            ausstellungsdatum,
-            aussteller,
-            Heilmittel.id,
-            createdKunde.id
-          );
-
-          Promise.all([tQuery, rQuery]).then(
-            ([therapeutList, [createdRezept, rezeptSuccess]]) => {
-              console.log(therapeutList[0], createdRezept, rezeptSuccess);
-              const PraxisId = ConfigService.getPraxis();
-              TerminService.bulkCreate(
-                terminVorschlagsList.map((termin) => {
-                  return {
-                    start: termin,
-                    minutes: 20,
-                    PraxisId,
-                    RezeptId: createdRezept.id,
-                    TherapeutId: therapeutList[0].id,
-                  };
-                })
-              ).then(console.log);
-            }
+      return createNewRezept(
+        this.kunde,
+        this.rezept,
+        terminVorschlagsList
+      ).then(([termine, createdKunde, createdRezept]) => {
+        console.table(termine);
+        console.log(createdKunde, createdRezept);
+        this.rezept = { ...this.rezept, ...createdRezept };
+        this.$emit("done");
+      });
+    },
+    weiter() {
+      if (this.currentStep == 3) {
+        this.done(this.terminvorschlaege).then(() => this.currentStep++);
+      } else if (this.currentStep == 4) this.close();
+      else this.currentStep++;
+    },
+    terminuebersichtGenerieren() {
+      this.$refs.termine.generatePdf();
+    },
+    rechnungGenerieren() {
+      this.$refs.rechnungen.generatePdf();
+    },
+    close() {
+      this.$bvModal.hide("neuesRezept");
+    },
+  },
+  computed: {
+    currentStepIsValid() {
+      switch (this.currentStep) {
+        case 1:
+          return Object.keys(this.kunde).length > 0;
+        case 2: {
+          const { Heilmittel, ausstellungsdatum, aussteller } = this.rezept;
+          return Heilmittel && ausstellungsdatum && aussteller;
+        }
+        case 3: {
+          return (
+            this.terminvorschlaege.length == this.rezept.Heilmittel.terminNumber
           );
         }
-      );
+        case 4:
+          return true;
+        default:
+          return false;
+      }
     },
   },
 };
