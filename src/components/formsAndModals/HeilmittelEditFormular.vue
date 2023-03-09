@@ -66,7 +66,7 @@
 
     <b-form-group
       id="heilmittelkrankenkassenbeteiligung-group"
-      label="Kundenbeteiligung (€):"
+      label="Krankenkassenbeteiligung (€):"
       label-for="heilmittel-krankenkassenbeteiligung"
     >
       <b-input

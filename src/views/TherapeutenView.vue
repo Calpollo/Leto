@@ -5,6 +5,7 @@
       <h3>Auslastungen diese Woche:</h3>
 
       <ArbeitszeitOverview
+        class="mb-2"
         v-for="therapeut in this.therapeuten"
         :key="therapeut.id"
         :therapeut="therapeut"

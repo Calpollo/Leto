@@ -5,6 +5,7 @@ import TerminService from "@/services/TerminService";
 import TherapeutService from "@/services/TherapeutService";
 
 const millisecondsPerHour = 3600000;
+const millisecondsPerDay = millisecondsPerHour * 24;
 
 export function eventHours(event) {
   if (!event) return 0;
@@ -47,18 +48,19 @@ export function fullDayHours(openingHours) {
 }
 
 export function dateRowStart(event, openingHours) {
-  const timeDiff =
+  let timeDiff =
     new Date(event.start) - new Date(openingHours.Zeitspanne.start);
-  const millisecondsPerHour = 3600000;
+  timeDiff = timeDiff % millisecondsPerDay;
   return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 
 export function dateRowEnd(event, openingHours) {
-  const timeDiff =
+  let timeDiff =
     new Date(event.start).setMinutes(
       new Date(event.start).getMinutes() + event.minutes
     ) - new Date(openingHours.Zeitspanne.start);
-  return Math.round((timeDiff / millisecondsPerHour) * 4);
+  timeDiff = timeDiff % millisecondsPerDay;
+  return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 
 export async function createNewRezept(
@@ -89,6 +91,7 @@ export async function createNewRezept(
   }
   // console.log(createdKunde, kundeSuccess);
   const { ausstellungsdatum, aussteller, Heilmittel } = rezept;
+  // TODO: change to explicit therapeut choice not therapeutList[0]
   const tQuery = TherapeutService.getAll();
   const rQuery = RezeptService.create(
     ausstellungsdatum,
@@ -115,4 +118,10 @@ export async function createNewRezept(
       ).then((termine) => [termine, createdKunde, createdRezept]);
     }
   );
+}
+
+export function therapeutToColor(id) {
+  let colors = ConfigService.getCalendar()?.therapeutColors;
+  if (!colors) return "grey";
+  else return colors[id];
 }

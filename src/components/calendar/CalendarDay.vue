@@ -5,7 +5,10 @@
       :style="getDayStyle()"
       v-if="openingHours?.Zeitspanne"
     >
-      <p class="datum" :style="{ gridColumn: '1/' + maxConcurrentEvents }">
+      <p
+        class="datum"
+        :style="{ gridColumn: '1/' + (maxConcurrentEvents + 1) }"
+      >
         {{ dateToLocale(this.date) }}
       </p>
 
@@ -107,7 +110,7 @@ export default {
         gridRow: rowStart + "/" + rowEnd,
         gridColumn:
           concurrentEvents.get(event.id) == 1
-            ? "1/" + this.concurrentEvents
+            ? "1/" + (concurrentEvents.get(event.id) + 1)
             : "auto",
       };
       return result;
@@ -119,7 +122,8 @@ export default {
   computed: {
     maxConcurrentEvents() {
       const concurrentEvents = eventListToConcurringEventnumber(this.events);
-      return Math.max(...concurrentEvents.values());
+      const result = Math.max(...concurrentEvents.values());
+      return result;
     },
   },
 };

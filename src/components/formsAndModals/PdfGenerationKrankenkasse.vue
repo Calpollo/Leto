@@ -2,7 +2,7 @@
   <b-modal
     id="PdfGenerationKrankenkasse"
     size="lg"
-    title="PDFs zur Generierung auswählen"
+    title="Abrechnung für Krankenkassen generieren"
   >
     <b-row>
       <b-col cols="12" lg="6">
@@ -14,6 +14,14 @@
         <b-form-group label="Bis" label-for="bis-auswahl">
           <b-input id="bis-auswahl" type="date" v-model="filterEndDate" />
         </b-form-group>
+      </b-col>
+    </b-row>
+
+    <b-row>
+      <b-col>
+        <b-form-checkbox v-model="allowKostenfrei">
+          Rezepte ohne Krankenkassenbeteiligung erlauben
+        </b-form-checkbox>
       </b-col>
     </b-row>
 
@@ -74,6 +82,7 @@ export default {
         .toISOString()
         .split("T")[0],
       filterEndDate: new Date().toISOString().split("T")[0],
+      allowKostenfrei: true,
     };
   },
   mounted() {
@@ -120,6 +129,10 @@ export default {
           (r) =>
             r.ausstellungsdatum > this.filterStartDate &&
             r.ausstellungsdatum < this.filterEndDate + 1000 * 60 * 60 * 24
+        )
+        .filter(
+          (r) =>
+            this.allowKostenfrei || r.Heilmittel.krankenkassenbeteiligung > 0
         );
     },
     abrechnungsRezepte() {

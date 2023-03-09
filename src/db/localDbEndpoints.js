@@ -132,6 +132,15 @@ ipcMain.handle("updateRezept", async (event, data) => {
 });
 
 // ############################
+// set Associations
+// ############################
+
+ipcMain.handle("setTherapeutHeilmittel", async (event, data) => {
+  console.log("localDbEndpoints.setTherhapeutHeilmittels");
+  return JSON.stringify(await localDB.setTherhapeutHeilmittels(data));
+});
+
+// ############################
 // remove Instances in the database
 // ############################
 ipcMain.handle("removeZeitspanne", async (event, data) => {

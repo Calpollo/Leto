@@ -1,5 +1,11 @@
 <template>
   <div class="calendardate" :style="getDateStyles()">
+    <p class="timestring">
+      {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
+      -
+      {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
+    </p>
+
     <p class="datename" v-show="this.kunde">
       <b-icon-info-circle
         class="mx-2"
@@ -8,11 +14,6 @@
 
       {{ this.event.Rezept.Heilmittel.abk }}: {{ this.kunde?.firstname }}
       {{ this.kunde?.lastname }}
-    </p>
-    <p class="timestring">
-      {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
-      -
-      {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
     </p>
 
     <b-tooltip
@@ -37,9 +38,9 @@
 </template>
 
 <script>
-import ConfigService from "@/services/ConfigService";
 import KundenService from "@/services/KundenService";
 import TerminService from "@/services/TerminService";
+import { therapeutToColor } from "@/utils/events";
 export default {
   name: "CalendarDate",
   props: {
@@ -65,13 +66,8 @@ export default {
     },
     getDateStyles() {
       return {
-        backgroundColor: this.therapeutToColor(this.event.Therapeut.name),
+        backgroundColor: therapeutToColor(this.event.Therapeut.name),
       };
-    },
-    therapeutToColor(id) {
-      let colors = ConfigService.getCalendar()?.therapeutColors;
-      if (!colors) return "grey";
-      else return colors[id];
     },
     deleteDate() {
       // TODO: confirm deletion

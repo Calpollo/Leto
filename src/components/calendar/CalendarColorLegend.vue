@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import ConfigService from "@/services/ConfigService";
+import { therapeutToColor } from "@/utils/events";
 export default {
   name: "CalendarColorLegend",
   props: {
@@ -26,11 +26,7 @@ export default {
     },
   },
   methods: {
-    therapeutToColor(id) {
-      let colors = ConfigService.getCalendar()?.therapeutColors;
-      if (!colors) return "grey";
-      else return colors[id];
-    },
+    therapeutToColor,
   },
 };
 </script>

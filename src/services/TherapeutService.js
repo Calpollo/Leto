@@ -45,6 +45,12 @@ class TherapeutService {
       if (therapeut.Vertrag) {
         await VertragService.update(therapeut.Vertrag);
       }
+      if (therapeut.Heilmittels) {
+        await DatabaseService.setTherapeutHeilmittel({
+          therapeutId: therapeut.id,
+          hms: therapeut.Heilmittels,
+        });
+      }
       return th;
     });
   }

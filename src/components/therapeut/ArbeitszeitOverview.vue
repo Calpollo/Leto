@@ -4,13 +4,11 @@
       {{ therapeut.name }} ({{ therapeut.geschlecht }})
     </h4>
     <div class="timebar" :style="getTimebarStyle()">
-      <div class="fullTime">
-        <div class="usedTime" :style="getUsedTimeStyle()">
-          <b
-            >{{ termineZeitSumme || "?" }} /
-            {{ therapeut.Vertrag?.wochenstunden || 0 }} h</b
-          >
-        </div>
+      <div class="fullTime" :style="getFullTimeStyle()">
+        <b>
+          {{ termineZeitSumme || "?" }} /
+          {{ therapeut.Vertrag?.wochenstunden || 0 }} h
+        </b>
       </div>
       <router-link
         v-if="!this.hideArrow"
@@ -50,13 +48,13 @@ export default {
       if (this.hideArrow) return {};
       return { gridTemplateColumns: "80% 20%" };
     },
-    getUsedTimeStyle() {
+    getFullTimeStyle() {
+      const percent =
+        ((this.termineZeitSumme || 0) / this.therapeut.Vertrag?.wochenstunden ||
+          1) * 100;
+      // const percent = 50;
       return {
-        width:
-          ((this.termineZeitSumme || 0) /
-            this.therapeut.Vertrag?.wochenstunden || 1) *
-            100 +
-          "%",
+        background: `linear-gradient(to right, var(--secondary), var(--secondary) ${percent}%, var(--secondary-accent) ${percent}%)`,
       };
     },
     updatetermineZeitSumme() {
@@ -84,20 +82,12 @@ export default {
 
 .fullTime {
   color: var(--background-accent);
-  background-color: var(--secondary);
   border: solid 2px var(--secondary);
   border-radius: 999px;
-  text-align: left;
   overflow: hidden;
-  vertical-align: middle;
   width: 100%;
   height: 100%;
-}
-
-.usedTime {
-  display: inline-grid;
-  background-color: var(--secondary-accent);
-  height: 100%;
+  display: grid;
   place-items: center;
 }
 </style>

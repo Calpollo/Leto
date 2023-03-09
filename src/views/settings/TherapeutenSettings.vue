@@ -21,17 +21,17 @@
           <b-icon-trash-fill color="white" />
         </b-button>
       </h3>
-      <p>
+      <small>
         Im Unternehmen seit:
         <em>{{ dateToLocale(therapeut.createdAt) }}</em>
-      </p>
-      <p>
+      </small>
+      <br />
+      <small>
         Zuletzt geändert:
         <em>{{ dateToLocale(therapeut.updatedAt) }}</em>
-      </p>
+      </small>
 
-      <b-card v-if="therapeut.Vertrag" bg-variant="light">
-        <h4>Vertrag:</h4>
+      <b-card v-if="therapeut.Vertrag" bg-variant="light" title="Vertrag">
         <b-tabs>
           <b-tab title="Vertrag">
             <b-table
@@ -71,6 +71,26 @@
           </b-tab>
         </b-tabs>
       </b-card>
+
+      <b-card
+        v-if="therapeut.Heilmittels"
+        class="mt-2"
+        bg-variant="light"
+        title="Heilmittel"
+        sub-title="Genehmigte Heilmittel für diesen Therapeuten"
+      >
+        <b-card-text>
+          <b-table
+            v-if="therapeut.Heilmittels.length > 0"
+            :items="
+              therapeut.Heilmittels.map(({ abk, name }) => {
+                return { 'Abkürzung/Code': abk, name };
+              })
+            "
+          ></b-table>
+          <b-badge class="mx-2" pill v-else>keine Heilmittel</b-badge>
+        </b-card-text>
+      </b-card>
     </div>
 
     <b-modal id="editModal" size="lg" scrollable title="Therapeuteinstellungen">
@@ -103,6 +123,7 @@ import { toLocale } from "@/utils/dates";
 import TherapeutService from "@/services/TherapeutService";
 import TherapeutEditFormular from "@/components/formsAndModals/TherapeutEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
+
 export default {
   components: { TherapeutEditFormular, DeletionConfirmation },
   data() {
@@ -115,19 +136,22 @@ export default {
   methods: {
     loadTherapeuten() {
       TherapeutService.getAll({
-        include: {
-          association: "Vertrag",
-          include: [
-            "montagsZeit",
-            "dienstagsZeit",
-            "mittwochsZeit",
-            "donnerstagsZeit",
-            "freitagsZeit",
-            "Urlaub",
-          ],
-        },
+        include: [
+          "Heilmittels",
+          {
+            association: "Vertrag",
+            include: [
+              "montagsZeit",
+              "dienstagsZeit",
+              "mittwochsZeit",
+              "donnerstagsZeit",
+              "freitagsZeit",
+              "Urlaub",
+            ],
+          },
+        ],
       }).then((tList) => {
-        console.log(tList);
+        // console.log(tList);
         this.therapeuten = tList;
       });
     },
@@ -149,8 +173,7 @@ export default {
     },
     ok() {
       if (this.selectedTh.id) {
-        TherapeutService.update(this.selectedTh).then((d) => {
-          console.log(d);
+        TherapeutService.update(this.selectedTh).then(() => {
           this.loadTherapeuten();
         });
       } else {

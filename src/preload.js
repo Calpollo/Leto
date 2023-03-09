@@ -42,6 +42,9 @@ contextBridge.exposeInMainWorld("ipc", {
   updateHeilmittel: (data) => ipcRenderer.invoke("updateHeilmittel", data),
   updateDatum: (data) => ipcRenderer.invoke("updateDatum", data),
 
+  setTherapeutHeilmittel: (data) =>
+    ipcRenderer.invoke("setTherapeutHeilmittel", data),
+
   removeZeitspanne: (data) => ipcRenderer.invoke("removeZeitspanne", data),
   removeTermin: (data) => ipcRenderer.invoke("removeTermin", data),
   removeVertrag: (data) => ipcRenderer.invoke("removeVertrag", data),

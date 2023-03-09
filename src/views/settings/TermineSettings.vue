@@ -121,7 +121,9 @@ export default {
           this.selectedHm.abk,
           this.selectedHm.name,
           this.selectedHm.terminNumber,
-          this.selectedHm.terminMinutes
+          this.selectedHm.terminMinutes,
+          this.selectedHm.kundenbeteiligung,
+          this.selectedHm.krankenkassenbeteiligung
         ).then((d) => {
           console.log(d);
           this.loadHeilmittel();

@@ -368,15 +368,48 @@
         </b-col>
       </b-row>
     </b-form-group>
+
+    <hr />
+    <p><b>Heilmittel:</b></p>
+
+    <b-form-group
+      id="therapeutheilmittel-group"
+      label-for="therapeut-heilmittel"
+    >
+      <b-list-group>
+        <b-list-group-item
+          v-for="hm in therapeut.Heilmittels"
+          :key="hm.id"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{ hm.abk }}: {{ hm.name }}
+          <b-button @click="removeHeilmittel(hm)">
+            <b-icon-trash />
+          </b-button>
+        </b-list-group-item>
+      </b-list-group>
+
+      <b-dropdown id="hmAdd" v-if="unchosenHeilmittel.length > 0" class="mt-2">
+        <template #button-content> <b-icon-plus />Heilmittelauswahl </template>
+        <b-dropdown-item
+          v-for="hm in unchosenHeilmittel"
+          :key="hm.id"
+          @click="therapeut.Heilmittels.push(hm)"
+          >{{ hm.abk }}</b-dropdown-item
+        >
+      </b-dropdown>
+    </b-form-group>
   </b-form>
 </template>
 
 <script>
+import HeilmittelService from "@/services/HeilmittelService";
 export default {
   name: "TherapeutEditFormular",
   data() {
     return {
       therapeut: this.value,
+      heilmittel: [],
     };
   },
   props: {
@@ -396,6 +429,8 @@ export default {
         freitagsZeit: {},
       };
     }
+
+    HeilmittelService.getAll().then((hmList) => (this.heilmittel = hmList));
   },
   methods: {
     updateTime(variable, value) {
@@ -418,6 +453,18 @@ export default {
         yearlyRepetition: false,
         VertragId: this.therapeut.Vertrag.id,
       });
+    },
+    removeHeilmittel(hm) {
+      this.therapeut.Heilmittels.splice(
+        this.therapeut.Heilmittels.indexOf(hm),
+        1
+      );
+    },
+  },
+  computed: {
+    unchosenHeilmittel() {
+      const chosenHmList = this.therapeut.Heilmittels.map((hm) => hm.id);
+      return this.heilmittel.filter((hm) => !chosenHmList.includes(hm.id));
     },
   },
 };

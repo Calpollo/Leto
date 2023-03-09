@@ -172,6 +172,16 @@ class DatabaseService {
   }
 
   // ############################
+  // Setting Associations
+  // ############################
+
+  setTherapeutHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.setTherapeutHeilmittel(data).then(JSON.parse);
+    }
+  }
+
+  // ############################
   // Remove Instances in the database
   // ############################
   removeZeitspanne(data) {
