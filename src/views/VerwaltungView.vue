@@ -37,16 +37,9 @@
       </div>
     </div>
 
-    <div class="statistics">
-      <div class="singlestat">
-        <b>97%</b> der gebuchten Termine werden von den Patienten wahrgenommen.
-      </div>
-      <div class="singlestat">
-        <b>124 Termine</b> wurden im Durchschnitt pro Woche durchgeführt (bei 3
-        Therapeuten und 150 versch. Patienten)
-      </div>
-      <div class="singlestat">
-        <b>24%</b> der Termine enstehen durch ein Folgerezept
+    <div class="statistics" :style="getStatisticsStyle()">
+      <div class="singlestat" v-for="stat in stats" :key="stat.afterText">
+        <b>{{ stat.value }}</b> {{ stat.afterText }}
       </div>
     </div>
 
@@ -79,9 +72,15 @@
 <script>
 import PdfGenerationAuswahl from "@/components/formsAndModals/PdfGenerationAuswahl.vue";
 import PdfGenerationKrankenkasse from "@/components/formsAndModals/PdfGenerationKrankenkasse.vue";
+import { generateStatistics } from "@/utils/statistics";
 
 export default {
   components: { PdfGenerationAuswahl, PdfGenerationKrankenkasse },
+  data() {
+    return {
+      stats: [],
+    };
+  },
   methods: {
     openPdfGenerationKunde() {
       this.$refs.pdfgenerationKunde.show();
@@ -89,6 +88,17 @@ export default {
     openPdfGenerationKrankenkasse() {
       this.$refs.pdfgenerationKrankenkasse.show();
     },
+    getStatisticsStyle() {
+      return {
+        gridTemplateColumns: `repeat(${this.stats.length}, 1fr)`,
+      };
+    },
+  },
+  mounted() {
+    generateStatistics().then((stats) => {
+      console.table(stats);
+      this.stats = stats;
+    });
   },
 };
 </script>
@@ -160,7 +170,6 @@ export default {
 
 .statistics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
 
   .singlestat {
     text-align: center;
