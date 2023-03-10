@@ -544,6 +544,16 @@ class LocalDbAdapter {
         defaultValue: 200,
         allowNull: false,
       },
+      selbstzahlerPreis: {
+        type: Float32Array,
+        defaultValue: 200,
+        allowNull: false,
+      },
+      privatVersichertenPreis: {
+        type: Float32Array,
+        defaultValue: 200,
+        allowNull: false,
+      },
     });
 
     this.Kunde = this.sequelize.define("Kunde", {
@@ -573,6 +583,14 @@ class LocalDbAdapter {
       address: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      versichertenstatus: {
+        type: DataTypes.STRING,
+        defaultValue: "GKV",
+        allowNull: false,
+        validate: {
+          isIn: [["GKV", "PKV", "SZ"]],
+        },
       },
       versichertennummer: {
         type: DataTypes.STRING,

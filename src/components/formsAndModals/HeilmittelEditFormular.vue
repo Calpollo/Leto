@@ -76,6 +76,32 @@
         v-model="heilmittelConf.krankenkassenbeteiligung"
       ></b-input>
     </b-form-group>
+
+    <b-form-group
+      id="heilmittelselbstzahler-group"
+      label="Kosten für Selbstzahler (€):"
+      label-for="heilmittel-selbstzahler"
+    >
+      <b-input
+        id="heilmittel-selbstzahler"
+        type="number"
+        min="0"
+        v-model="heilmittelConf.selbstzahlerPreis"
+      ></b-input>
+    </b-form-group>
+
+    <b-form-group
+      id="heilmittelprivatversichert-group"
+      label="Kosten für Privatversicherte (€):"
+      label-for="heilmittel-privatversichert"
+    >
+      <b-input
+        id="heilmittel-privatversichert"
+        type="number"
+        min="0"
+        v-model="heilmittelConf.privatVersichertenPreis"
+      ></b-input>
+    </b-form-group>
   </b-form>
 </template>
 

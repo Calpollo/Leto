@@ -34,13 +34,24 @@
       <b-row>
         <b-col cols="6">
           Terminzahl: <b>{{ terminConf.terminNumber }}</b> <br />
+        </b-col>
+        <b-col cols="6">
           Termindauer (Min.): <b>{{ terminConf.terminMinutes }}</b>
+        </b-col>
+        <b-col cols="12">
+          <hr />
         </b-col>
         <b-col cols="6">
           Kundenbeteiligung (€): <b>{{ terminConf.kundenbeteiligung }}</b>
           <br />
           Krankenkassenbeteiligung (€):
           <b>{{ terminConf.krankenkassenbeteiligung }}</b>
+        </b-col>
+        <b-col cols="6">
+          Kosten für Selbszahler (€): <b>{{ terminConf.selbstzahlerPreis }}</b>
+          <br />
+          Kosten für Privatversicherte (€):
+          <b>{{ terminConf.privatVersichertenPreis }}</b>
         </b-col>
       </b-row>
     </div>
@@ -164,6 +175,7 @@ export default {
   &::after {
     content: "";
     background: url(@/assets/FrauRollstuhl.svg);
+    background-attachment: fixed;
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(250px, 30%);

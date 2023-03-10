@@ -103,7 +103,15 @@
             <b-icon-telephone-fill class="mr-2" />
             <a :href="'tel:' + patient.phone">{{ patient.phone }}</a>
           </p>
-          <p v-if="patient.phone">
+          <p v-if="patient.versichertenstatus">
+            <b-icon-lock-fill class="mr-2" />
+            {{ patient.versichertenstatus }}
+          </p>
+          <p
+            v-if="
+              patient.versichertennummer && patient.versichertenstatus != 'SZ'
+            "
+          >
             <b-icon-hash class="mr-2" />
             {{ patient.versichertennummer }}
           </p>
@@ -123,7 +131,7 @@
         </b-card-body>
       </b-card>
 
-      <b-modal id="editModal" scrollable title="Patienten-informationen">
+      <b-modal id="editModal" scrollable title="Patienten-Informationen">
         <PatientEditFormular v-model="selectedEditKunde" />
         <template #modal-footer="{}">
           <b-button size="sm" variant="success" @click="ok">Speichern</b-button>
@@ -149,7 +157,11 @@
           {{ selectedEditKunde?.address }}<br />
           {{ selectedEditKunde?.email }}<br />
           {{ selectedEditKunde?.phone }}<br />
-          {{ selectedEditKunde?.versichertennummer }}
+          {{ selectedEditKunde?.versichertenstatus }}
+          <span v-if="selectedEditKunde?.versichertenstatus != 'SZ'">
+            <br />
+            {{ selectedEditKunde?.versichertennummer }}
+          </span>
         </p>
       </DeletionConfirmation>
     </div>

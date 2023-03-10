@@ -1,71 +1,79 @@
 <template>
   <b-form class="PatientEditFormular">
-    <b-form-group
-      id="patientfirstname-group"
-      label="Vorname:"
-      label-for="patient-firstname"
-    >
-      <b-input
-        id="patient-firstname"
-        type="text"
-        v-model="patient.firstname"
-      ></b-input>
+    <b-form-group id="lastname-group" label="Nachname:" label-for="lastname">
+      <b-form-input
+        id="lastname"
+        type="search"
+        placeholder="Nachname"
+        v-model="kunde.lastname"
+        required
+      />
     </b-form-group>
 
-    <b-form-group
-      id="patientlastname-group"
-      label="Nachname:"
-      label-for="patient-lastname"
-    >
-      <b-input
-        id="patient-lastname"
+    <b-form-group id="firstname-group" label="Vorname:" label-for="firstname">
+      <b-form-input
+        id="firstname"
         type="text"
-        v-model="patient.lastname"
-      ></b-input>
+        placeholder="Vorname"
+        v-model="kunde.firstname"
+      />
     </b-form-group>
 
-    <b-form-group
-      id="patientemail-group"
-      label="E-Mail-Adresse:"
-      label-for="patient-email"
-    >
-      <b-input
-        id="patient-email"
+    <b-form-group id="address-group" label="Adresse:" label-for="address">
+      <b-form-input
+        id="address"
+        type="text"
+        placeholder="Straße Haus-Nr., PLZ Ort"
+        v-model="kunde.address"
+      />
+    </b-form-group>
+
+    <b-form-group id="phone-group" label="Telefonnummer:" label-for="phone">
+      <b-form-input
+        id="phone"
+        type="tel"
+        placeholder="0123 456789"
+        v-model="kunde.phone"
+      />
+    </b-form-group>
+
+    <b-form-group id="email-group" label="Email-Adresse:" label-for="email">
+      <b-form-input
+        id="email"
         type="email"
-        v-model="patient.email"
-      ></b-input>
+        placeholder="max.mustermann@gmail.com"
+        v-model="kunde.email"
+      />
     </b-form-group>
 
     <b-form-group
-      id="patientphone-group"
-      label="Telefonnummer:"
-      label-for="patient-phone"
+      id="versicherstatus-group"
+      label="Versicherungsstatus:"
+      label-for="versicherstatus"
     >
-      <b-input id="patient-phone" type="text" v-model="patient.phone"></b-input>
+      <b-dropdown id="versicherstatus">
+        <template #button-content>{{ kunde.versichertenstatus }}</template>
+        <b-dropdown-item
+          v-for="status in ['GKV', 'PKV', 'SZ']"
+          :key="status"
+          @click="setVersichertenStatus(status)"
+          >{{ status }}</b-dropdown-item
+        >
+      </b-dropdown>
     </b-form-group>
 
     <b-form-group
-      id="patientaddress-group"
-      label="Adresse:"
-      label-for="patient-address"
+      v-if="showVersichertenNummer"
+      id="versichertennummer-group"
+      label="Versichertennummer:"
+      label-for="versichertennummer"
     >
-      <b-input
-        id="patient-address"
+      <b-form-input
+        id="versichertennummer"
         type="text"
-        v-model="patient.address"
-      ></b-input>
-    </b-form-group>
-
-    <b-form-group
-      id="patientversichertennummer-group"
-      label="Adresse:"
-      label-for="patient-versichertennummer"
-    >
-      <b-input
-        id="patient-versichertennummer"
-        type="text"
-        v-model="patient.versichertennummer"
-      ></b-input>
+        placeholder="versichertennummer"
+        v-model="kunde.versichertennummer"
+      />
     </b-form-group>
   </b-form>
 </template>
@@ -75,11 +83,31 @@ export default {
   name: "PatientEditFormular",
   data() {
     return {
-      patient: this.value,
+      kunde: this.value,
     };
   },
   props: {
     value: Object,
+  },
+  methods: {
+    setVersichertenStatus(status) {
+      this.kunde = {
+        ...this.kunde,
+        versichertenstatus: status,
+        versichertennummer:
+          status == "SZ" ? null : this.kunde.versichertennummer,
+      };
+    },
+  },
+  watch: {
+    value() {
+      this.kunde = this.value;
+    },
+  },
+  computed: {
+    showVersichertenNummer() {
+      return ["GKV", "PKV"].includes(this.kunde.versichertenstatus);
+    },
   },
 };
 </script>
