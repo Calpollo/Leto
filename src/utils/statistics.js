@@ -21,10 +21,11 @@ function kundenStatistics() {
       else
         versichertenstatusMap.push({ status: k.versichertenstatus, count: 1 });
     });
-    const mvpStat = versichertenstatusMap.sort((a, b) => a.count - b.count)[0];
+    const mvpStat = versichertenstatusMap.sort((a, b) => b.count - a.count)[0];
     return {
       beforeText: "",
-      value: (mvpStat.count / kundenList.length) * 100 + "%",
+      value:
+        Math.round((mvpStat.count / kundenList.length) * 10000) / 100 + "%",
       afterText: `der Patienten sind über ${mvpStat.status} versichert`,
     };
   });
@@ -38,10 +39,11 @@ function rezeptAustellerStatistics() {
       if (found) found.count++;
       else ausstellerMap.push({ aussteller: r.aussteller, count: 1 });
     });
-    const mvpStat = ausstellerMap.sort((a, b) => a.count - b.count)[0];
+    const mvpStat = ausstellerMap.sort((a, b) => b.count - a.count)[0];
     return {
       beforeText: "",
-      value: (mvpStat.count / rezeptList.length) * 100 + "%",
+      value:
+        Math.round((mvpStat.count / rezeptList.length) * 10000) / 100 + "%",
       afterText: `der Rezepte wurden von ${mvpStat.aussteller} ausgestellt`,
     };
   });
@@ -55,10 +57,11 @@ function rezeptHeilmittelStatistics() {
       if (found) found.count++;
       else heilmittelMap.push({ heilmittel: r.Heilmittel.abk, count: 1 });
     });
-    const mvpStat = heilmittelMap.sort((a, b) => a.count - b.count)[0];
+    const mvpStat = heilmittelMap.sort((a, b) => b.count - a.count)[0];
     return {
       beforeText: "",
-      value: (mvpStat.count / rezeptList.length) * 100 + "%",
+      value:
+        Math.round((mvpStat.count / rezeptList.length) * 10000) / 100 + "%",
       afterText: `der Rezepte sind ${mvpStat.heilmittel}-Rezepte`,
     };
   });

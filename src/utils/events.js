@@ -14,19 +14,30 @@ export function eventHours(event) {
 
 export function eventsAtTheSameTime(event, events) {
   const eventStart = new Date(event.start).valueOf();
-  const eventEnd = new Date(event.start).setMinutes(
-    new Date(eventStart).getMinutes() + event.minutes
-  );
+  const eventEnd = new Date(event.start)
+    .setMinutes(new Date(eventStart).getMinutes() + event.minutes)
+    .valueOf();
   return events.filter((e) => {
     const eStart = new Date(e.start).valueOf();
-    const eEnd = new Date(e.start).setMinutes(
-      new Date(eStart).getMinutes() + e.minutes
-    );
+    const eEnd = new Date(e.start)
+      .setMinutes(new Date(eStart).getMinutes() + e.minutes)
+      .valueOf();
+
+    // console.table({
+    //   eStart: eStart - 1670000000000,
+    //   eventStart: eventStart - 1670000000000,
+    //   eEnd: eEnd - 1670000000000,
+    //   eventEnd: eventEnd - 1670000000000,
+    //   startEndOverlapA: eventEnd == eStart,
+    //   startEndOverlapB: eEnd == eventStart,
+    //   inbetweenA: eventStart < eEnd && eventEnd >= eEnd,
+    //   inbetweenB: eventStart <= eStart && eventEnd > eStart,
+    // });
     return (
       eStart == eventStart ||
       eEnd == eventEnd ||
-      (eventStart <= eEnd && eventEnd >= eEnd) ||
-      (eventStart <= eStart && eventEnd >= eStart)
+      (eventStart < eEnd && eventEnd >= eEnd) ||
+      (eventStart <= eStart && eventEnd > eStart)
     );
   }).length;
 }

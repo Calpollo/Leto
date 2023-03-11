@@ -185,7 +185,7 @@ export default {
         )
         .filter(
           (r) =>
-            r.ausstellungsdatum > this.filterStartDate &&
+            r.ausstellungsdatum > this.filterStartDate - 1000 * 60 * 60 * 24 &&
             r.ausstellungsdatum < this.filterEndDate + 1000 * 60 * 60 * 24
         );
     },

@@ -12,6 +12,7 @@
       pdf-orientation="portrait"
       pdf-content-width="90%"
       ref="html2Pdf"
+      @hasDownloaded="emitClose"
       :html-to-pdf-options="{
         margin: [15, 10],
         filename: 'Abrechnung',
@@ -24,24 +25,6 @@
             <img id="leto-logo" src="@/assets/Leto - Text.png" />
 
             <b-row>
-              <!-- <b-col class="anschrift">
-                <p>
-                  {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
-                </p>
-                <p>{{ Rezept?.Kunde?.address }}</p>
-                <p>
-                  Tel:
-                  <a :href="'tel:' + Rezept?.Kunde?.phone">
-                    {{ Rezept?.Kunde?.phone }}
-                  </a>
-                </p>
-                <p>
-                  Email:
-                  <a :href="'mailto:' + Rezept?.Kunde?.email">
-                    {{ Rezept?.Kunde?.email }}
-                  </a>
-                </p>
-              </b-col> -->
               <b-col class="anschrift">
                 <p>{{ Praxis?.name }}</p>
                 <p>{{ Praxis?.address }}</p>
@@ -70,19 +53,6 @@
               striped
               :items="kostenaufstellung"
             ></b-table>
-
-            <!-- <p>
-              Bitte überweise den Betrag von
-              <b> {{ Rezept?.Heilmittel?.kundenbeteiligung }} € </b>bis zum
-              <b>
-                {{ this.dateToLocale(this.PaymentDeadline) }}
-              </b>
-              an die untenstehende Bankverbindung.
-            </p> -->
-
-            <!-- <p>
-              Bei Fragen zu dieser Rechnung kannst du dich gerne bei uns melden!
-            </p> -->
 
             <p>Mit freundlichen Grüßen</p>
 
@@ -124,6 +94,9 @@ export default {
     dateToLocale(date) {
       return toLocale(date);
     },
+    emitClose() {
+      setTimeout(() => this.$emit("close"), 5000);
+    },
   },
   props: {
     RezeptList: {
@@ -144,7 +117,7 @@ export default {
             r.Kunde.versichertennummer ||
             `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
           Heilmittel: `${r.Heilmittel.abk}: ${r.Heilmittel.name}`,
-          Ausstellungsdatum: this.dateToLocale(r.ausstellungsdatum),
+          Datum: this.dateToLocale(r.ausstellungsdatum),
           Preis: r.Heilmittel.krankenkassenbeteiligung + " €",
         };
       });

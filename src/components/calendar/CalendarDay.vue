@@ -48,6 +48,12 @@ export default {
     return {
       pixelPerHour: 160,
       openingHours: null,
+      defaultOpeningHours: {
+        Zeitspanne: {
+          start: new Date().setHours(8, 0, 0, 0),
+          end: new Date().setHours(19, 0, 0, 0),
+        },
+      },
     };
   },
   props: {
@@ -76,7 +82,8 @@ export default {
       ];
       const hours = week[dayOfTheWeek];
       if (!hours) {
-        this.openingHours = { weekend: true };
+        this.openingHours = this.defaultOpeningHours;
+        // this.openingHours = { weekend: true };
       } else {
         this.openingHours = { Zeitspanne: week[dayOfTheWeek] };
       }

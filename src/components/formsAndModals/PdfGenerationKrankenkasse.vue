@@ -55,6 +55,7 @@
     <KrankenkasseAbrechnung
       :RezeptList="abrechnungsRezepte"
       ref="krankenkasseAbrechnung"
+      @close="cancel"
     />
 
     <template #modal-footer="{}">
@@ -99,7 +100,6 @@ export default {
     },
     ok() {
       this.$refs.krankenkasseAbrechnung.generatePdf();
-      this.$bvModal.hide("PdfGenerationKrankenkasse");
     },
     cancel() {
       this.$bvModal.hide("PdfGenerationKrankenkasse");
@@ -127,7 +127,7 @@ export default {
         )
         .filter(
           (r) =>
-            r.ausstellungsdatum > this.filterStartDate &&
+            r.ausstellungsdatum > this.filterStartDate - 1000 * 60 * 60 * 24 &&
             r.ausstellungsdatum < this.filterEndDate + 1000 * 60 * 60 * 24
         )
         .filter(

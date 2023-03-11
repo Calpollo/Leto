@@ -71,7 +71,7 @@
 
       <b-row class="mb-4">
         <b-col>
-          Ergebnisse: <b>{{ rezepte.length }}</b>
+          Ergebnisse: <b>{{ filteredRezepte.length }}</b>
         </b-col>
       </b-row>
 
@@ -163,7 +163,9 @@ export default {
     getDateRange(rezeptId) {
       let r = [...this.rezepte];
       r = r.find((r) => r.id == rezeptId);
-      let sortedTermine = [...r.Termins].sort((a, b) => a.start - b.start);
+      let sortedTermine = [...r.Termins].sort(
+        (a, b) => new Date(b.start) - new Date(a.start)
+      );
       let first = sortedTermine[0].start;
       let last = sortedTermine[r.Termins.length - 1].start;
       return `${this.dateToLocale(last)} - ${this.dateToLocale(first)}`;

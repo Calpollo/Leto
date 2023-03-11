@@ -6,7 +6,7 @@
         <!-- TODO: update to a more exact method -->
         {{
           therapeut.Termins?.map((t) => new Date(t.start))
-            .sort()[0]
+            .sort((a, b) => new Date(b) - new Date(a))[0]
             ?.toLocaleDateString("de-DE") || "braucht Termine"
         }}
       </li>

@@ -75,14 +75,14 @@
                   Heilmittel: `${Rezept?.Heilmittel?.abk}: ${Rezept?.Heilmittel?.name}`,
                   Termine: Rezept?.Heilmittel?.terminNumber,
                   Dauer: Rezept?.Heilmittel?.terminMinutes,
-                  Preis: Rezept?.Heilmittel?.kundenbeteiligung + ' €',
+                  Preis: price + ' €',
                 },
               ]"
             ></b-table>
 
             <p>
               Bitte überweise den Betrag von
-              <b> {{ Rezept?.Heilmittel?.kundenbeteiligung }} € </b>bis zum
+              <b> {{ price }} € </b>bis zum
               <b>
                 {{ this.dateToLocale(this.PaymentDeadline) }}
               </b>
@@ -160,6 +160,20 @@ export default {
   watch: {
     RezeptId() {
       this.updateRezept(this.RezeptId);
+    },
+  },
+  computed: {
+    price() {
+      switch (this.Rezept?.Kunde?.versichertenstatus) {
+        case "GKV":
+          return this.Rezept?.Heilmittel?.kundenbeteiligung;
+        case "PKV":
+          return this.Rezept.Heilmittel?.privatVersichertenPreis;
+        case "SZ":
+          return this.Rezept.Heilmittel?.selbstzahlerPreis;
+        default:
+          return 0;
+      }
     },
   },
 };
