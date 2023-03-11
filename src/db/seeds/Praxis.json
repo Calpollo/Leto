@@ -1,0 +1,38 @@
+{
+  "name": "Körpertherapie Wagner",
+  "address": "Friedensstraße 9, 73072 Donzdorf",
+  "email": "kontakt@koerpertherapie-wagner.de",
+  "phone": "+4971622068788",
+  "öffnungszeiten": {
+    "montagsZeit": {
+      "start": { "hour": 8, "minute": 0 },
+      "end": { "hour": 19, "minute": 30 }
+    },
+    "dienstagsZeit": {
+      "start": { "hour": 8, "minute": 0 },
+      "end": { "hour": 19, "minute": 30 }
+    },
+    "mittwochsZeit": {
+      "start": { "hour": 8, "minute": 0 },
+      "end": { "hour": 19, "minute": 30 }
+    },
+    "donnerstagsZeit": {
+      "start": { "hour": 8, "minute": 0 },
+      "end": { "hour": 19, "minute": 30 }
+    },
+    "freitagsZeit": {
+      "start": { "hour": 8, "minute": 0 },
+      "end": { "hour": 19, "minute": 30 }
+    }
+  },
+  "feiertage": [
+    {
+      "datum": "2022-12-24",
+      "yearlyRepetition": true
+    },
+    {
+      "datum": "2022-10-03",
+      "yearlyRepetition": true
+    }
+  ]
+}

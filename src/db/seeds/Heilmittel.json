@@ -1,0 +1,26 @@
+[
+  {
+    "abk": "MT-6",
+    "name": "Manuelle Therapie",
+    "terminNumber": 6,
+    "terminMinutes": 20
+  },
+  {
+    "abk": "MT-10",
+    "name": "Manuelle Therapie",
+    "terminNumber": 10,
+    "terminMinutes": 20
+  },
+  {
+    "abk": "KGG-6",
+    "name": "Krankengymnastik am Gerät",
+    "terminNumber": 6,
+    "terminMinutes": 30
+  },
+  {
+    "abk": "KGG-10",
+    "name": "Krankengymnastik am Gerät",
+    "terminNumber": 10,
+    "terminMinutes": 30
+  }
+]

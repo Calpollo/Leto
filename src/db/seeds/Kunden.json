@@ -1,0 +1,120 @@
+[
+  {
+    "firstname": "Richard",
+    "lastname": "Rückenprobleme",
+    "address": "Hauptstraße 1, 96120 Bischberg",
+    "email": "otto.normalverbraucher@gmail.com",
+    "phone": "016090899730",
+    "versichertenstatus": "GKV",
+    "versichertennummer": "G36B48972H20",
+    "Rezepte": [
+      {
+        "aussteller": "Allgemeinarztpraxis Hinz & Kunz",
+        "Heilmittel": "KGG-6",
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Tanja Therapeutin",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 12, "minutes": 0 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 1, "hours": 8, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 2, "hours": 13, "minutes": 15 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 3, "hours": 13, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 4, "hours": 16, "minutes": 0 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 6, "hours": 11, "minutes": 0 },
+            "minutes": 30
+          }
+        ]
+      },
+      {
+        "aussteller": "Ortspraxis Heilkunst",
+        "Heilmittel": "KGG-10",
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Tanja Therapeutin",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 12, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 1, "hours": 9, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 2, "hours": 13, "minutes": 45 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 3, "hours": 14, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 4, "hours": 17, "minutes": 30 },
+            "minutes": 30
+          },
+          {
+            "start": { "plusdays": 6, "hours": 12, "minutes": 0 },
+            "minutes": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "firstname": "Otto",
+    "lastname": "Normalverbraucher",
+    "address": "Hauptstraße 1, 96120 Bischberg",
+    "email": "otto.normalverbraucher@gmail.com",
+    "phone": "016090899730",
+    "versichertenstatus": "GKV",
+    "versichertennummer": "G213456789N20",
+    "Rezepte": [
+      {
+        "aussteller": "Allgemeinarztpraxis Hinz & Kunz",
+        "Heilmittel": "MT-6",
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Peter Physio",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 12, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 1, "hours": 9, "minutes": 40 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 2, "hours": 15, "minutes": 20 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 3, "hours": 13, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 4, "hours": 10, "minutes": 40 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 5, "hours": 12, "minutes": 0 },
+            "minutes": 20
+          }
+        ]
+      }
+    ]
+  }
+]

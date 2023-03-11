@@ -1,4 +1,8 @@
 import { INTEGER } from "sequelize";
+import Praxis from "./seeds/Praxis.json";
+import Heilmittel from "./seeds/Heilmittel.json";
+import Therapeuten from "./seeds/Therapeuten.json";
+import Kunden from "./seeds/Kunden.json";
 
 const { Sequelize, DataTypes } = require("sequelize");
 const fs = require("fs");
@@ -13,423 +17,206 @@ class LocalDbAdapter {
 
     this.up().then(() => {
       this.seed();
-      console.log("Axxociations", this.Therapeut.associations);
     });
   }
 
   async seed() {
-    const [arbeitszeitMo_1] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitDi_1] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitMi_1] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitDo_1] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitFr_1] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
+    const { name, address, email, phone } = Praxis;
+    await this.Praxis.create({ name, address, email, phone }).then((p) => {
+      const {
+        montagsZeit,
+        dienstagsZeit,
+        mittwochsZeit,
+        donnerstagsZeit,
+        freitagsZeit,
+      } = Praxis.öffnungszeiten;
+      const creations = [
+        montagsZeit,
+        dienstagsZeit,
+        mittwochsZeit,
+        donnerstagsZeit,
+        freitagsZeit,
+      ].map((zeit) =>
+        this.Zeitspanne.create({
+          start: new Date().setHours(zeit.start.hour, zeit.start.minute),
+          end: new Date().setHours(zeit.end.hour, zeit.end.minute),
+        })
+      );
+      const zeiten = Promise.all(creations).then(
+        ([
+          montagsZeit,
+          dienstagsZeit,
+          mittwochsZeit,
+          donnerstagsZeit,
+          freitagsZeit,
+        ]) => {
+          return Promise.all([
+            p.setMontagsZeit(montagsZeit),
+            p.setDienstagsZeit(dienstagsZeit),
+            p.setMittwochsZeit(mittwochsZeit),
+            p.setDonnerstagsZeit(donnerstagsZeit),
+            p.setFreitagsZeit(freitagsZeit),
+          ]);
+        }
+      );
+
+      const feiertage = Promise.all(
+        Praxis.feiertage.map((f) => this.Datum.create(f))
+      ).then((feiertage) => p.addFeiertage(feiertage));
+
+      return Promise.all([zeiten, feiertage]);
     });
 
-    const [arbeitszeitMo_2] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitDi_2] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitMi_2] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitDo_2] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [arbeitszeitFr_2] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
+    await Promise.all(
+      Heilmittel.map((h) => {
+        return this.Heilmittel.create(h);
+      })
+    );
 
-    const [tagDerDeutschenEinheit] = await this.Datum.findOrCreate({
-      where: {
-        datum: "2022-10-03",
-        yearlyRepetition: true,
-      },
-    });
+    await Promise.all(
+      Therapeuten.map((t) => {
+        const { name, geschlecht } = t;
+        return this.Therapeut.create({ name, geschlecht }).then((th) => {
+          const { wochenstunden, hausbesuchsstunden, urlaubstage } = t.Vertrag;
+          const vertragCreation = this.Vertrag.create({
+            wochenstunden,
+            hausbesuchsstunden,
+            urlaubstage,
+          }).then((v) => {
+            const vertragAssociation = th.setVertrag(v);
+            const {
+              montagsZeit,
+              dienstagsZeit,
+              mittwochsZeit,
+              donnerstagsZeit,
+              freitagsZeit,
+            } = t.Vertrag.arbeitszeiten;
+            const creations = [
+              montagsZeit,
+              dienstagsZeit,
+              mittwochsZeit,
+              donnerstagsZeit,
+              freitagsZeit,
+            ].map((zeit) =>
+              this.Zeitspanne.create({
+                start: new Date().setHours(zeit.start.hour, zeit.start.minute),
+                end: new Date().setHours(zeit.end.hour, zeit.end.minute),
+              })
+            );
+            const zeiten = Promise.all(creations).then(
+              ([
+                montagsZeit,
+                dienstagsZeit,
+                mittwochsZeit,
+                donnerstagsZeit,
+                freitagsZeit,
+              ]) => {
+                return Promise.all([
+                  v.setMontagsZeit(montagsZeit),
+                  v.setDienstagsZeit(dienstagsZeit),
+                  v.setMittwochsZeit(mittwochsZeit),
+                  v.setDonnerstagsZeit(donnerstagsZeit),
+                  v.setFreitagsZeit(freitagsZeit),
+                ]);
+              }
+            );
 
-    const [christmasEve] = await this.Datum.findOrCreate({
-      where: {
-        datum: "2022-12-24",
-        yearlyRepetition: true,
-      },
-    });
+            return Promise.all([zeiten, vertragAssociation]);
+          });
 
-    const [christmasVacation] = await this.Datum.findOrCreate({
-      where: {
-        datum: "2022-12-23",
-        yearlyRepetition: false,
-      },
-    });
+          const hmAssociation = this.Heilmittel.findAll().then(
+            (heilmittelList) =>
+              th.addHeilmittel(
+                t.Heilmittel.map((hm) => {
+                  const found = heilmittelList.find((h) => h.abk == hm);
+                  return found;
+                })
+              )
+          );
 
-    const [vertrag_1] = await this.Vertrag.findOrCreate({
-      where: {
-        wochenstunden: 35,
-        hausbesuchsstunden: 15,
-        urlaubstage: 25,
-      },
-    });
+          return Promise.all([vertragCreation, hmAssociation]);
+        });
+      })
+    );
 
-    const [vertrag_2] = await this.Vertrag.findOrCreate({
-      where: {
-        wochenstunden: 38,
-        hausbesuchsstunden: 0,
-        urlaubstage: 25,
-      },
-    });
+    await Promise.all(
+      Kunden.map((k) => {
+        const {
+          firstname,
+          lastname,
+          address,
+          email,
+          phone,
+          versichertenstatus,
+          versichertennummer,
+        } = k;
+        return this.Kunde.create({
+          firstname,
+          lastname,
+          address,
+          email,
+          phone,
+          versichertenstatus,
+          versichertennummer,
+        }).then((kunde) => {
+          return Promise.all(
+            k.Rezepte.map((r) => {
+              return this.Rezept.create({ aussteller: r.aussteller }).then(
+                (rezept) => {
+                  const rezeptHeilmittelSearch = this.Heilmittel.findAll().then(
+                    (heilmittelList) =>
+                      heilmittelList.find((hm) => hm.abk == r.Heilmittel)
+                  );
+                  const rezeptPraxisSearch = this.Praxis.findAll().then(
+                    (praxisList) => praxisList.find((p) => p.name == r.Praxis)
+                  );
+                  const rezeptTherapeutSearch = this.Therapeut.findAll().then(
+                    async (therapeutList) => {
+                      const found = therapeutList.find(
+                        (t) => t.name == r.Therapeut
+                      );
+                      return found;
+                    }
+                  );
 
-    await Promise.all([
-      vertrag_1.setMontagsZeit(arbeitszeitMo_1),
-      vertrag_1.setDienstagsZeit(arbeitszeitDi_1),
-      vertrag_1.setMittwochsZeit(arbeitszeitMi_1),
-      vertrag_1.setDonnerstagsZeit(arbeitszeitDo_1),
-      vertrag_1.setFreitagsZeit(arbeitszeitFr_1),
+                  const rezeptTermineCreation = Promise.all(
+                    r.Termine.map((t) => {
+                      return this.Termin.create({
+                        start: new Date(
+                          new Date().setDate(
+                            new Date().getDate() + t.start.plusdays
+                          )
+                        ).setHours(t.start.hours, t.start.minutes, 0, 0),
+                        minutes: t.minutes,
+                      });
+                    })
+                  );
 
-      vertrag_1.addUrlaub([christmasVacation]),
-
-      vertrag_2.setMontagsZeit(arbeitszeitMo_2),
-      vertrag_2.setDienstagsZeit(arbeitszeitDi_2),
-      vertrag_2.setMittwochsZeit(arbeitszeitMi_2),
-      vertrag_2.setDonnerstagsZeit(arbeitszeitDo_2),
-      vertrag_2.setFreitagsZeit(arbeitszeitFr_2),
-    ]);
-
-    const [mt6] = await this.Heilmittel.findOrCreate({
-      where: {
-        abk: "MT-6",
-        name: "Manuelle Therapie",
-        terminNumber: 6,
-        terminMinutes: 20,
-      },
-    });
-
-    const [mt10] = await this.Heilmittel.findOrCreate({
-      where: {
-        abk: "MT-10",
-        name: "Manuelle Therapie",
-        terminNumber: 10,
-        terminMinutes: 20,
-      },
-    });
-
-    const [kgg6] = await this.Heilmittel.findOrCreate({
-      where: {
-        abk: "KGG-6",
-        name: "Krankengymnastik am Gerät",
-        terminNumber: 6,
-        terminMinutes: 30,
-      },
-    });
-
-    const [kgg10] = await this.Heilmittel.findOrCreate({
-      where: {
-        abk: "KGG-6",
-        name: "Krankengymnastik am Gerät",
-        terminNumber: 10,
-        terminMinutes: 20,
-      },
-    });
-
-    const [th_1] = await this.Therapeut.findOrCreate({
-      where: {
-        name: "Tanja Therapeutin",
-        geschlecht: "w",
-      },
-    });
-
-    const [th_2] = await this.Therapeut.findOrCreate({
-      where: {
-        name: "Peter Physio",
-        geschlecht: "m",
-      },
-    });
-
-    await th_2.addHeilmittel([mt6, mt10]);
-    await th_2.setVertrag(vertrag_2);
-
-    await th_1.addHeilmittel([mt6, kgg6, kgg10]);
-    await th_1.setVertrag(vertrag_1);
-
-    const [ottoNormal] = await this.Kunde.findOrCreate({
-      where: {
-        firstname: "Otto",
-        lastname: "Normalverbraucher",
-        address: "Hauptstraße 1, 96120 Bischberg",
-        email: "otto.normalverbraucher@gmail.com",
-        phone: "016090899730",
-        versichertennummer: "G213456789N20",
-      },
-    });
-
-    const [ottoNormalRezept] = await this.Rezept.findOrCreate({
-      where: {
-        aussteller: "Allgemeinarztpraxis Hinz & Kunz",
-      },
-    });
-
-    await ottoNormalRezept.setKunde(ottoNormal);
-    await ottoNormalRezept.setHeilmittel(mt6);
-
-    const [reinerRuecken] = await this.Kunde.findOrCreate({
-      where: {
-        firstname: "Richard",
-        lastname: "Rückenprobleme",
-        address: "Hauptstraße 1, 96120 Bischberg",
-        email: "otto.normalverbraucher@gmail.com",
-        phone: "016090899730",
-        versichertennummer: "G36B48972H20",
-      },
-    });
-
-    const reinerRueckenRezept = await this.Rezept.create({
-      aussteller: "ABC",
-    });
-
-    await reinerRueckenRezept.setKunde(reinerRuecken);
-    await reinerRueckenRezept.setHeilmittel(kgg6);
-
-    console.log("reinerRueckenRezept", reinerRueckenRezept);
-    console.log("ottoNormalRezept", ottoNormalRezept);
-
-    const [ktWagner] = await this.Praxis.findOrCreate({
-      where: {
-        name: "Körpertherapie Wagner",
-        address: "Friedensstraße 9, 73072 Donzdorf",
-        email: "kontakt@koerpertherapie-wagner.de",
-        phone: "+4971622068788",
-      },
-    });
-
-    const [öffnungsZeitMo] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [öffnungsZeitDi] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [öffnungsZeitMi] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [öffnungsZeitDo] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-    const [öffnungsZeitFr] = await this.Zeitspanne.findOrCreate({
-      where: {
-        start: new Date().setHours(8, 0),
-        end: new Date().setHours(19, 30),
-      },
-    });
-
-    await Promise.all([
-      ktWagner.setMontagsZeit(öffnungsZeitMo),
-      ktWagner.setDienstagsZeit(öffnungsZeitDi),
-      ktWagner.setMittwochsZeit(öffnungsZeitMi),
-      ktWagner.setDonnerstagsZeit(öffnungsZeitDo),
-      ktWagner.setFreitagsZeit(öffnungsZeitFr),
-
-      ktWagner.addFeiertage([christmasEve, tagDerDeutschenEinheit]),
-    ]);
-
-    const [termin_o_1] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date().setHours(12, 0, 0, 0),
-        minutes: 20,
-      },
-    });
-
-    const [termin_o_2] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 1)).setHours(
-          9,
-          40,
-          0,
-          0
-        ),
-        minutes: 20,
-      },
-    });
-    const [termin_o_3] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 2)).setHours(
-          15,
-          20,
-          0,
-          0
-        ),
-        minutes: 20,
-      },
-    });
-    const [termin_o_4] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 3)).setHours(
-          13,
-          0,
-          0,
-          0
-        ),
-        minutes: 20,
-      },
-    });
-    const [termin_o_5] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 4)).setHours(
-          10,
-          40,
-          0,
-          0
-        ),
-        minutes: 20,
-      },
-    });
-    const [termin_o_6] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 5)).setHours(
-          12,
-          0,
-          0,
-          0
-        ),
-        minutes: 20,
-      },
-    });
-
-    for (const termin of [
-      termin_o_1,
-      termin_o_2,
-      termin_o_3,
-      termin_o_4,
-      termin_o_5,
-      termin_o_6,
-    ]) {
-      await termin.setPraxis(ktWagner);
-      await termin.setTherapeut(th_2);
-      await termin.setRezept(ottoNormalRezept);
-    }
-
-    const [termin_r_1] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date().setHours(12, 0, 0, 0),
-        minutes: 30,
-      },
-    });
-    const [termin_r_2] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 1)).setHours(
-          8,
-          30,
-          0,
-          0
-        ),
-        minutes: 30,
-      },
-    });
-    const [termin_r_3] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 2)).setHours(
-          13,
-          15,
-          0,
-          0
-        ),
-        minutes: 30,
-      },
-    });
-    const [termin_r_4] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 3)).setHours(
-          13,
-          30,
-          0,
-          0
-        ),
-        minutes: 30,
-      },
-    });
-    const [termin_r_5] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 4)).setHours(
-          16,
-          0,
-          0,
-          0
-        ),
-        minutes: 30,
-      },
-    });
-    const [termin_r_6] = await this.Termin.findOrCreate({
-      where: {
-        start: new Date(new Date().setDate(new Date().getDate() + 5)).setHours(
-          11,
-          0,
-          0,
-          0
-        ),
-        minutes: 30,
-      },
-    });
-
-    for (const termin of [
-      termin_r_1,
-      termin_r_2,
-      termin_r_3,
-      termin_r_4,
-      termin_r_5,
-      termin_r_6,
-    ]) {
-      await termin.setPraxis(ktWagner);
-      await termin.setTherapeut(th_1);
-      await termin.setRezept(reinerRueckenRezept);
-    }
+                  return Promise.all([
+                    rezeptHeilmittelSearch,
+                    rezeptPraxisSearch,
+                    rezeptTherapeutSearch,
+                    rezeptTermineCreation,
+                  ]).then(([heilmittel, praxis, therapeut, termine]) => {
+                    return Promise.all([
+                      rezept.setKunde(kunde),
+                      rezept.setHeilmittel(heilmittel),
+                      ...termine.map((t) => {
+                        return Promise.all([
+                          t.setPraxis(praxis),
+                          t.setTherapeut(therapeut),
+                          t.setRezept(rezept),
+                        ]);
+                      }),
+                    ]);
+                  });
+                }
+              );
+            })
+          );
+        });
+      })
+    );
 
     console.log("Modelle:", Object.keys(this.sequelize.models));
   }
@@ -771,9 +558,6 @@ class LocalDbAdapter {
     await this.Therapeut.hasMany(this.Termin);
     await this.Termin.belongsTo(this.Therapeut);
 
-    console.log("Rezeptassociations", this.Rezept.associations);
-    console.log("Therapeutassociations", this.Rezept.associations);
-
     // #################
     // Synchronisation
     // #################
@@ -802,7 +586,6 @@ class LocalDbAdapter {
   }
 
   update(table, { id, instance }) {
-    console.log("Update", table, id, instance);
     return table.update(instance, { where: { id } });
     // return this.get(table, { id }).then((found) => {
     //   console.log(found);
@@ -816,7 +599,6 @@ class LocalDbAdapter {
   }
 
   setTherhapeutHeilmittels({ therapeutId, hms }) {
-    console.log("setTherhapeutHeilmittels", therapeutId, hms);
     return this.Therapeut.findByPk(therapeutId).then((th) => {
       return Promise.all(hms.map((hm) => this.Heilmittel.findByPk(hm.id))).then(
         (hmList) => {
