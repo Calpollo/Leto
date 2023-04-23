@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="-3.384 92.836 475.34 219.558" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="169.079" y1="68.509" x2="169.079" y2="322.357" id="gradient-0" spreadMethod="pad" gradientTransform="matrix(0.99376, -0.111544, 0.041905, 0.373333, 132.602796, 173.001813)">
+      <stop offset="0" style="stop-color: rgba(94, 36, 187, 1)"/>
+      <stop offset="1" style="stop-color: rgba(51, 20, 101, 1)"/>
+    </linearGradient>
+    <style bx:fonts="Roboto">@import url(https://fonts.googleapis.com/css2?family=Roboto%3Aital%2Cwght%400%2C100%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C700%3B0%2C900%3B1%2C100%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C700%3B1%2C900&amp;display=swap);</style>
+  </defs>
+  <g transform="matrix(0.228793, 0, 0, 0.228793, 386.423645, 212.75473)" id="cTXp1uYPaCIBNa2WP4sw1" style="">
+    <linearGradient id="SVGID_415" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 1 0 0)" x1="382.0922041639002" y1="71.80851348745395" x2="70.92199045184606" y2="420.21277389676436">
+      <stop offset="0" style="stop-color:#6927D3;stop-opacity: 1"/>
+      <stop offset="0.2484" style="stop-color:#6927D3;stop-opacity: 1"/>
+      <stop offset="1" style="stop-color:#411B7F;stop-opacity: 1"/>
+    </linearGradient>
+    <path style="stroke: rgb(249,211,237); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: url(#SVGID_415); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" transform=" translate(-250, -250)" d="M 250 0 C 303.60544 0 353.28774 16.89964 394.00625 45.65826 L 343.94416 133.08309 C 318.22869000000003 112.38927 285.55238 99.99999 250 99.99999 C 167.2 99.99999 100 167.19999 100 249.99999 C 100 332.79999 167.2 399.99999 250 399.99999 C 332.8 399.99999 400 332.79999000000004 400 249.99999000000003 C 400 202.77305 378.13809 160.62120000000004 343.98902 133.11920000000003 L 471.02124 133.11920000000003 C 489.51986999999997 168.00550000000004 500 207.78630000000004 500 249.99999000000003 C 500 387.99999 388 499.99999 250 499.99999 C 112 499.99999 0 387.99999 0 249.99999000000003 C 0 111.99999000000003 112 -0.000009999999974752427 250 -0.000009999999974752427 z" stroke-linecap="round"/>
+  </g>
+  <text style="fill: url(#gradient-0); font-family: Roboto; font-size: 211.7px; font-weight: 700; paint-order: fill; stroke-linejoin: round; stroke-width: 0px; white-space: pre;" x="18.78" y="269.653">Let</text>
+</svg>

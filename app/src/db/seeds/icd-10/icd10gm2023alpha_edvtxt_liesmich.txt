@@ -1,0 +1,89 @@
+ICD-10-GM, Alphabetisches Verzeichnis
+Internationale statistische Klassifikation der Krankheiten und verwandter Gesundheitsprobleme, 10. Revision
+- German Modification -
+
+Herausgegeben vom Bundesinstitut für Arzneimittel und Medizinprodukte (BfArM), Dienstsitz Köln,
+im Auftrag des Bundesministeriums für Gesundheit (BMG)
+in Kooperation mit dem Zentralinstitut für die kassenärztliche Versorgung in der Bundesrepublik Deutschland (Zi)
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+LIESMICHDATEI 
+
+ICD-10-GM Version 2023      (OID 11.2.276.0.76.5.530)
+Alphabetisches Verzeichnis   TXT (CSV)
+
+
+Stand der Klassifikation:      30.09.2022
+
+
+Das Standdatum entspricht dem Stand der Klassifikationsdateien bei der Erstveröffentlichung einer neuen Jahresversion. 
+Werden die Dateien nach der Erstveröffentlichung unterjährig aufgrund von Fehlerkorrekturen oder nachträglichen Ergänzungen geändert und neu publiziert, wird zusätzlich das Aktualisierungsdatum angegeben.
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+INHALT DES ZIP-FILES  icd10gm2023alpha-txt.zip:
+
+  - icd10gm2023alpha_edvtxt_liesmich.txt
+
+  - downloadbedingungen-2021.pdf
+
+  - KLASSIFIKATIONSDATEI
+    icd10gm2023alpha_edvtxt_20220930.txt
+
+  - Ordner ZUSATZDATEIEN
+    icd10gm2023alpha_01_vor_titelblatt.pdf
+    icd10gm2023alpha_02_vor_inhaltsverzeichnis.pdf
+    icd10gm2023alpha_03_vor_vorwort.pdf
+    icd10gm2023alpha_04_vor_einfuehrung.pdf
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+HINWEISE ZUR REFERENZFASSUNG
+
+Die ICD-10-GM wird jedes Jahr in verschiedenen Fassungen und Formaten veröffentlicht.
+
+Verbindliche Referenzfassung einer Klassifikation ist jeweils das aktuell gültige Systematische Verzeichnis als PDF.
+Bei Unstimmigkeiten zwischen dem Systematischen Verzeichnis und dem Alphabetischen Verzeichnis ist das Systematische Verzeichnis maßgeblich.
+Bei Unstimmigkeiten zwischen den verschiedenen technischen Formaten des Systematischen bzw. des Alphabetischen Verzeichnisses ist die maßgebliche Referenzfassung jeweils das PDF.
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+Die Klassifikationsdatei enthält das vollständige Alphabetische Verzeichnis der ICD-10-GM.
+
+Im Systematischen Verzeichnis zur ICD sind Diagnosen in den Klassentexten jeweils nur mit ihrer Vorzugsbezeichnung genannt; Synonyme (z.B. Ziegenpeter als Synonym für Mumps) sind nicht enthalten.
+Das Alphabetische Verzeichnis enthält neben den Vorzugsbezeichnungen auch eine Vielzahl von Synonymen, insgesamt sind es mehr als 83.000 Diagnosentexte, verschlüsselt mit dem entsprechenden Kode der zugrundeliegenden ICD-Version.
+
+Nicht alle Kodes, die in der Systematik enthalten sind, sind auch im Alphabet enthalten. Es fehlen z.B.:
+
+  - Sternkodes als Einzelkodes, da sie nur zusammen mit einem Primärkode verwendet werden können (Mehrfachkodierung); in Kombination mit einem Primärkode können sie aber enthalten sein
+
+  - ein Teil der Kodes, deren Klassentexte in der Systematik unspezifische Angaben enthalten wie "sonstige", "nicht näher bezeichnete", "mehrere Lokalisationen", "einer einzelnen näher bezeichneten Lokalisation"; sind in der Systematik bei solchen Kodes jedoch spezifische Inklusiva genannt, sind diese im Alphabet enthalten
+
+
+DATENSATZBESCHREIBUNG
+
+Jeder Datensatz besteht aus 8 Feldern, die jeweils durch das Verkettungszeichen, also den senkrechten Strich ("|"), getrennt sind. Die Felder enthalten folgende Daten:
+
+Feld 1: Art der Kodierung
+        0 = reiner Verweissatz
+            Diese Datensätze haben keine Schlüsselnummer,
+            sondern innerhalb des Textfeldes Verweise auf andere Begriffe,
+            unter denen ihre Schlüsselnummern nachgewiesen sind.
+        1 = Kodierung nur mit einer Primärschlüsselnummer
+        2 = Kodierung mit einer Kreuz- und einer Sternschlüsselnummer
+        3 = Kodierung mit einer Primärschlüsselnummer und mit
+            einer Zusatzschlüsselnummer mit Ausrufezeichen
+        4 = Kodierung mit einer Kreuz-, einer Stern- und einer
+            Zusatzschlüsselnummer
+        5 = Kodierung nur als Zusatzschlüsselnummer möglich
+        6 = Kodierung mit zwei Primärschlüsselnummern
+Feld 2: BfArM-interne fortlaufende Nummer
+Feld 3: Druckkennzeichen
+        0 = Satz erscheint nicht in der Buchversion
+        1 = Satz erscheint in der Buchversion
+Feld 4: Primärschlüsselnummer 1 (ggf. mit Kreuz)
+Feld 5: Sternschlüsselnummer (mit Stern)
+Feld 6: Zusatzschlüsselnummer (mit Ausrufezeichen)
+Feld 7: Primärschlüsselnummer 2 (ggf. mit Kreuz)
+Feld 8: zugehöriger Text, ggf. mit Verweis
+
+Diese Datei ist für die Integration in Programme zur Diagnosenverschlüsselung gedacht.

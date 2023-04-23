@@ -1,0 +1,100 @@
+[
+  {
+    "name": "Tanja Therapeutin",
+    "geschlecht": "w",
+    "Heilmittel": [
+      "KG-6",
+      "KG-Gruppe-6",
+      "KGG-6",
+      "KG-BWB-6",
+      "KG-BWB-Gruppe-6",
+      "MT-6"
+    ],
+    "Vertrag": {
+      "wochenstunden": 38,
+      "hausbesuchsstunden": 0,
+      "urlaubstage": 25,
+      "Urlaub": [
+        {
+          "datum": "2023-05-24",
+          "yearlyRepetition": false
+        },
+        {
+          "datum": "2023-08-20",
+          "yearlyRepetition": true
+        }
+      ],
+      "arbeitszeiten": {
+        "montagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 18, "minute": 0 }
+        },
+        "dienstagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 18, "minute": 0 }
+        },
+        "mittwochsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 18, "minute": 0 }
+        },
+        "donnerstagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 17, "minute": 0 }
+        },
+        "freitagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 17, "minute": 0 }
+        }
+      }
+    }
+  },
+  {
+    "name": "Peter Physio",
+    "geschlecht": "m",
+    "Heilmittel": [
+      "KG-6",
+      "KG-Gruppe-6",
+      "KGG-6",
+      "KG-BWB-6",
+      "KG-BWB-Gruppe-6",
+      "MT-6"
+    ],
+    "Vertrag": {
+      "wochenstunden": 35,
+      "hausbesuchsstunden": 15,
+      "urlaubstage": 25,
+      "Urlaub": [
+        {
+          "datum": "2023-10-01",
+          "yearlyRepetition": false
+        },
+        {
+          "datum": "2023-02-24",
+          "yearlyRepetition": false
+        }
+      ],
+      "arbeitszeiten": {
+        "montagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 19, "minute": 30 }
+        },
+        "dienstagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 19, "minute": 30 }
+        },
+        "mittwochsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 19, "minute": 30 }
+        },
+        "donnerstagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 19, "minute": 30 }
+        },
+        "freitagsZeit": {
+          "start": { "hour": 8, "minute": 0 },
+          "end": { "hour": 12, "minute": 30 }
+        }
+      }
+    }
+  }
+]
