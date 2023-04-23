@@ -3,6 +3,9 @@ import Praxis from "./seeds/Praxis.json";
 import Heilmittel from "./seeds/Heilmittel.json";
 import Therapeuten from "./seeds/Therapeuten.json";
 import Kunden from "./seeds/Kunden.json";
+import Krankenkassen from "./seeds/Krankenkassen.json";
+import ICD10Codes from "./seeds/ICD10Codes.json";
+import Arzt from "./seeds/Arzt.json";
 
 const { Sequelize, DataTypes } = require("sequelize");
 const fs = require("fs");
@@ -16,13 +19,22 @@ class LocalDbAdapter {
     });
 
     this.up().then(() => {
+      this.sequelize.query(
+        "UPDATE sqlite_sequence SET SEQ=1000 WHERE NAME='Rezepts'"
+      );
       this.seed();
     });
   }
 
   async seed() {
-    const { name, address, email, phone } = Praxis;
-    await this.Praxis.create({ name, address, email, phone }).then((p) => {
+    const { name, address, email, phone, ikNummer } = Praxis;
+    const praxisCreation = this.Praxis.create({
+      name,
+      address,
+      email,
+      phone,
+      ikNummer,
+    }).then((p) => {
       const {
         montagsZeit,
         dienstagsZeit,
@@ -67,11 +79,13 @@ class LocalDbAdapter {
       return Promise.all([zeiten, feiertage]);
     });
 
-    await Promise.all(
-      Heilmittel.map((h) => {
-        return this.Heilmittel.create(h);
-      })
-    );
+    await Promise.all([
+      praxisCreation,
+      this.Heilmittel.bulkCreate(Heilmittel),
+      this.ICD10Code.bulkCreate(ICD10Codes.slice(0, 200)),
+      this.Krankenkasse.bulkCreate(Krankenkassen),
+      this.Arzt.bulkCreate(Arzt),
+    ]);
 
     await Promise.all(
       Therapeuten.map((t) => {
@@ -121,7 +135,11 @@ class LocalDbAdapter {
               }
             );
 
-            return Promise.all([zeiten, vertragAssociation]);
+            const urlaubCreation = this.Datum.bulkCreate(t.Vertrag.Urlaub).then(
+              (urlaubsListe) => v.addUrlaub(urlaubsListe)
+            );
+
+            return Promise.all([zeiten, vertragAssociation, urlaubCreation]);
           });
 
           const hmAssociation = this.Heilmittel.findAll().then(
@@ -147,8 +165,10 @@ class LocalDbAdapter {
           address,
           email,
           phone,
+          geburtstag,
           versichertenstatus,
           versichertennummer,
+          KrankenkasseKostenträgerkennung,
         } = k;
         return this.Kunde.create({
           firstname,
@@ -156,51 +176,74 @@ class LocalDbAdapter {
           address,
           email,
           phone,
+          geburtstag,
           versichertenstatus,
           versichertennummer,
+          KrankenkasseKostenträgerkennung,
         }).then((kunde) => {
           return Promise.all(
             k.Rezepte.map((r) => {
-              return this.Rezept.create({ aussteller: r.aussteller }).then(
-                (rezept) => {
-                  const rezeptHeilmittelSearch = this.Heilmittel.findAll().then(
-                    (heilmittelList) =>
-                      heilmittelList.find((hm) => hm.abk == r.Heilmittel)
-                  );
-                  const rezeptPraxisSearch = this.Praxis.findAll().then(
-                    (praxisList) => praxisList.find((p) => p.name == r.Praxis)
-                  );
-                  const rezeptTherapeutSearch = this.Therapeut.findAll().then(
-                    async (therapeutList) => {
-                      const found = therapeutList.find(
-                        (t) => t.name == r.Therapeut
-                      );
-                      return found;
-                    }
-                  );
+              const {
+                hausbesuch,
+                therapieBericht,
+                dringend,
+                indikation,
+                ArztLanr,
+              } = r;
+              return this.Rezept.create({
+                hausbesuch,
+                therapieBericht,
+                dringend,
+                indikation,
+                ArztLanr,
+              }).then((rezept) => {
+                const rezeptHeilmittelSearch = this.Heilmittel.findAll().then(
+                  (heilmittelList) =>
+                    heilmittelList.filter((hm) => r.Heilmittel.includes(hm.abk))
+                );
 
-                  const rezeptTermineCreation = Promise.all(
-                    r.Termine.map((t) => {
-                      return this.Termin.create({
-                        start: new Date(
-                          new Date().setDate(
-                            new Date().getDate() + t.start.plusdays
-                          )
-                        ).setHours(t.start.hours, t.start.minutes, 0, 0),
-                        minutes: t.minutes,
-                      });
-                    })
-                  );
+                const icd10codeSearch = this.ICD10Code.findAll({
+                  where: r.ICD10Code,
+                }).then((hmList) => (r.ICD10Code ? hmList[0] : null));
 
-                  return Promise.all([
-                    rezeptHeilmittelSearch,
-                    rezeptPraxisSearch,
-                    rezeptTherapeutSearch,
-                    rezeptTermineCreation,
-                  ]).then(([heilmittel, praxis, therapeut, termine]) => {
+                const rezeptPraxisSearch = this.Praxis.findAll().then(
+                  (praxisList) => praxisList.find((p) => p.name == r.Praxis)
+                );
+
+                const rezeptTherapeutSearch = this.Therapeut.findAll().then(
+                  async (therapeutList) => {
+                    const found = therapeutList.find(
+                      (t) => t.name == r.Therapeut
+                    );
+                    return found;
+                  }
+                );
+
+                const rezeptTermineCreation = Promise.all(
+                  r.Termine.map((t) => {
+                    return this.Termin.create({
+                      start: new Date(
+                        new Date().setDate(
+                          new Date().getDate() + t.start.plusdays
+                        )
+                      ).setHours(t.start.hours, t.start.minutes, 0, 0),
+                      minutes: t.minutes,
+                    });
+                  })
+                );
+
+                return Promise.all([
+                  rezeptHeilmittelSearch,
+                  rezeptPraxisSearch,
+                  rezeptTherapeutSearch,
+                  rezeptTermineCreation,
+                  icd10codeSearch,
+                ]).then(
+                  ([heilmittel, praxis, therapeut, termine, icd10code]) => {
                     return Promise.all([
+                      rezept.setIcd10code(icd10code),
                       rezept.setKunde(kunde),
-                      rezept.setHeilmittel(heilmittel),
+                      rezept.setHeilmittels(heilmittel),
                       ...termine.map((t) => {
                         return Promise.all([
                           t.setPraxis(praxis),
@@ -209,9 +252,9 @@ class LocalDbAdapter {
                         ]);
                       }),
                     ]);
-                  });
-                }
-              );
+                  }
+                );
+              });
             })
           );
         });
@@ -219,6 +262,7 @@ class LocalDbAdapter {
     );
 
     console.log("Modelle:", Object.keys(this.sequelize.models));
+    // console.log("Kundenassociations:", this.Kunde.associations);
   }
 
   // Initialize Database
@@ -371,6 +415,9 @@ class LocalDbAdapter {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      geburtstag: {
+        type: DataTypes.DATE,
+      },
       versichertenstatus: {
         type: DataTypes.STRING,
         defaultValue: "GKV",
@@ -404,18 +451,25 @@ class LocalDbAdapter {
 
     this.Rezept = this.sequelize.define("Rezept", {
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-      },
-      aussteller: {
-        type: DataTypes.STRING,
-        allowNull: true,
       },
       ausstellungsdatum: {
         type: DataTypes.DATEONLY,
         allowNull: true,
         defaultValue: DataTypes.NOW,
+      },
+      hausbesuch: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      therapieBericht: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      indikation: {
+        type: DataTypes.STRING,
       },
     });
 
@@ -443,6 +497,9 @@ class LocalDbAdapter {
         allowNull: true,
         validate: { is: /[?:+]?[0-9]*/i },
       },
+      ikNummer: {
+        type: DataTypes.STRING,
+      },
     });
 
     this.Termin = this.sequelize.define("Termin", {
@@ -463,6 +520,55 @@ class LocalDbAdapter {
       },
     });
 
+    this.ICD10Code = this.sequelize.define("icd10code", {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      kodierung: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      primärschlüssel: {
+        type: DataTypes.STRING,
+      },
+      sternschlüssel: {
+        type: DataTypes.STRING,
+      },
+      zusatzschlüssel: {
+        type: DataTypes.STRING,
+      },
+      text: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    });
+
+    this.Arzt = this.sequelize.define("Arzt", {
+      lanr: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    });
+
+    this.Krankenkasse = this.sequelize.define("Krankenkasse", {
+      kostenträgerkennung: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        primaryKey: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    });
+
     await Promise.all([
       this.Zeitspanne,
       this.Datum,
@@ -472,6 +578,9 @@ class LocalDbAdapter {
       this.Rezept,
       this.Praxis,
       this.Termin,
+      this.ICD10Code,
+      this.Arzt,
+      this.Krankenkasse,
     ]);
 
     // #################
@@ -524,13 +633,29 @@ class LocalDbAdapter {
     await this.Therapeut.hasOne(this.Vertrag, { onDelete: "CASCADE" });
     await this.Vertrag.belongsTo(this.Therapeut, { onDelete: "CASCADE" });
 
-    // Patientenrezept: Rezept - Kunde
-    await this.Heilmittel.hasMany(this.Rezept);
-    await this.Rezept.belongsTo(this.Heilmittel);
-
     // Rezeptinhalt: Rezept - Heilmittel
+    await this.Heilmittel.belongsToMany(this.Rezept, {
+      through: "RezeptHeilmittel",
+    });
+    await this.Rezept.belongsToMany(this.Heilmittel, {
+      through: "RezeptHeilmittel",
+    });
+
+    // Patientenversicherung: Krankenkasse - Kunde
+    await this.Krankenkasse.hasMany(this.Kunde);
+    await this.Kunde.belongsTo(this.Krankenkasse);
+
+    // Patientenrezept: Rezept - Kunde
     await this.Kunde.hasMany(this.Rezept);
     await this.Rezept.belongsTo(this.Kunde);
+
+    // Rezeptinhalt: Rezept - Arzt
+    await this.Arzt.hasMany(this.Rezept);
+    await this.Rezept.belongsTo(this.Arzt);
+
+    // Rezeptinhalt: Rezept - ICD10Code
+    await this.ICD10Code.hasMany(this.Rezept);
+    await this.Rezept.belongsTo(this.ICD10Code);
 
     // Praxisöffnungszeiten: Praxis - Zeitspanne
     this.Praxis.belongsTo(this.Zeitspanne, {
@@ -605,6 +730,19 @@ class LocalDbAdapter {
           return th.setHeilmittels(hmList);
         }
       );
+    });
+  }
+
+  setRezeptHeilmittels({ rezeptId, hms }) {
+    return this.Rezept.findByPk(rezeptId).then((r) => {
+      return Promise.all(
+        hms.map((hm) => {
+          if (hm.id) return this.Heilmittel.findByPk(hm.id);
+          return this.Heilmittel.findByPk(hm);
+        })
+      ).then((hmList) => {
+        return r.setHeilmittels(hmList).then(() => r);
+      });
     });
   }
 

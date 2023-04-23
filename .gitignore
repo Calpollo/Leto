@@ -3,6 +3,8 @@ node_modules
 /dist
 data
 config
+src/db/seeds/gkv
+src/db/seeds/icd-10
 
 # local env files
 .env.local

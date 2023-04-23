@@ -2,7 +2,6 @@ import ConfigService from "@/services/ConfigService";
 import KundenService from "@/services/KundenService";
 import RezeptService from "@/services/RezeptService";
 import TerminService from "@/services/TerminService";
-import TherapeutService from "@/services/TherapeutService";
 
 const millisecondsPerHour = 3600000;
 const millisecondsPerDay = millisecondsPerHour * 24;
@@ -74,20 +73,14 @@ export function dateRowEnd(event, openingHours) {
   return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 
-export async function createNewRezept(
-  kunde,
-  rezept,
-  termine,
-  createKunde = true,
-  kundeId = null
-) {
+export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
   // console.log(kunde, rezept);
   // console.log(termine);
 
-  const { lastname, firstname, email, phone, address } = kunde;
   let createdKunde = null;
   let kundeSuccess = false;
-  if (createKunde) {
+  if (kunde) {
+    const { lastname, firstname, email, phone, address } = kunde;
     // eslint-disable-next-line no-unused-vars
     [createdKunde, kundeSuccess] = await KundenService.create(
       lastname,
@@ -97,38 +90,44 @@ export async function createNewRezept(
       address
     );
   } else {
-    createdKunde = await KundenService.getOne(kundeId);
+    createdKunde = await KundenService.getOne(kunde?.id || rezept.Kunde.id);
     // kundeSuccess = true;
   }
-  // console.log(createdKunde, kundeSuccess);
-  const { ausstellungsdatum, aussteller, Heilmittel } = rezept;
-  // TODO: change to explicit therapeut choice not therapeutList[0]
-  const tQuery = TherapeutService.getAll();
-  const rQuery = RezeptService.create(
+  console.log(createdKunde, kundeSuccess);
+  const {
     ausstellungsdatum,
-    aussteller,
-    Heilmittel.id,
-    createdKunde.id
-  );
-
-  return Promise.all([tQuery, rQuery]).then(
-    // eslint-disable-next-line no-unused-vars
-    ([therapeutList, [createdRezept, rezeptSuccess]]) => {
-      // console.log(therapeutList[0], createdRezept, rezeptSuccess);
-      const PraxisId = ConfigService.getPraxis();
-      return TerminService.bulkCreate(
-        termine.map((termin) => {
-          return {
-            start: termin,
-            minutes: 20,
-            PraxisId,
-            RezeptId: createdRezept.id,
-            TherapeutId: therapeutList[0].id,
-          };
-        })
-      ).then((termine) => [termine, createdKunde, createdRezept]);
-    }
-  );
+    Heilmittels,
+    ArztLanr,
+    hausbesuch,
+    therapieBericht,
+    icd10codeId,
+    indikation,
+  } = rezept;
+  console.log(Heilmittels);
+  return RezeptService.create(
+    ausstellungsdatum,
+    createdKunde.id,
+    ArztLanr,
+    hausbesuch,
+    therapieBericht,
+    icd10codeId,
+    indikation,
+    Heilmittels.map((hm) => hm.id)
+  ).then((createdRezept) => {
+    const PraxisId = ConfigService.getPraxis();
+    console.table(termine);
+    return TerminService.bulkCreate(
+      termine.map((termin) => {
+        return {
+          start: termin.date,
+          minutes: 20,
+          PraxisId,
+          RezeptId: createdRezept.id,
+          TherapeutId: termin.TherapeutId,
+        };
+      })
+    ).then((termine) => [termine, createdKunde, createdRezept]);
+  });
 }
 
 export function therapeutToColor(id) {

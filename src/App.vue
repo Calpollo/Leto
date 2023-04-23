@@ -69,16 +69,24 @@ export default {
 }
 
 :root {
-  --color: #141414;
+  --color: #330f0a;
+  // --color: #141414;
   color: var(--color);
 
-  --primary: #7c45e0;
-  --secondary: #064720;
-  --accent: #d77a61;
-  --secondary-accent: #0a7133;
-  --background: #e2e2e2;
+  --primary: #6927d3;
+  --secondary: #495f41;
+  --accent: #d0a5c0;
+  --secondary-accent: #384932;
+  --background: #eff9f0;
   // --background-accent: #dbd3d8;
-  --background-accent: #c5c5c5;
+  --background-accent: #b6dfb9;
+  // --primary: #7c45e0;
+  // --secondary: #064720;
+  // --accent: #d77a61;
+  // --secondary-accent: #0a7133;
+  // --background: #e7e1d4;
+  // // --background-accent: #dbd3d8;
+  // --background-accent: #cbc7bd;
 
   --error: #fa8253;
   --warning: #ffbb00;

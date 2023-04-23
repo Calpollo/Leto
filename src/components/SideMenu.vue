@@ -19,6 +19,7 @@
   display: inline-block;
   position: sticky;
   top: 0;
+  bottom: 0;
   width: 20%;
   min-width: max-content;
   height: 100vh;

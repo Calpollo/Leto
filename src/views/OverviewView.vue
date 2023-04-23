@@ -27,31 +27,31 @@
 
     <div>
       <b-row class="my-4 mx-0" align-h="between">
-        <b-button-group id="calendarlengthSelection">
+        <b-button-group id="calendarlengthSelection" size="sm">
           <b-button
             v-b-tooltip.hover
-            title="Zeige den heutigen Tag"
+            title="Heute"
             @click="setCalendarLength(1)"
             :variant="this.calendarlength == 1 ? 'dark' : 'secondary'"
             >T</b-button
           >
           <b-button
             v-b-tooltip.hover
-            title="Zeige nur Heute, Morgen und Übermorgen"
+            title="Heute, Morgen und Übermorgen"
             @click="setCalendarLength(3)"
             :variant="this.calendarlength == 3 ? 'dark' : 'secondary'"
             >3 Tage</b-button
           >
           <b-button
             v-b-tooltip.hover
-            title="Zeige die aktuelle Woche"
+            title="aktuelle Woche"
             @click="setCalendarLength(7)"
             :variant="this.calendarlength == 7 ? 'dark' : 'secondary'"
             >W</b-button
           >
           <b-button
             v-b-tooltip.hover
-            title="Zeige den aktuellen Monat"
+            title="aktueller Monat"
             @click="setCalendarLength(30)"
             :variant="this.calendarlength == 30 ? 'dark' : 'secondary'"
             disabled
@@ -94,6 +94,7 @@ import ConfigService from "@/services/ConfigService";
 import TerminService from "@/services/TerminService";
 import TherapeutService from "@/services/TherapeutService";
 import CalendarColorLegend from "@/components/calendar/CalendarColorLegend.vue";
+
 export default {
   name: "OverviewView",
   data() {
@@ -111,7 +112,7 @@ export default {
       TerminService.getAll({
         include: [
           "Therapeut",
-          { association: "Rezept", include: "Heilmittel" },
+          { association: "Rezept", include: "Heilmittels" },
           "Praxis",
         ],
       }).then((termine) => {
@@ -136,6 +137,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#calendar {
+  border-radius: 15px;
+}
 .btn-stretch {
   width: 100%;
   height: 100%;

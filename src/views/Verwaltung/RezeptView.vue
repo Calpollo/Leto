@@ -77,45 +77,78 @@
 
       <b-card v-for="rezept in filteredRezepte" :key="rezept.id">
         <b-card-header>
-          {{ rezept.Heilmittel.abk }} : {{ rezept.Kunde.firstname }}
+          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }} :
+          {{ rezept.Kunde.firstname }}
           {{ rezept.Kunde.lastname }}
           <span class="ml-2" v-b-tooltip.hover :title="rezept.id">
             <b-icon-info-circle />
           </span>
         </b-card-header>
         <b-card-body>
-          <p>
-            <span v-b-tooltip.hover title="Aussteller">
-              <b-icon-arrow-left class="mr-2" />
-              {{ rezept.aussteller }}
-            </span>
-          </p>
-          <p>
-            <span v-b-tooltip.hover title="Ausstellungsdatum">
-              <b-icon-calendar-date class="mr-2" />
-              {{ dateToLocale(rezept.ausstellungsdatum) }}
-            </span>
-          </p>
-          <p>
-            <span v-b-tooltip.hover title="Terminanzahl">
-              <b-icon-calendar-plus class="mr-2" />
-              {{ rezept.Termins.length }} Termine
-            </span>
-          </p>
-          <p>
-            <span v-b-tooltip.hover title="Zeitraum der Termine">
-              <b-icon-calendar-range class="mr-2" />
-              im Zeitraum: {{ getDateRange(rezept.id) }}
-            </span>
-          </p>
+          <b-row>
+            <b-col>
+              <p>
+                <span v-b-tooltip.hover title="Aussteller">
+                  <b-icon-arrow-left class="mr-2" />
+                  {{ rezept.ArztLanr }}
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Ausstellungsdatum">
+                  <b-icon-calendar-date class="mr-2" />
+                  {{ dateToLocale(rezept.ausstellungsdatum) }}
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Terminanzahl">
+                  <b-icon-calendar-plus class="mr-2" />
+                  {{ rezept.Termins.length }} Termine
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Zeitraum der Termine">
+                  <b-icon-calendar-range class="mr-2" />
+                  im Zeitraum: {{ getDateRange(rezept.id) }}
+                </span>
+              </p>
+            </b-col>
+            <b-col>
+              <p>
+                <span v-b-tooltip.hover title="icd10code">
+                  <b-icon-code-square class="mr-2" />
+                  {{ rezept.icd10code.primärschlüssel }}:
+                  {{ rezept.icd10code.text }}
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Indikation">
+                  <b-icon-bullseye class="mr-2" />
+                  {{ rezept.indikation }}
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Therapiebericht verlangt">
+                  <b-icon-journal-text class="mr-2" />
+                  {{ rezept.therapieBericht ? "" : "kein" }} Therapiebericht
+                  verlangt
+                </span>
+              </p>
+              <p>
+                <span v-b-tooltip.hover title="Hausbesuche verschrieben">
+                  <b-icon-house class="mr-2" />
+                  {{ rezept.hausbesuch ? "" : "kein" }} Hausbesuch
+                </span>
+              </p>
+            </b-col>
+          </b-row>
 
           <rechnung-kunde-pdf
             :ref="'rechnungkunde-' + rezept.id"
-            :rezept-id="rezept.id"
+            :rezept-id="rezept.id.toString()"
           />
           <termin-uebersicht-pdf
             :ref="'terminuebersicht-' + rezept.id"
-            :rezept-id="rezept.id"
+            :rezept-id="rezept.id.toString()"
           />
 
           <b-button-group>
@@ -153,16 +186,17 @@ export default {
   },
   components: { SpinnerLogo, RechnungKundePdf, TerminUebersichtPdf },
   mounted() {
-    RezeptService.getAll({ include: ["Kunde", "Termins", "Heilmittel"] }).then(
-      (rezeptList) => {
-        this.rezepte = rezeptList;
-      }
-    );
+    RezeptService.getAll({
+      include: ["Kunde", "Termins", "Heilmittels", "icd10code"],
+    }).then((rezeptList) => {
+      this.rezepte = rezeptList;
+    });
   },
   methods: {
     getDateRange(rezeptId) {
       let r = [...this.rezepte];
       r = r.find((r) => r.id == rezeptId);
+      if (r.Termins.length == 0) return "keine Termine";
       let sortedTermine = [...r.Termins].sort(
         (a, b) => new Date(b.start) - new Date(a.start)
       );
@@ -208,7 +242,7 @@ export default {
         .filter((r) => {
           return (
             !this.selectedHeilmittelId ||
-            r.HeilmittelId == this.selectedHeilmittelId
+            r.Heilmittels.map((hm) => hm.id).includes(this.selectedHeilmittelId)
           );
         });
     },
@@ -225,10 +259,12 @@ export default {
     heilmittel() {
       let temp = [];
       [...this.rezepte]
-        .map((r) => r.Heilmittel)
+        .map((r) => r.Heilmittels)
         .forEach((hm) => {
-          const found = temp.find((t) => t.id == hm.id);
-          if (!found) temp.push(hm);
+          hm.forEach((_hm) => {
+            const found = temp.find((t) => t.id == _hm.id);
+            if (!found) temp.push(_hm);
+          });
         });
       return temp;
     },

@@ -21,6 +21,8 @@ contextBridge.exposeInMainWorld("ipc", {
   getRezept: (data) => ipcRenderer.invoke("getRezept", data),
   getHeilmittel: (data) => ipcRenderer.invoke("getHeilmittel", data),
   getDatum: (data) => ipcRenderer.invoke("getDatum", data),
+  getICD10Code: (data) => ipcRenderer.invoke("getICD10Code", data),
+  getArzt: (data) => ipcRenderer.invoke("getArzt", data),
 
   createZeitspanne: (data) => ipcRenderer.invoke("createZeitspanne", data),
   createTermin: (data) => ipcRenderer.invoke("createTermin", data),
@@ -31,6 +33,7 @@ contextBridge.exposeInMainWorld("ipc", {
   createRezept: (data) => ipcRenderer.invoke("createRezept", data),
   createHeilmittel: (data) => ipcRenderer.invoke("createHeilmittel", data),
   createDatum: (data) => ipcRenderer.invoke("createDatum", data),
+  createArzt: (data) => ipcRenderer.invoke("createArzt", data),
 
   updateZeitspanne: (data) => ipcRenderer.invoke("updateZeitspanne", data),
   updateTermin: (data) => ipcRenderer.invoke("updateTermin", data),
@@ -44,6 +47,8 @@ contextBridge.exposeInMainWorld("ipc", {
 
   setTherapeutHeilmittel: (data) =>
     ipcRenderer.invoke("setTherapeutHeilmittel", data),
+  setRezeptHeilmittel: (data) =>
+    ipcRenderer.invoke("setRezeptHeilmittel", data),
 
   removeZeitspanne: (data) => ipcRenderer.invoke("removeZeitspanne", data),
   removeTermin: (data) => ipcRenderer.invoke("removeTermin", data),

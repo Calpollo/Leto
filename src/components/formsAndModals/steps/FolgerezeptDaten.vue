@@ -37,15 +37,13 @@
           v-for="rezept in rezepte"
           :key="rezept.id"
           :value="
-            rezept.Heilmittel.abk +
+            rezept.Heilmittels?.map((hm) => hm.abk).join(', ') +
             ': ' +
-            dateToLocale(rezept.ausstellungsdatum) +
-            ', ' +
-            rezept.aussteller
+            dateToLocale(rezept.ausstellungsdatum)
           "
         >
-          {{ rezept.Heilmittel.abk }}:
-          {{ dateToLocale(rezept.ausstellungsdatum) }}, {{ rezept.aussteller }}
+          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
+          {{ dateToLocale(rezept.ausstellungsdatum) }}
         </option>
       </datalist>
     </b-form-group>
@@ -58,7 +56,7 @@
     />
 
     <b-button
-      :disabled="!rezept?.HeilmittelId"
+      :disabled="!rezept?.Heilmittels"
       type="submit"
       v-if="showSaveButton"
       >Weiter</b-button
@@ -102,8 +100,9 @@ export default {
     changedKunde() {
       const [lastname, firstname] = this.selectedKunde.split(", ");
       RezeptService.getByLastnameAndFirstname(lastname, firstname, {
-        include: "Heilmittel",
+        include: ["Heilmittels", "Kunde"],
       }).then((rezeptList) => {
+        console.table(rezeptList);
         this.rezepte = rezeptList;
         this.selectedRezept = null;
         this.rezept = {};
@@ -121,17 +120,21 @@ export default {
         this.$emit("input", this.rezept);
         return;
       }
-      const [HeilmittelAbk, rest] = this.selectedRezept.split(": ");
+      const [HeilmittelAbks, rest] = this.selectedRezept.split(": ");
       const [ausstellungsdatum, aussteller] = rest.split(", ");
+      console.log({ HeilmittelAbks, rest });
       const found = this.rezepte.find(
         (r) =>
-          r.Heilmittel.abk == HeilmittelAbk &&
+          r.Heilmittels.some((hm) =>
+            HeilmittelAbks.split(", ").includes(hm.abk)
+          ) &&
           this.dateToLocale(r.ausstellungsdatum) == ausstellungsdatum &&
           r.aussteller == aussteller
       );
+      console.log(found);
       if (found) {
         // eslint-disable-next-line
-        const { id, createdAt, updatedAt, Kunde, ...rest } = found;
+        const { id, createdAt, updatedAt, ...rest } = found;
         this.rezept = rest;
         this.showRezeptDaten = true;
         this.$emit("input", this.rezept);
@@ -144,7 +147,6 @@ export default {
     save() {
       this.$emit("input", {
         ...this.rezept,
-        HeilmittelId: this.rezept.Heilmittel.id,
       });
       this.$emit("save");
     },

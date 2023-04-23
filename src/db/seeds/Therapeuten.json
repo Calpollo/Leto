@@ -2,11 +2,28 @@
   {
     "name": "Tanja Therapeutin",
     "geschlecht": "w",
-    "Heilmittel": ["MT-6", "MT-10"],
+    "Heilmittel": [
+      "KG-6",
+      "KG-Gruppe-6",
+      "KGG-6",
+      "KG-BWB-6",
+      "KG-BWB-Gruppe-6",
+      "MT-6"
+    ],
     "Vertrag": {
       "wochenstunden": 38,
       "hausbesuchsstunden": 0,
       "urlaubstage": 25,
+      "Urlaub": [
+        {
+          "datum": "2023-05-24",
+          "yearlyRepetition": false
+        },
+        {
+          "datum": "2023-08-20",
+          "yearlyRepetition": true
+        }
+      ],
       "arbeitszeiten": {
         "montagsZeit": {
           "start": { "hour": 8, "minute": 0 },
@@ -34,11 +51,28 @@
   {
     "name": "Peter Physio",
     "geschlecht": "m",
-    "Heilmittel": ["MT-6", "KGG-6", "KGG-10"],
+    "Heilmittel": [
+      "KG-6",
+      "KG-Gruppe-6",
+      "KGG-6",
+      "KG-BWB-6",
+      "KG-BWB-Gruppe-6",
+      "MT-6"
+    ],
     "Vertrag": {
       "wochenstunden": 35,
       "hausbesuchsstunden": 15,
       "urlaubstage": 25,
+      "Urlaub": [
+        {
+          "datum": "2023-10-01",
+          "yearlyRepetition": false
+        },
+        {
+          "datum": "2023-02-24",
+          "yearlyRepetition": false
+        }
+      ],
       "arbeitszeiten": {
         "montagsZeit": {
           "start": { "hour": 8, "minute": 0 },

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="confirmDeletion" title="Löschen bestätigen">
+  <b-modal :id="'confirmDeletion-' + id" title="Löschen bestätigen">
     <slot />
     <template #modal-footer="{}">
       <b-button size="sm" variant="danger" @click="ok">
@@ -16,16 +16,21 @@
 <script>
 export default {
   name: "DeletionConfirmation",
+  data() {
+    return {
+      id: Math.random(),
+    };
+  },
   methods: {
     show() {
-      this.$bvModal.show("confirmDeletion");
+      this.$bvModal.show("confirmDeletion-" + this.id);
     },
     ok() {
       this.$emit("confirm");
-      this.$bvModal.hide("confirmDeletion");
+      this.$bvModal.hide("confirmDeletion-" + this.id);
     },
     cancel() {
-      this.$bvModal.hide("confirmDeletion");
+      this.$bvModal.hide("confirmDeletion-" + this.id);
     },
   },
 };

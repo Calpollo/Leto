@@ -10,20 +10,36 @@
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
 
-    <b-button
-      v-for="[vorschlag, id] in vorschlaege.map((v) => {
-        return [v, vorschlaege.indexOf(v)];
-      })"
-      :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
-      :key="id"
-      class="m-2"
-      :disabled="!vorschlag.selected && selectionCount == maxSelectionNum"
-      @click="selectVorschlag(vorschlag)"
-    >
-      {{ vorschlag.date.toLocaleString("de-DE", { weekday: "short" }) }},
-      {{ vorschlag.date.toLocaleDateString("de-DE") }},
-      {{ vorschlag.date.getHours() }}:{{ pad(vorschlag.date.getMinutes()) }}
-    </b-button>
+    <b-row>
+      <b-col
+        v-for="[vorschlag, id] in vorschlaege.map((v) => {
+          return [v, vorschlaege.indexOf(v)];
+        })"
+        :key="id"
+        cols="3"
+      >
+        <b-button
+          :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
+          class="m-2"
+          :disabled="!vorschlag.selected && selectionCount == maxSelectionNum"
+          @click="selectVorschlag(vorschlag)"
+        >
+          {{
+            vorschlag.date.toLocaleString("de-DE", {
+              weekday: "short",
+            })
+          }},
+          {{
+            vorschlag.date.toLocaleDateString("de-DE", {
+              month: "2-digit",
+              day: "2-digit",
+            })
+          }}
+          {{ vorschlag.date.getHours() }}:{{ pad(vorschlag.date.getMinutes()) }}
+          {{ vorschlag.Therapeut.name.split(" ")[0] }}
+        </b-button>
+      </b-col>
+    </b-row>
 
     <br />
 
@@ -50,10 +66,11 @@
 </template>
 
 <script>
+import TherapeutService from "@/services/TherapeutService";
 export default {
   name: "TerminVorschlaege",
   props: {
-    heilmittel: Object,
+    heilmittel: Array,
     showSaveButton: {
       type: Boolean,
       default: true,
@@ -61,23 +78,25 @@ export default {
   },
   data() {
     return {
-      maxSelectionNum: this.heilmittel.terminNumber,
-      vorschlaege: this.generateVorschläge(),
+      // maxSelectionNum: this.heilmittel.terminNumber,
+      vorschlaege: [],
     };
   },
   methods: {
     // TODO: improve
-    generateVorschläge() {
-      return [...Array(this.heilmittel.terminNumber + 24)].map(
-        (item, index) => {
+    async generateVorschläge() {
+      return TherapeutService.getAll().then((therapeutListe) => {
+        return [...Array(this.maxSelectionNum * 4)].map((item, index) => {
           return {
             date: this.roundToFullHour(
               new Date(new Date().getTime() + 2 * index * 60 * 60 * 1000)
             ),
-            selected: index < this.heilmittel.terminNumber,
+            selected: index < this.maxSelectionNum,
+            Therapeut: therapeutListe[0],
+            TherapeutId: therapeutListe[0].id,
           };
-        }
-      );
+        });
+      });
     },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
@@ -96,11 +115,19 @@ export default {
     save() {
       this.$emit(
         "save",
-        this.vorschlaege.filter((v) => v.selected).map((v) => v.date)
+        this.vorschlaege
+          .filter((v) => v.selected)
+          .map((v) => {
+            return { date: v.date, TherapeutId: v.TherapeutId };
+          })
       );
       this.$emit(
         "input",
-        this.vorschlaege.filter((v) => v.selected).map((v) => v.date)
+        this.vorschlaege
+          .filter((v) => v.selected)
+          .map((v) => {
+            return { date: v.date, TherapeutId: v.TherapeutId };
+          })
       );
     },
   },
@@ -108,9 +135,20 @@ export default {
     selectionCount() {
       return this.vorschlaege.filter((v) => v.selected).length;
     },
+    maxSelectionNum() {
+      let sum = 0;
+      this.heilmittel.forEach((hm) => {
+        sum += hm.terminNumber;
+      });
+      return sum;
+    },
   },
   mounted() {
-    this.save();
+    this.generateVorschläge().then((vorschlagsliste) => {
+      this.vorschlaege = vorschlagsliste;
+      this.save();
+    });
+    // this.save();
   },
 };
 </script>

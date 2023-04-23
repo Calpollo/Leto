@@ -1,24 +1,40 @@
 <template>
   <b-modal id="terminAbsage" scrollable title="Patient nicht erschienen">
-    <label for="patient" class="mr-2">Patient:</label>
-    <!-- TODO: change to search input with datalist -->
-    <b-dropdown id="patient" text="Patient">
-      <b-dropdown-item
-        v-for="patient in patienten"
-        :key="patient.id"
-        @click="selectedPatientId = patient.id"
-      >
-        {{ patient.lastname }}, {{ patient.firstname }}
-      </b-dropdown-item>
-    </b-dropdown>
+    <b-form-group label="Patient:" label-for="patienten-auswahl">
+      <b-input
+        id="patienten-auswahl"
+        type="search"
+        list="patientenlist"
+        @change="changePatient"
+      />
+      <datalist id="patientenlist">
+        <option
+          v-for="patient in patienten"
+          :key="patient.id"
+          :value="patient.lastname + ', ' + patient.firstname"
+        >
+          {{ patient.lastname }}, {{ patient.firstname }}
+        </option>
+      </datalist>
+    </b-form-group>
 
-    <label for="termin" class="mr-2">Termin:</label>
-    <b-dropdown id="termin" text="Termin">
-      <b-dropdown-item v-for="termin in termine" :key="termin.id">
-        <!-- TODO: change to meaningful text -->
-        {{ termin.id }}
-      </b-dropdown-item>
-    </b-dropdown>
+    <b-form-group label="Termin:" label-for="termin-auswahl">
+      <b-input
+        id="termin-auswahl"
+        type="search"
+        list="terminlist"
+        @change="changeTermin"
+      />
+      <datalist id="terminlist">
+        <option
+          v-for="t in termine"
+          :key="t.id"
+          :value="toLocale(t.start) + ' - ' + toLocaleTime(t.start)"
+        >
+          {{ toLocale(t.start) }} - {{ toLocaleTime(t.start) }}
+        </option>
+      </datalist>
+    </b-form-group>
 
     <template #modal-footer="{ ok, cancel }">
       <!-- TODO: change @click for meaningful reaction -->
@@ -34,6 +50,7 @@
 import KundenService from "@/services/KundenService";
 import TerminService from "@/services/TerminService";
 import RezeptService from "@/services/RezeptService";
+import { toLocale, toLocaleTime } from "@/utils/dates";
 export default {
   name: "PatientNichtErschienen",
   data() {
@@ -41,9 +58,12 @@ export default {
       patienten: [],
       selectedPatientId: null,
       termine: [],
+      selectedTerminId: null,
     };
   },
   methods: {
+    toLocale,
+    toLocaleTime,
     updateTermine() {
       const p = this.patienten.find((p) => p.id == this.selectedPatientId);
       RezeptService.getByLastnameAndFirstname(p.lastname, p.firstname)
@@ -58,6 +78,26 @@ export default {
           if (Array.isArray(terminList)) this.termine = terminList.flat();
           else this.termine = terminList;
         });
+    },
+    changePatient(lastnamefirstname) {
+      const [lastname, firstname] = lastnamefirstname.split(", ");
+      const found = this.patienten.find(
+        (p) => p.lastname == lastname && p.firstname == firstname
+      );
+      if (found) this.selectedPatientId = found.id;
+      else this.selectedPatientId = "";
+    },
+    changeTermin(dateTime) {
+      const [date, time] = dateTime.split(" - ");
+      const [day, month, year] = date.split(".");
+      const [hours, minutes] = time.split(":");
+      const found = this.termine.find(
+        (p) =>
+          new Date(p.start).valueOf() ==
+          new Date(year, month - 1, day, hours, minutes).valueOf()
+      );
+      if (found) this.selectedTerminId = found.id;
+      else this.selectedTerminId = "";
     },
   },
   mounted() {

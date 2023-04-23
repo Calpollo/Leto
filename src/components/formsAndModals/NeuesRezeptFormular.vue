@@ -37,7 +37,7 @@
         <v-stepper-content step="3">
           <termin-vorschlaege
             v-if="currentStep == 3"
-            :heilmittel="rezept.Heilmittel"
+            :heilmittel="rezept.Heilmittels"
             v-model="terminvorschlaege"
             :showSaveButton="false"
           />
@@ -65,7 +65,7 @@
       </v-stepper-items>
     </v-stepper>
 
-    <template #modal-footer="{ cancel }">
+    <template #modal-footer="{}">
       <b-button-group>
         <b-button
           :disabled="currentStep == 1 || currentStep == 4"
@@ -80,9 +80,7 @@
           >{{ currentStep < 4 ? "Weiter" : "Fertig" }}</b-button
         >
       </b-button-group>
-      <b-button variant="outline-danger" @click="cancel()">
-        Abbrechen
-      </b-button>
+      <b-button variant="outline-danger" @click="close"> Abbrechen </b-button>
     </template>
   </b-modal>
 </template>
@@ -106,17 +104,15 @@ export default {
     return {
       currentStep: 1,
       kunde: {},
-      rezept: {},
+      rezept: { hausbesuch: false, therapieBericht: false, Heilmittels: [] },
       terminvorschlaege: [],
     };
   },
   methods: {
     done(terminVorschlagsList) {
-      return createNewRezept(
-        this.kunde,
-        this.rezept,
-        terminVorschlagsList
-      ).then(([termine, createdKunde, createdRezept]) => {
+      return createNewRezept(this.rezept, terminVorschlagsList, {
+        kunde: this.kunde,
+      }).then(([termine, createdKunde, createdRezept]) => {
         console.table(termine);
         console.log(createdKunde, createdRezept);
         this.rezept = { ...this.rezept, ...createdRezept };
@@ -136,6 +132,14 @@ export default {
       this.$refs.rechnungen.generatePdf();
     },
     close() {
+      this.currentStep = 1;
+      this.kunde = {};
+      this.rezept = {
+        hausbesuch: false,
+        therapieBericht: false,
+        Heilmittels: [],
+      };
+      this.terminvorschlaege = [];
       this.$bvModal.hide("neuesRezept");
     },
   },
@@ -145,12 +149,32 @@ export default {
         case 1:
           return Object.keys(this.kunde).length > 0;
         case 2: {
-          const { Heilmittel, ausstellungsdatum, aussteller } = this.rezept;
-          return Heilmittel && ausstellungsdatum && aussteller;
+          const {
+            Heilmittels,
+            ausstellungsdatum,
+            ArztLanr,
+            ICD10code,
+            hausbesuch,
+            indikation,
+            therapieBericht,
+          } = this.rezept;
+          return (
+            Heilmittels.length > 0 &&
+            ausstellungsdatum &&
+            ArztLanr &&
+            ICD10code &&
+            hausbesuch != null &&
+            indikation &&
+            therapieBericht != null
+          );
         }
         case 3: {
           return (
-            this.terminvorschlaege.length == this.rezept.Heilmittel.terminNumber
+            this.terminvorschlaege.length ==
+            this.rezept.Heilmittels.map((hm) => hm.terminNumber).reduce(
+              (a, b) => a + b,
+              0
+            )
           );
         }
         case 4:

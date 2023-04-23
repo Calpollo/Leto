@@ -51,7 +51,7 @@ export default {
       defaultOpeningHours: {
         Zeitspanne: {
           start: new Date().setHours(8, 0, 0, 0),
-          end: new Date().setHours(19, 0, 0, 0),
+          end: new Date().setHours(19, 30, 0, 0),
         },
       },
     };

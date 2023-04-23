@@ -11,6 +11,8 @@ let {
   Kunde,
   Termin,
   Rezept,
+  ICD10Code,
+  Arzt,
 } = localDB;
 
 // ############################
@@ -53,6 +55,14 @@ ipcMain.handle("getRezept", async (event, data) => {
   return JSON.stringify(await localDB.get(Rezept, data));
 });
 
+ipcMain.handle("getICD10Code", async (event, data) => {
+  return JSON.stringify(await localDB.get(ICD10Code, data));
+});
+
+ipcMain.handle("getArzt", async (event, data) => {
+  return JSON.stringify(await localDB.get(Arzt, data));
+});
+
 // ############################
 // Create Instances in the database
 // ############################
@@ -90,6 +100,10 @@ ipcMain.handle("createTermin", async (event, data) => {
 
 ipcMain.handle("createRezept", async (event, data) => {
   return JSON.stringify(await localDB.create(Rezept, data));
+});
+
+ipcMain.handle("createArzt", async (event, data) => {
+  return JSON.stringify(await localDB.create(Arzt, data));
 });
 
 // ############################
@@ -138,6 +152,11 @@ ipcMain.handle("updateRezept", async (event, data) => {
 ipcMain.handle("setTherapeutHeilmittel", async (event, data) => {
   console.log("localDbEndpoints.setTherhapeutHeilmittels");
   return JSON.stringify(await localDB.setTherhapeutHeilmittels(data));
+});
+
+ipcMain.handle("setRezeptHeilmittel", async (event, data) => {
+  console.log("localDbEndpoints.setRezeptHeilmittels");
+  return JSON.stringify(await localDB.setRezeptHeilmittels(data));
 });
 
 // ############################

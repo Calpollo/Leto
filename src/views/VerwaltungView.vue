@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     generateStatistics().then((stats) => {
-      console.table(stats);
+      // console.table(stats);
       this.stats = stats;
     });
   },

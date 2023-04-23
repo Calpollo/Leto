@@ -12,7 +12,6 @@
       pdf-orientation="portrait"
       pdf-content-width="90%"
       ref="html2Pdf"
-      @hasDownloaded="emitClose"
       :html-to-pdf-options="{
         margin: [15, 10],
         filename: 'Abrechnung',
@@ -111,16 +110,20 @@ export default {
   },
   computed: {
     kostenaufstellung() {
-      return [...this.RezeptList].map((r) => {
-        return {
-          Patient:
-            r.Kunde.versichertennummer ||
-            `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
-          Heilmittel: `${r.Heilmittel.abk}: ${r.Heilmittel.name}`,
-          Datum: this.dateToLocale(r.ausstellungsdatum),
-          Preis: r.Heilmittel.krankenkassenbeteiligung + " €",
-        };
-      });
+      return [...this.RezeptList]
+        .map((r) => {
+          return r.Heilmittels.map((hm) => {
+            return {
+              Patient:
+                r.Kunde.versichertennummer ||
+                `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
+              Heilmittel: `${hm.abk}: ${hm.name}`,
+              Datum: this.dateToLocale(r.ausstellungsdatum),
+              Preis: hm.krankenkassenbeteiligung + " €",
+            };
+          });
+        })
+        .flat();
     },
   },
 };

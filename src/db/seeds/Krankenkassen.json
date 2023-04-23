@@ -1,0 +1,938 @@
+[
+  {
+    "kostenträgerkennung": "104127692",
+    "name": "actimonda krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "108018121",
+    "name": "AOK Baden‐Württemberg"
+  },
+  {
+    "kostenträgerkennung": "108310400",
+    "name": "AOK Bayern"
+  },
+  {
+    "kostenträgerkennung": "103119199",
+    "name": "AOK Bremen / Bremerhaven"
+  },
+  {
+    "kostenträgerkennung": "102114819",
+    "name": "AOK ‐ Die Gesundheitskasse für Niedersachsen"
+  },
+  {
+    "kostenträgerkennung": "105313145",
+    "name": "AOK ‐ Die Gesundheitskasse in Hessen"
+  },
+  {
+    "kostenträgerkennung": "100395611",
+    "name": "AOK Nordost ‐ Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "100696012",
+    "name": "AOK Nordost ‐ Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "109519005",
+    "name": "AOK Nordost ‐ Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "101317004",
+    "name": "AOK NordWest ‐ Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "103411401",
+    "name": "AOK NordWest ‐ Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "105998018",
+    "name": "AOK PLUS ‐ Die Gesundheitskasse für Sachsen und Thüringen"
+  },
+  {
+    "kostenträgerkennung": "107299005",
+    "name": "AOK PLUS ‐ Die Gesundheitskasse für Sachsen und Thüringen"
+  },
+  {
+    "kostenträgerkennung": "101519213",
+    "name": "AOK Rheinland/Hamburg"
+  },
+  {
+    "kostenträgerkennung": "104212505",
+    "name": "AOK Rheinland/Hamburg"
+  },
+  {
+    "kostenträgerkennung": "106215364",
+    "name": "AOK Rheinland‐Pfalz/Saarland‐Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "109319309",
+    "name": "AOK Rheinland‐Pfalz/Saarland‐Die Gesundheitskasse"
+  },
+  {
+    "kostenträgerkennung": "101097008",
+    "name": "AOK Sachsen‐Anhalt"
+  },
+  {
+    "kostenträgerkennung": "103121013",
+    "name": "atlas BKK ahlmann"
+  },
+  {
+    "kostenträgerkennung": "108534160",
+    "name": "Audi BKK"
+  },
+  {
+    "kostenträgerkennung": "109938503",
+    "name": "BAHN‐BKK"
+  },
+  {
+    "kostenträgerkennung": "100180008",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "100580002",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "100980006",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "101380002",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "101580004",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "101780006",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "103080003",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "103480007",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "104080005",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "105080008",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "105180009",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "106280002",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "106780007",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "107280004",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "108380007",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "109380009",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "109580001",
+    "name": "BARMER GEK"
+  },
+  {
+    "kostenträgerkennung": "103725342",
+    "name": "Bertelsmann BKK"
+  },
+  {
+    "kostenträgerkennung": "103501080",
+    "name": "BIG direkt gesund"
+  },
+  {
+    "kostenträgerkennung": "102122660",
+    "name": "BKK 24"
+  },
+  {
+    "kostenträgerkennung": "103525909",
+    "name": "BKK Achenbach Buschhütten"
+  },
+  {
+    "kostenträgerkennung": "106229304",
+    "name": "BKK advita"
+  },
+  {
+    "kostenträgerkennung": "107536171",
+    "name": "BKK Aesculap"
+  },
+  {
+    "kostenträgerkennung": "108833355",
+    "name": "BKK Akzo Nobel ‐Bayern‐"
+  },
+  {
+    "kostenträgerkennung": "108591499",
+    "name": "BKK A.T.U"
+  },
+  {
+    "kostenträgerkennung": "104626889",
+    "name": "BKK Basell"
+  },
+  {
+    "kostenträgerkennung": "105530422",
+    "name": "BKK B. Braun Melsungen AG"
+  },
+  {
+    "kostenträgerkennung": "101532301",
+    "name": "BKK Beiersdorf AG"
+  },
+  {
+    "kostenträgerkennung": "103524101",
+    "name": "BKK BJB"
+  },
+  {
+    "kostenträgerkennung": "104626903",
+    "name": "BKK BPW Bergische Achsen KG Wiehl"
+  },
+  {
+    "kostenträgerkennung": "105330157",
+    "name": "BKK Braun‐Gillette"
+  },
+  {
+    "kostenträgerkennung": "104424794",
+    "name": "BKK DEMAG KRAUSS‐MAFFEI"
+  },
+  {
+    "kostenträgerkennung": "106431572",
+    "name": "BKK der G. M. PFAFF AG"
+  },
+  {
+    "kostenträgerkennung": "107835333",
+    "name": "BKK der MTU Friedrichshafen GmbH"
+  },
+  {
+    "kostenträgerkennung": "103525567",
+    "name": "BKK der SIEMAG"
+  },
+  {
+    "kostenträgerkennung": "105928809",
+    "name": "BKK der Thüringer Energieversorgung"
+  },
+  {
+    "kostenträgerkennung": "104224634",
+    "name": "BKK Deutsche Bank AG"
+  },
+  {
+    "kostenträgerkennung": "103724294",
+    "name": "BKK Diakonie"
+  },
+  {
+    "kostenträgerkennung": "103724249",
+    "name": "BKK DürkoppAdler"
+  },
+  {
+    "kostenträgerkennung": "109139915",
+    "name": "BKK ESSANELLE"
+  },
+  {
+    "kostenträgerkennung": "104125509",
+    "name": "BKK EUREGIO"
+  },
+  {
+    "kostenträgerkennung": "102429648",
+    "name": "BKK EWE"
+  },
+  {
+    "kostenträgerkennung": "102122557",
+    "name": "BKK exklusiv"
+  },
+  {
+    "kostenträgerkennung": "109033393",
+    "name": "BKK Faber‐Castell und Partner"
+  },
+  {
+    "kostenträgerkennung": "103121137",
+    "name": "BKK firmus"
+  },
+  {
+    "kostenträgerkennung": "107036370",
+    "name": "BKK Freudenberg"
+  },
+  {
+    "kostenträgerkennung": "103724272",
+    "name": "BKK Gildemeister Seidensticker"
+  },
+  {
+    "kostenträgerkennung": "104424830",
+    "name": "BKK GRILLO‐WERKE AG"
+  },
+  {
+    "kostenträgerkennung": "107835071",
+    "name": "BKK Groz‐Beckert"
+  },
+  {
+    "kostenträgerkennung": "107835743",
+    "name": "BKK G+V"
+  },
+  {
+    "kostenträgerkennung": "104124597",
+    "name": "BKK Heimbach"
+  },
+  {
+    "kostenträgerkennung": "105530364",
+    "name": "BKK HENSCHEL Plus"
+  },
+  {
+    "kostenträgerkennung": "103725547",
+    "name": "BKK Herford Minden Ravensberg"
+  },
+  {
+    "kostenträgerkennung": "105530331",
+    "name": "BKK Herkules"
+  },
+  {
+    "kostenträgerkennung": "105830539",
+    "name": "BKK IHV"
+  },
+  {
+    "kostenträgerkennung": "105330431",
+    "name": "BKK KARL MAYER"
+  },
+  {
+    "kostenträgerkennung": "108633433",
+    "name": "BKK Kassana"
+  },
+  {
+    "kostenträgerkennung": "108833674",
+    "name": "BKK KBA"
+  },
+  {
+    "kostenträgerkennung": "106331593",
+    "name": "BKK KEVAG KOBLENZ"
+  },
+  {
+    "kostenträgerkennung": "108934142",
+    "name": "BKK Krones"
+  },
+  {
+    "kostenträgerkennung": "105830517",
+    "name": "BKK Linde"
+  },
+  {
+    "kostenträgerkennung": "108036145",
+    "name": "BKK MAHLE"
+  },
+  {
+    "kostenträgerkennung": "107923192",
+    "name": "BKK MEDICUS"
+  },
+  {
+    "kostenträgerkennung": "103726081",
+    "name": "BKK Melitta Plus"
+  },
+  {
+    "kostenträgerkennung": "106020600",
+    "name": "BKK MEM"
+  },
+  {
+    "kostenträgerkennung": "105230076",
+    "name": "BKK MERCK"
+  },
+  {
+    "kostenträgerkennung": "103725364",
+    "name": "BKK Miele"
+  },
+  {
+    "kostenträgerkennung": "102120076",
+    "name": "BKK MOBIL OIL"
+  },
+  {
+    "kostenträgerkennung": "106431652",
+    "name": "BKK Pfalz"
+  },
+  {
+    "kostenträgerkennung": "101520181",
+    "name": "BKK PHOENIX"
+  },
+  {
+    "kostenträgerkennung": "105723301",
+    "name": "BKK PricewaterhouseCoopers"
+  },
+  {
+    "kostenträgerkennung": "101931440",
+    "name": "BKK Publik ‐ Partner der BKK Salzgitter"
+  },
+  {
+    "kostenträgerkennung": "107532042",
+    "name": "BKK Rieker.Ricosta.Weisser"
+  },
+  {
+    "kostenträgerkennung": "102131240",
+    "name": "BKK RWE"
+  },
+  {
+    "kostenträgerkennung": "101922757",
+    "name": "BKK Salzgitter"
+  },
+  {
+    "kostenträgerkennung": "108035576",
+    "name": "BKK Scheufelen"
+  },
+  {
+    "kostenträgerkennung": "101320043",
+    "name": "BKK Schleswig‐Holstein"
+  },
+  {
+    "kostenträgerkennung": "107531187",
+    "name": "BKK Schwarzwald‐Baar‐Heuberg"
+  },
+  {
+    "kostenträgerkennung": "109132678",
+    "name": "BKK STADT AUGSBURG"
+  },
+  {
+    "kostenträgerkennung": "102031410",
+    "name": "BKK Technoform"
+  },
+  {
+    "kostenträgerkennung": "108632900",
+    "name": "BKK Textilgruppe Hof"
+  },
+  {
+    "kostenträgerkennung": "103526615",
+    "name": "BKK VDN"
+  },
+  {
+    "kostenträgerkennung": "107832012",
+    "name": "BKK VerbundPlus"
+  },
+  {
+    "kostenträgerkennung": "109723913",
+    "name": "BKK Verkehrsbau Union (VBU)"
+  },
+  {
+    "kostenträgerkennung": "104229606",
+    "name": "BKK VICTORIA ‐ D.A.S."
+  },
+  {
+    "kostenträgerkennung": "106432038",
+    "name": "BKK VITAL"
+  },
+  {
+    "kostenträgerkennung": "108031424",
+    "name": "BKK Voralb HELLER*LEUZE*TRAUB"
+  },
+  {
+    "kostenträgerkennung": "103524407",
+    "name": "BKK vor Ort"
+  },
+  {
+    "kostenträgerkennung": "105530126",
+    "name": "BKK Werra‐Meissner"
+  },
+  {
+    "kostenträgerkennung": "107836243",
+    "name": "BKK Wieland‐Werke"
+  },
+  {
+    "kostenträgerkennung": "105734543",
+    "name": "BKK Wirtschaft und Finanzen"
+  },
+  {
+    "kostenträgerkennung": "108036577",
+    "name": "BKK Würth"
+  },
+  {
+    "kostenträgerkennung": "106329566",
+    "name": "BKK ZF und Partner"
+  },
+  {
+    "kostenträgerkennung": "109034270",
+    "name": "BMW BKK"
+  },
+  {
+    "kostenträgerkennung": "108036123",
+    "name": "Bosch BKK"
+  },
+  {
+    "kostenträgerkennung": "100820488",
+    "name": "Brandenburgische BKK"
+  },
+  {
+    "kostenträgerkennung": "101523446",
+    "name": "Continentale Betriebskrankenkasse"
+  },
+  {
+    "kostenträgerkennung": "108030775",
+    "name": "Daimler BKK"
+  },
+  {
+    "kostenträgerkennung": "100167999",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "100567993",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "100967997",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "101367993",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "101567995",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "101767997",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "103067994",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "103467998",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "104067996",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "105067999",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "105167990",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "106267993",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "106767998",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "107267995",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "108367998",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "109367990",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "109567992",
+    "name": "DAK‐Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "106329225",
+    "name": "Debeka BKK"
+  },
+  {
+    "kostenträgerkennung": "101939006",
+    "name": "Deutsche BKK"
+  },
+  {
+    "kostenträgerkennung": "104926702",
+    "name": "DIE BERGISCHE KRANKENKASSE"
+  },
+  {
+    "kostenträgerkennung": "107536262",
+    "name": "Die Schwenninger Betriebskrankenkasse"
+  },
+  {
+    "kostenträgerkennung": "102129930",
+    "name": "energie‐BKK"
+  },
+  {
+    "kostenträgerkennung": "104525057",
+    "name": "E.ON BKK"
+  },
+  {
+    "kostenträgerkennung": "105732324",
+    "name": "Ernst und Young BKK"
+  },
+  {
+    "kostenträgerkennung": "101520329",
+    "name": "ESSO BKK"
+  },
+  {
+    "kostenträgerkennung": "100171007",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "100571001",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "100971005",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101371001",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101571003",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101771005",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "103071002",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "103471006",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "104071004",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "105071007",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "105171008",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "106271001",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "106771006",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "107271003",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "108371006",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "109371008",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "109571000",
+    "name": "Hanseatische Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "105230101",
+    "name": "HEAG BKK"
+  },
+  {
+    "kostenträgerkennung": "103724238",
+    "name": "Heimat Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "103086806",
+    "name": "hkk Erste Gesundheit"
+  },
+  {
+    "kostenträgerkennung": "108428980",
+    "name": "HypoVereinsbank BKK"
+  },
+  {
+    "kostenträgerkennung": "100602360",
+    "name": "IKK Brandenburg und Berlin"
+  },
+  {
+    "kostenträgerkennung": "101500154",
+    "name": "IKK classic"
+  },
+  {
+    "kostenträgerkennung": "103500693",
+    "name": "IKK classic"
+  },
+  {
+    "kostenträgerkennung": "105903116",
+    "name": "IKK classic"
+  },
+  {
+    "kostenträgerkennung": "107202793",
+    "name": "IKK classic"
+  },
+  {
+    "kostenträgerkennung": "108001963",
+    "name": "IKK classic"
+  },
+  {
+    "kostenträgerkennung": "101202961",
+    "name": "IKK gesund plus"
+  },
+  {
+    "kostenträgerkennung": "101300129",
+    "name": "IKK Nord"
+  },
+  {
+    "kostenträgerkennung": "109303301",
+    "name": "IKK Südwest"
+  },
+  {
+    "kostenträgerkennung": "100175502",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "100575506",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "100975500",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "101375506",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "101575508",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "101775500",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "103075507",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "103475501",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "104075509",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "105075502",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "105175503",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "106275506",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "106775501",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "107275508",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "108375501",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "109375503",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "109575505",
+    "name": "Kaufmännische Krankenkasse ‐ KKH"
+  },
+  {
+    "kostenträgerkennung": "103505006",
+    "name": "Knappschaft"
+  },
+  {
+    "kostenträgerkennung": "105508890",
+    "name": "Krankenkasse für den Gartenbau"
+  },
+  {
+    "kostenträgerkennung": "108008880",
+    "name": "LKK Baden‐Württemberg"
+  },
+  {
+    "kostenträgerkennung": "108609148",
+    "name": "LKK Franken und Oberbayern"
+  },
+  {
+    "kostenträgerkennung": "105508787",
+    "name": "LKK Hessen, Rheinland‐Pfalz und Saarland"
+  },
+  {
+    "kostenträgerkennung": "106408802",
+    "name": "LKK Hessen, Rheinland‐Pfalz und Saarland"
+  },
+  {
+    "kostenträgerkennung": "109308818",
+    "name": "LKK Hessen, Rheinland‐Pfalz und Saarland"
+  },
+  {
+    "kostenträgerkennung": "100609049",
+    "name": "LKK Mittel‐ und Ostdeutschland"
+  },
+  {
+    "kostenträgerkennung": "109008837",
+    "name": "LKK Niederbayern, Oberpfalz und Schwaben"
+  },
+  {
+    "kostenträgerkennung": "102108731",
+    "name": "LKK Niedersachsen‐Bremen"
+  },
+  {
+    "kostenträgerkennung": "103708773",
+    "name": "LKK Nordrhein‐Westfalen Münster"
+  },
+  {
+    "kostenträgerkennung": "101308719",
+    "name": "LKK Schleswig‐Holstein und Hamburg"
+  },
+  {
+    "kostenträgerkennung": "108035612",
+    "name": "mhplus Betriebskrankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101522116",
+    "name": "Novitas BKK"
+  },
+  {
+    "kostenträgerkennung": "106492393",
+    "name": "pronova BKK"
+  },
+  {
+    "kostenträgerkennung": "105823040",
+    "name": "R+V BKK"
+  },
+  {
+    "kostenträgerkennung": "105330168",
+    "name": "Salus BKK ‐ Die Gutfühlversicherung"
+  },
+  {
+    "kostenträgerkennung": "101392255",
+    "name": "SECURVITA BKK"
+  },
+  {
+    "kostenträgerkennung": "101520147",
+    "name": "Shell BKK/LIFE"
+  },
+  {
+    "kostenträgerkennung": "108033244",
+    "name": "Siemens‐Betriebskrankenkasse (SBK)"
+  },
+  {
+    "kostenträgerkennung": "108833505",
+    "name": "SKD BKK"
+  },
+  {
+    "kostenträgerkennung": "106936311",
+    "name": "Südzucker‐BKK"
+  },
+  {
+    "kostenträgerkennung": "100177504",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "100577508",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "100977502",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101377508",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101577500",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "101777502",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "103077509",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "103477503",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "104077501",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "105077504",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "105177505",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "106277508",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "106777503",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "107277500",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "108377503",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "109377505",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "109577507",
+    "name": "Techniker Krankenkasse"
+  },
+  {
+    "kostenträgerkennung": "102137985",
+    "name": "TUI BKK"
+  },
+  {
+    "kostenträgerkennung": "104926494",
+    "name": "Vaillant BKK"
+  },
+  {
+    "kostenträgerkennung": "105330191",
+    "name": "Vereinigte BKK"
+  },
+  {
+    "kostenträgerkennung": "108036441",
+    "name": "WMF BKK"
+  }
+]

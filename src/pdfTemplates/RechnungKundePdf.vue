@@ -68,21 +68,15 @@
             </p>
 
             <b-table
+              v-if="RezeptId"
               id="kostenaufstellung"
               striped
-              :items="[
-                {
-                  Heilmittel: `${Rezept?.Heilmittel?.abk}: ${Rezept?.Heilmittel?.name}`,
-                  Termine: Rezept?.Heilmittel?.terminNumber,
-                  Dauer: Rezept?.Heilmittel?.terminMinutes,
-                  Preis: price + ' €',
-                },
-              ]"
+              :items="kostenaufstellungen"
             ></b-table>
 
             <p>
               Bitte überweise den Betrag von
-              <b> {{ price }} € </b>bis zum
+              <b> {{ totalPrice }} € </b>bis zum
               <b>
                 {{ this.dateToLocale(this.PaymentDeadline) }}
               </b>
@@ -132,7 +126,7 @@ export default {
     },
     updateRezept(id) {
       RezeptService.getOne(id, {
-        include: ["Kunde", "Heilmittel"],
+        include: ["Kunde", "Heilmittels"],
       }).then((r) => {
         this.Rezept = r;
       });
@@ -143,6 +137,18 @@ export default {
     dateToLocale(date) {
       return toLocale(date);
     },
+    priceOfHeilmittel(heilmittel, versichertenstatus) {
+      switch (versichertenstatus) {
+        case "GKV":
+          return heilmittel.kundenbeteiligung;
+        case "PKV":
+          return heilmittel.privatVersichertenPreis;
+        case "SZ":
+          return heilmittel.selbstzahlerPreis;
+        default:
+          return 0;
+      }
+    },
   },
   props: {
     RezeptId: {
@@ -151,6 +157,7 @@ export default {
     },
   },
   mounted() {
+    // TODO: configure the paymentdeadline
     this.PaymentDeadline.setDate(new Date().getDate() + 14);
     this.updateRezept(this.RezeptId);
     PraxisService.getOne(ConfigService.getPraxis()).then((praxis) => {
@@ -163,17 +170,30 @@ export default {
     },
   },
   computed: {
-    price() {
-      switch (this.Rezept?.Kunde?.versichertenstatus) {
-        case "GKV":
-          return this.Rezept?.Heilmittel?.kundenbeteiligung;
-        case "PKV":
-          return this.Rezept.Heilmittel?.privatVersichertenPreis;
-        case "SZ":
-          return this.Rezept.Heilmittel?.selbstzahlerPreis;
-        default:
-          return 0;
-      }
+    totalPrice() {
+      let priceSum = 0;
+      if (this.RezeptId)
+        this.Rezept?.Heilmittels.forEach(
+          (hm) =>
+            (priceSum += this.priceOfHeilmittel(
+              hm,
+              this.Rezept?.Kunde?.versichertenstatus
+            ))
+        );
+      return priceSum;
+    },
+    kostenaufstellungen() {
+      if (!this.RezeptId) return [];
+      return this.Rezept?.Heilmittels.map((hm) => {
+        return {
+          Heilmittel: `${hm.abk}: ${hm.name}`,
+          Termine: hm.terminNumber,
+          Dauer: hm.terminMinutes,
+          Preis:
+            this.priceOfHeilmittel(hm, this.Rezept.Kunde.versichertenstatus) +
+            " €",
+        };
+      });
     },
   },
 };

@@ -11,8 +11,8 @@
         class="mx-2"
         :id="`tooltip-target-${this.event.id}`"
       />
-
-      {{ this.event.Rezept.Heilmittel.abk }}: {{ this.kunde?.firstname }}
+      {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
+      {{ this.kunde?.firstname }}
       {{ this.kunde?.lastname }}
     </p>
 
@@ -26,7 +26,7 @@
       </p>
       <p>
         {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
-        {{ this.event.Rezept.Heilmittel.abk }}
+        {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}
       </p>
       <p>{{ this.event.Praxis.name }}</p>
 
@@ -34,6 +34,28 @@
         <b-icon-trash-fill />
       </b-button>
     </b-tooltip>
+
+    <!-- TODO: move instead of delete -->
+    <DeletionConfirmation
+      :ref="'deletionConfirmation-' + event.id"
+      @confirm="confirmableFunction"
+    >
+      <p>
+        Bist du sicher, dass du diesen Termin entfernen willst? Du kannst diese
+        Entscheidung nicht mehr rückgängig machen!
+      </p>
+      <p>
+        <b
+          >{{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
+          -
+          {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}</b
+        ><br />
+        Heilmittel:
+        {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}<br />
+        Kunde: {{ this.kunde?.firstname }} {{ this.kunde?.lastname }}<br />
+        Therapeut: {{ this.event.Therapeut.name }}
+      </p>
+    </DeletionConfirmation>
   </div>
 </template>
 
@@ -41,6 +63,7 @@
 import KundenService from "@/services/KundenService";
 import TerminService from "@/services/TerminService";
 import { therapeutToColor } from "@/utils/events";
+import DeletionConfirmation from "../formsAndModals/DeletionConfirmation.vue";
 export default {
   name: "CalendarDate",
   props: {
@@ -58,6 +81,7 @@ export default {
           new Date(this.event.start).getMinutes() + this.event.minutes
         )
       ),
+      confirmableFunction: () => {},
     };
   },
   methods: {
@@ -70,9 +94,11 @@ export default {
       };
     },
     deleteDate() {
-      // TODO: confirm deletion
-      TerminService.remove(this.event.id);
-      this.$emit("triggerUpdate");
+      this.confirmableFunction = () => {
+        TerminService.remove(this.event.id);
+        this.$emit("triggerUpdate");
+      };
+      this.$refs["deletionConfirmation-" + this.event.id].show();
     },
   },
   mounted() {
@@ -80,10 +106,11 @@ export default {
       return (this.kunde = k);
     });
   },
+  components: { DeletionConfirmation },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .calendardate {
   color: white;
   display: inline-block;
@@ -91,10 +118,18 @@ export default {
   font-size: small;
 
   text-align: left;
-  padding: 10px;
+  padding: 5px 10px;
   border-radius: 12px;
   overflow: hidden;
   margin: 1px 1px 0;
+
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 p {

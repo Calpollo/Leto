@@ -1,26 +1,284 @@
 [
   {
-    "abk": "MT-6",
-    "name": "Manuelle Therapie",
+    "abk": "KG-6",
+    "name": "Krankengymnasitk",
     "terminNumber": 6,
     "terminMinutes": 20
   },
   {
-    "abk": "MT-10",
-    "name": "Manuelle Therapie",
-    "terminNumber": 10,
-    "terminMinutes": 20
+    "abk": "KG-Gruppe-6",
+    "name": "Krankengymnasitk Gruppe",
+    "terminNumber": 6
   },
   {
     "abk": "KGG-6",
-    "name": "Krankengymnastik am Gerät",
+    "name": "Krankengymnasitk-Gerät",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KG-BWB-6",
+    "name": "Krankengymnasitk im Bewegungsbad",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KG-BWB-Gruppe-6",
+    "name": "Krankengymnasitk im Bewegungsbad Gruppe",
+    "terminNumber": 6
+  },
+  {
+    "abk": "MT-6",
+    "name": "Manuelle Therapie",
+    "terminNumber": 6
+  },
+  {
+    "abk": "ÜBB-6",
+    "name": "Übungsbehandlung",
+    "terminNumber": 6
+  },
+  {
+    "abk": "ÜBB-Gruppe-6",
+    "name": "Übungsbehandlung Gruppe",
+    "terminNumber": 6
+  },
+  {
+    "abk": "ÜBB-BWB-6",
+    "name": "Übungsbehandlung im Bewegungsbad",
+    "terminNumber": 6
+  },
+  {
+    "abk": "ÜBB-BWB-Gruppe-6",
+    "name": "Übungsbehandlung im Bewegungsbad Gruppe",
+    "terminNumber": 6
+  },
+  {
+    "abk": "CG-6",
+    "name": "Chirogymnastik",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KMT-6",
+    "name": "Klassische Massagetherapie",
+    "terminNumber": 6
+  },
+  {
+    "abk": "UWM-6",
+    "name": "Unterwasserdruckstrahlmassage",
+    "terminNumber": 6
+  },
+  {
+    "abk": "SM-6",
+    "name": "Segmentmassage",
+    "terminNumber": 6
+  },
+  {
+    "abk": "PM-6",
+    "name": "Periostmassage",
+    "terminNumber": 6
+  },
+  {
+    "abk": "BGM-6",
+    "name": "Bindegewebsmassage",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Wärmetherapie-6",
+    "name": "Wärmetherapie",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Kältetherapie-6",
+    "name": "Kältetherapie",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Traktion-6",
+    "name": "Traktion",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Elektrotherapie-6",
+    "name": "Elektrotherapie",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Hydroelektrische Bäder-6",
+    "name": "Hydroelektrische Bäder",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KG-10",
+    "name": "Krankengymnasitk",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-Gruppe-10",
+    "name": "Krankengymnasitk Gruppe",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-BWB-10",
+    "name": "Krankengymnasitk im Bewegungsbad",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-BWB-Gruppe-10",
+    "name": "Krankengymnasitk im Bewegungsbad Gruppe",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-ZNS-10",
+    "name": "Krankengymnasitk ZNS",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-ZNS-Kinder-10",
+    "name": "Krankengymnasitk ZNS Kinder",
+    "terminNumber": 10
+  },
+  {
+    "abk": "Wärmetherapie-10",
+    "name": "Wärmetherapie",
+    "terminNumber": 10
+  },
+  {
+    "abk": "Kältetherapie-10",
+    "name": "Kältetherapie",
+    "terminNumber": 10
+  },
+  {
+    "abk": "Traktion-10",
+    "name": "Traktion",
+    "terminNumber": 10
+  },
+  {
+    "abk": "Elektrotherapie-10",
+    "name": "Elektrotherapie",
+    "terminNumber": 10
+  },
+  {
+    "abk": "Elektrostimulation-10",
+    "name": "Elektrostimulation",
+    "terminNumber": 10
+  },
+  {
+    "abk": "KG-Atem-6",
+    "name": "Krankengymnasitk (Atemtherapie)",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KG-Atem-Gruppe-6",
+    "name": "Krankengymnasitk (Atemtherapie) Gruppe",
+    "terminNumber": 6
+  },
+  {
+    "abk": "KG-Muko-6",
+    "name": "Krankengymnasitk-Muko",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Inhalation-6",
+    "name": "Inhalation",
+    "terminNumber": 6
+  },
+  {
+    "abk": "MLD-30",
+    "name": "Manuelle Lymphdrainage (Teilbehandlung)",
     "terminNumber": 6,
     "terminMinutes": 30
   },
   {
-    "abk": "KGG-10",
-    "name": "Krankengymnastik am Gerät",
+    "abk": "MLD-30-Kompression",
+    "name": "Manuelle Lymphdrainage (Teilbehandlung) + Kompressionsbandagierung",
+    "terminNumber": 6,
+    "terminMinutes": 30
+  },
+  {
+    "abk": "MLD-45",
+    "name": "Manuelle Lymphdrainage (Großbehandlung)",
+    "terminNumber": 6,
+    "terminMinutes": 45
+  },
+  {
+    "abk": "MLD-45-Kompression",
+    "name": "Manuelle Lymphdrainage (Großbehandlung) + Kompressionsbandagierung",
+    "terminNumber": 6,
+    "terminMinutes": 45
+  },
+  {
+    "abk": "MLD-60",
+    "name": "Manuelle Lymphdrainage (Ganzbehandlung)",
+    "terminNumber": 6,
+    "terminMinutes": 60
+  },
+  {
+    "abk": "MLD-60",
+    "name": "Manuelle Lymphdrainage (Ganzbehandlung) + Kompressionsbandagierung",
+    "terminNumber": 6,
+    "terminMinutes": 60
+  },
+  {
+    "abk": "CM-6",
+    "name": "Colonmassage",
+    "terminNumber": 6
+  },
+  {
+    "abk": "CO2-Bad-6",
+    "name": "CO2-Bad",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Hornhautabtragung-6",
+    "name": "Hornhautabtragung",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Nagelbearbeitung-6",
+    "name": "Nagelbearbeitung",
+    "terminNumber": 6
+  },
+  {
+    "abk": "PodolKomplex-6",
+    "name": "Podologische Komplexbehandlung",
+    "terminNumber": 6
+  },
+  {
+    "abk": "Nagelspangenbehandlung-8",
+    "name": "Nagelspangenbehandlung",
+    "terminNumber": 8
+  },
+  {
+    "abk": "Nagelspangenbehandlung-4",
+    "name": "Nagelspangenbehandlung",
+    "terminNumber": 4
+  },
+  {
+    "abk": "ST-30-10",
+    "name": "Stimmtherapie-30",
     "terminNumber": 10,
     "terminMinutes": 30
+  },
+  {
+    "abk": "ST-45-10",
+    "name": "Stimmtherapie-45",
+    "terminNumber": 10,
+    "terminMinutes": 45
+  },
+  {
+    "abk": "ST-60-10",
+    "name": "Stimmtherapie-60",
+    "terminNumber": 10,
+    "terminMinutes": 60
+  },
+  {
+    "abk": "ST-Gruppe-45-10",
+    "name": "Stimmtherapie-Gruppe-45",
+    "terminNumber": 10,
+    "terminMinutes": 45
+  },
+  {
+    "abk": "ST-Gruppe-90-10",
+    "name": "Stimmtherapie-Gruppe-90",
+    "terminNumber": 10,
+    "terminMinutes": 90
   }
 ]

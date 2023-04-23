@@ -22,14 +22,35 @@ class RezeptService {
     });
   }
 
-  create(ausstellungsdatum, aussteller, HeilmittelId, KundeId) {
+  create(
+    ausstellungsdatum,
+    KundeId,
+    ArztLanr,
+    hausbesuch,
+    therapieBericht,
+    icd10codeId,
+    indikation,
+    HeilmittelIds = null
+  ) {
     return DatabaseService.createRezept({
       where: {
         ausstellungsdatum,
-        aussteller,
-        HeilmittelId,
         KundeId,
+        ArztLanr,
+        hausbesuch,
+        therapieBericht,
+        icd10codeId,
+        indikation,
       },
+    }).then(([rezept, creationSuccess]) => {
+      console.log(rezept, creationSuccess);
+      if (HeilmittelIds) {
+        console.log(rezept.id);
+        return DatabaseService.setRezeptHeilmittel({
+          rezeptId: rezept.id,
+          hms: HeilmittelIds,
+        });
+      } else return rezept;
     });
   }
 }

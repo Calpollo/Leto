@@ -43,9 +43,9 @@
           :key="rezept.id"
           v-model="rezept.selected"
         >
-          Rezept: {{ rezept.Heilmittel.abk }}, {{ rezept.Kunde.firstname }}
-          {{ rezept.Kunde.lastname }} (vom
-          {{ toLocale(rezept?.ausstellungsdatum) }})
+          Rezept: {{ rezept.Kunde.firstname }} {{ rezept.Kunde.lastname }} (vom
+          {{ toLocale(rezept?.ausstellungsdatum) }},
+          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }})
         </b-form-checkbox>
       </b-col>
     </b-row>
@@ -87,7 +87,7 @@ export default {
     };
   },
   mounted() {
-    RezeptService.getAll({ include: ["Heilmittel", "Kunde"] }).then(
+    RezeptService.getAll({ include: ["Heilmittels", "Kunde"] }).then(
       (rezeptList) =>
         (this.rezepte = rezeptList.map((r) => {
           return { ...r, selected: true };
@@ -122,17 +122,18 @@ export default {
   computed: {
     filteredRezepte() {
       return [...this.rezepte]
-        .filter(
-          (r) => !this.selectedKundeId || r.KundeId == this.selectedKundeId
-        )
+        .filter((r) => {
+          return (
+            new Date(r.ausstellungsdatum).valueOf() >
+              new Date(this.filterStartDate).valueOf() - 1000 * 60 * 60 * 24 &&
+            new Date(r.ausstellungsdatum).valueOf() <
+              new Date(this.filterEndDate).valueOf() + 1000 * 60 * 60 * 24
+          );
+        })
         .filter(
           (r) =>
-            r.ausstellungsdatum > this.filterStartDate - 1000 * 60 * 60 * 24 &&
-            r.ausstellungsdatum < this.filterEndDate + 1000 * 60 * 60 * 24
-        )
-        .filter(
-          (r) =>
-            this.allowKostenfrei || r.Heilmittel.krankenkassenbeteiligung > 0
+            this.allowKostenfrei ||
+            r.Heilmittels.some((hm) => hm.krankenkassenbeteiligung > 0)
         );
     },
     abrechnungsRezepte() {

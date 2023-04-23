@@ -3,6 +3,7 @@
   "address": "Friedensstraße 9, 73072 Donzdorf",
   "email": "kontakt@koerpertherapie-wagner.de",
   "phone": "+4971622068788",
+  "ikNummer": "000800009",
   "öffnungszeiten": {
     "montagsZeit": {
       "start": { "hour": 8, "minute": 0 },

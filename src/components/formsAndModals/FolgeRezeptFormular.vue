@@ -27,7 +27,7 @@
         <v-stepper-content step="2">
           <termin-vorschlaege
             v-if="currentStep == 2"
-            :heilmittel="rezept.Heilmittel"
+            :heilmittel="rezept.Heilmittels"
             :showSaveButton="false"
             v-model="terminvorschlaege"
           />
@@ -44,12 +44,12 @@
           <TerminUebersichtPdf
             v-if="currentStep == 3"
             ref="termine"
-            :RezeptId="rezept.id"
+            :RezeptId="rezept.id.toString()"
           />
           <RechnungKundePdf
             v-if="currentStep == 3"
             ref="rechnungen"
-            :RezeptId="rezept.id"
+            :RezeptId="rezept.id.toString()"
           />
         </v-stepper-content>
       </v-stepper-items>
@@ -58,6 +58,7 @@
     <template #modal-footer="{ cancel }">
       <b-button-group>
         <b-button
+          v-if="currentStep != 3"
           :disabled="currentStep == 1 || currentStep == 3"
           @click="currentStep--"
         >
@@ -70,7 +71,11 @@
           >{{ currentStep < 3 ? "Weiter" : "Fertig" }}
         </b-button>
       </b-button-group>
-      <b-button variant="outline-danger" @click="cancel()">
+      <b-button
+        v-if="currentStep != 3"
+        variant="outline-danger"
+        @click="cancel()"
+      >
         Abbrechen
       </b-button>
     </template>
@@ -81,8 +86,15 @@
 import { createNewRezept } from "@/utils/events";
 import FolgerezeptDaten from "./steps/FolgerezeptDaten.vue";
 import TerminVorschlaege from "./steps/TerminVorschlaege.vue";
+import TerminUebersichtPdf from "@/pdfTemplates/TerminUebersichtPdf.vue";
+import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
 export default {
-  components: { FolgerezeptDaten, TerminVorschlaege },
+  components: {
+    FolgerezeptDaten,
+    TerminVorschlaege,
+    TerminUebersichtPdf,
+    RechnungKundePdf,
+  },
   data() {
     return {
       currentStep: 1,
@@ -92,20 +104,15 @@ export default {
   },
   methods: {
     done(terminVorschlagsList) {
-      // TODO: trigger rezept erstellung und termin erstellung
       console.log(this.rezept, terminVorschlagsList);
-      return createNewRezept(
-        null,
-        this.rezept,
-        terminVorschlagsList,
-        false,
-        this.rezept.KundeId
-      ).then(([termine, createdKunde, createdRezept]) => {
-        console.table(termine);
-        console.log(createdKunde, createdRezept);
-        this.rezept = { ...this.rezept, ...createdRezept };
-        this.$emit("done");
-      });
+      return createNewRezept(this.rezept, terminVorschlagsList).then(
+        ([termine, createdKunde, createdRezept]) => {
+          console.table(termine);
+          console.log(createdKunde, createdRezept);
+          this.rezept = { ...this.rezept, ...createdRezept };
+          this.$emit("done");
+        }
+      );
     },
     weiter() {
       if (this.currentStep == 2) {
@@ -127,14 +134,18 @@ export default {
     currentStepIsValid() {
       switch (this.currentStep) {
         case 1: {
-          const { Heilmittel, ausstellungsdatum, aussteller } = this.rezept;
-          return Heilmittel && ausstellungsdatum && aussteller;
+          const { Heilmittels, ausstellungsdatum, ArztLanr } = this.rezept;
+          return Heilmittels && ausstellungsdatum && ArztLanr;
         }
         case 2: {
-          return (
-            this.terminvorschlaege.length == this.rezept.Heilmittel.terminNumber
-          );
+          let terminSum = 0;
+          this.rezept.Heilmittels.forEach((hm) => {
+            terminSum += hm.terminNumber;
+          });
+          return this.terminvorschlaege.length == terminSum;
         }
+        case 3:
+          return true;
         default:
           return false;
       }

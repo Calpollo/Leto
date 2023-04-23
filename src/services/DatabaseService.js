@@ -69,6 +69,18 @@ class DatabaseService {
     }
   }
 
+  getICD10Code(data) {
+    if (this.isLocal()) {
+      return window.ipc.getICD10Code(data).then(JSON.parse);
+    }
+  }
+
+  getArzt(data) {
+    if (this.isLocal()) {
+      return window.ipc.getArzt(data).then(JSON.parse);
+    }
+  }
+
   // ############################
   // Create Instances in the database
   // ############################
@@ -117,6 +129,12 @@ class DatabaseService {
   createDatum(data) {
     if (this.isLocal()) {
       return window.ipc.createDatum(data).then(JSON.parse);
+    }
+  }
+
+  createArzt(data) {
+    if (this.isLocal()) {
+      return window.ipc.createArzt(data).then(JSON.parse);
     }
   }
 
@@ -178,6 +196,12 @@ class DatabaseService {
   setTherapeutHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.setTherapeutHeilmittel(data).then(JSON.parse);
+    }
+  }
+
+  setRezeptHeilmittel(data) {
+    if (this.isLocal()) {
+      return window.ipc.setRezeptHeilmittel(data).then(JSON.parse);
     }
   }
 

@@ -119,7 +119,7 @@ export default {
     },
     updateRezept(id) {
       RezeptService.getOne(id, {
-        include: ["Kunde", "Heilmittel", "Termins"],
+        include: ["Kunde", "Termins"],
       }).then((r) => {
         this.Rezept = r;
       });

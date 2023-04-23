@@ -5,14 +5,23 @@
     "address": "Hauptstraße 1, 96120 Bischberg",
     "email": "otto.normalverbraucher@gmail.com",
     "phone": "016090899730",
+    "geburtstag": "1999-08-20",
     "versichertenstatus": "GKV",
     "versichertennummer": "G36B48972H20",
+    "KrankenkasseKostenträgerkennung": "100180008",
     "Rezepte": [
       {
-        "aussteller": "Allgemeinarztpraxis Hinz & Kunz",
-        "Heilmittel": "KGG-6",
+        "Heilmittel": ["KGG-6", "MT-6"],
         "Praxis": "Körpertherapie Wagner",
         "Therapeut": "Tanja Therapeutin",
+        "hausbesuch": false,
+        "therapieBericht": false,
+        "dringend": false,
+        "indikation": "CS-a",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "738170601",
         "Termine": [
           {
             "start": { "plusdays": 0, "hours": 12, "minutes": 0 },
@@ -41,10 +50,17 @@
         ]
       },
       {
-        "aussteller": "Ortspraxis Heilkunst",
-        "Heilmittel": "KGG-10",
+        "Heilmittel": ["CG-6"],
         "Praxis": "Körpertherapie Wagner",
         "Therapeut": "Tanja Therapeutin",
+        "hausbesuch": false,
+        "therapieBericht": false,
+        "dringend": false,
+        "indikation": "WS-b",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "632289001",
         "Termine": [
           {
             "start": { "plusdays": 0, "hours": 12, "minutes": 30 },
@@ -80,14 +96,23 @@
     "address": "Hauptstraße 1, 96120 Bischberg",
     "email": "otto.normalverbraucher@gmail.com",
     "phone": "016090899730",
+    "geburtstag": "1997-02-24",
     "versichertenstatus": "GKV",
     "versichertennummer": "G213456789N20",
+    "KrankenkasseKostenträgerkennung": "100177504",
     "Rezepte": [
       {
-        "aussteller": "Allgemeinarztpraxis Hinz & Kunz",
-        "Heilmittel": "MT-6",
+        "Heilmittel": ["MT-6"],
         "Praxis": "Körpertherapie Wagner",
         "Therapeut": "Peter Physio",
+        "hausbesuch": false,
+        "therapieBericht": false,
+        "dringend": false,
+        "indikation": "EX-a",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "632289001",
         "Termine": [
           {
             "start": { "plusdays": 0, "hours": 12, "minutes": 0 },
