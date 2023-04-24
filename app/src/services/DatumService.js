@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class DatumService {
   getAll({ include = [], where = {} } = {}) {
-    return DatabaseService.getDatum({ include, where });
+    return DatabaseService.getDatum({ include, where }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getDatum({ id, include });
+    return DatabaseService.getDatum({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(datum, yearlyRepetition, VertragId) {

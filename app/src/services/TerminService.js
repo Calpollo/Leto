@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class TerminService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getTermine({ include });
+    return DatabaseService.getTermine({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getTermine({ id, include });
+    return DatabaseService.getTermine({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   remove(id) {

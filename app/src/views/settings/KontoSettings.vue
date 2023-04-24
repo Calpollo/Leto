@@ -28,6 +28,7 @@
 
 <script>
 import SettingsEditBlock from "@/components/settings/SettingsEditBlock.vue";
+import ConfigService from "../../services/ConfigService";
 
 export default {
   data() {
@@ -47,6 +48,7 @@ export default {
   methods: {
     setVersion(ver) {
       this.selectedVersion = ver;
+      ConfigService.setVersion(ver);
     },
   },
   components: { SettingsEditBlock },

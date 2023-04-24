@@ -7,8 +7,11 @@ class ConfigService {
   }
 
   checkConfig() {
-    if (!["local"].includes(this.getVersion()))
-      throw new Error("The programm version must be in ['local']");
+    const versionList = ["Lokal", "Basis", "Premium"];
+    if (!versionList.includes(this.getVersion()))
+      throw new Error(
+        "The programm version must be in " + JSON.stringify(versionList)
+      );
     if (!["1", "3", "week", "month"].includes(this.getCalendar("defaultView")))
       throw new Error(
         'The calendar default view must be in ["1", "3", "week", "month"]'
@@ -38,6 +41,11 @@ class ConfigService {
 
   getDefaultPause() {
     return this.config.defaultPause;
+  }
+
+  setVersion(version) {
+    this.config.version = version;
+    this.save();
   }
 
   setTherapeutColor(name, color) {

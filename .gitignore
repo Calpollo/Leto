@@ -1,10 +1,10 @@
 .DS_Store
-node_modules
-/dist
-data
-config
-src/db/seeds/gkv
-src/db/seeds/icd-10
+app/node_modules
+app/dist
+app/data
+app/config
+app/src/db/seeds/gkv
+app/src/db/seeds/icd-10
 
 # local env files
 .env.local
@@ -26,4 +26,4 @@ pnpm-debug.log*
 *.sw?
 
 #Electron-builder output
-/dist_electron
+/app/dist_electron

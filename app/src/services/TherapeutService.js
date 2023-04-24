@@ -3,11 +3,17 @@ import VertragService from "./VertragService";
 
 class TherapeutService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getTherapeut({ include });
+    return DatabaseService.getTherapeut({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getTherapeut({ id, include });
+    return DatabaseService.getTherapeut({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(name, geschlecht, Vertrag) {

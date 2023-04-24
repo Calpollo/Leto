@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class HeilmittelService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getHeilmittel({ include });
+    return DatabaseService.getHeilmittel({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getHeilmittel({ id, include });
+    return DatabaseService.getHeilmittel({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(

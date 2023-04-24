@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class RezeptService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getRezept({ include });
+    return DatabaseService.getRezept({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getRezept({ id, include });
+    return DatabaseService.getRezept({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   getByLastnameAndFirstname(lastname, firstname, { include = [] } = {}) {

@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class KundenService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getKunde({ include });
+    return DatabaseService.getKunde({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getKunde({ id, include });
+    return DatabaseService.getKunde({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(lastname, firstname, email, phone, address) {

@@ -4,11 +4,17 @@ import ZeitspanneService from "./ZeitspanneService";
 
 class VertragService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getVertrag({ include });
+    return DatabaseService.getVertrag({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getVertrag({ id, include });
+    return DatabaseService.getVertrag({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(

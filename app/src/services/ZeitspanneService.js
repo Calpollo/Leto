@@ -2,11 +2,17 @@ import DatabaseService from "./DatabaseService";
 
 class ZeitspanneService {
   getAll({ include = [] } = {}) {
-    return DatabaseService.getZeitspanne({ include });
+    return DatabaseService.getZeitspanne({ include }).catch((err) => {
+      console.warn(err);
+      return [];
+    });
   }
 
   getOne(id, { include = [] } = {}) {
-    return DatabaseService.getZeitspanne({ id, include });
+    return DatabaseService.getZeitspanne({ id, include }).catch((err) => {
+      console.warn(err);
+      return null;
+    });
   }
 
   create(start, end) {

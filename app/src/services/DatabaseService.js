@@ -1,89 +1,131 @@
 import ConfigService from "./ConfigService";
+import axios from "axios";
+
+const ax = axios.create({
+  baseURL:
+    process.env.NODE_ENV == "production"
+      ? "https://leto.andreasnicklaus.de/api/"
+      : "http://localhost:8080/",
+  // timeout: 1000,
+  // headers: { 'X-Custom-Header': 'foobar' }
+});
 
 class DatabaseService {
-  constructor() {
-    if (ConfigService.getVersion() != "local")
-      console.warn(
-        "DatabaseService is not implemented for any version other than 'local'."
-      );
-  }
-
   isLocal() {
-    return ConfigService.getVersion() == "local";
+    return ConfigService.getVersion() == "Lokal";
   }
 
   // ############################
   // Get Instances from the database
   // ############################
+  // TODO: add rest of data options for other versions than "Lokal"
   getZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.getZeitspanne(data).then(JSON.parse);
+    } else {
+      if (data.id)
+        return ax.get("/zeitspanne/" + data.id).then((res) => res.data);
+      return ax.get("/zeitspanne/").then((res) => res.data);
     }
   }
 
   getTermine(data) {
     if (this.isLocal()) {
       return window.ipc.getTermin(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/termin/" + data.id).then((res) => res.data);
+      return ax.get("/termin/").then((res) => res.data);
     }
   }
 
   getKunde(data) {
     if (this.isLocal()) {
       return window.ipc.getKunde(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/kunde/" + data.id).then((res) => res.data);
+      return ax.get("/kunde/").then((res) => res.data);
     }
   }
 
   getTherapeut(data) {
     if (this.isLocal()) {
       return window.ipc.getTherapeut(data).then(JSON.parse);
+    } else {
+      if (data.id)
+        return ax.get("/therapeut/" + data.id).then((res) => res.data);
+      return ax.get("/therapeut/").then((res) => res.data);
     }
   }
 
   getPraxis(data) {
     if (this.isLocal()) {
       return window.ipc.getPraxis(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/praxis/" + data.id).then((res) => res.data);
+      return ax.get("/praxis/").then((res) => res.data);
     }
   }
 
   getRezept(data) {
     if (this.isLocal()) {
       return window.ipc.getRezept(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/rezept/" + data.id).then((res) => res.data);
+      return ax.get("/rezept/").then((res) => res.data);
     }
   }
 
   getHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.getHeilmittel(data).then(JSON.parse);
+    } else {
+      if (data.id)
+        return ax.get("/heilmittel/" + data.id).then((res) => res.data);
+      return ax.get("/heilmittel/").then((res) => res.data);
     }
   }
 
   getVertrag(data) {
     if (this.isLocal()) {
       return window.ipc.getVertrag(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/vertrag/" + data.id).then((res) => res.data);
+      return ax.get("/vertrag/").then((res) => res.data);
     }
   }
 
   getDatum(data) {
     if (this.isLocal()) {
       return window.ipc.getDatum(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/datum/" + data.id).then((res) => res.data);
+      return ax.get("/datum/").then((res) => res.data);
     }
   }
 
   getICD10Code(data) {
     if (this.isLocal()) {
       return window.ipc.getICD10Code(data).then(JSON.parse);
+    } else {
+      if (data.id)
+        return ax.get("/icd10code/" + data.id).then((res) => res.data);
+      return ax.get("/icd10code/").then((res) => res.data);
     }
   }
 
   getArzt(data) {
     if (this.isLocal()) {
       return window.ipc.getArzt(data).then(JSON.parse);
+    } else {
+      if (data.id) return ax.get("/arzt/" + data.id).then((res) => res.data);
+      return ax.get("/arzt/").then((res) => res.data);
     }
   }
 
   // ############################
   // Create Instances in the database
   // ############################
+  // TODO: add support for other versions than 'Lokal'
   createZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.createZeitspanne(data).then(JSON.parse);
@@ -141,6 +183,8 @@ class DatabaseService {
   // ############################
   // Update Instances in the database
   // ############################
+  // TODO: add support for other versions than 'Lokal'
+
   updateZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.updateZeitspanne(data).then(JSON.parse);
@@ -192,6 +236,7 @@ class DatabaseService {
   // ############################
   // Setting Associations
   // ############################
+  // TODO: add support for other versions than 'Lokal'
 
   setTherapeutHeilmittel(data) {
     if (this.isLocal()) {
@@ -208,6 +253,8 @@ class DatabaseService {
   // ############################
   // Remove Instances in the database
   // ############################
+  // TODO: add support for other versions than 'Lokal'
+
   removeZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.removeZeitspanne(data).then(JSON.parse);
