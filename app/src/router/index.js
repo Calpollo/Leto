@@ -1,3 +1,4 @@
+import store from "@/store";
 import Vue from "vue";
 import VueRouter from "vue-router";
 
@@ -7,7 +8,7 @@ const routes = [
   {
     path: "/",
     name: "Start",
-    redirect: "home",
+    component: () => import("../views/LoginView.vue"),
   },
   {
     path: "/home",
@@ -78,6 +79,13 @@ const router = new VueRouter({
   mode: process.env.IS_ELECTRON ? "hash" : "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPaths = ["/"];
+  if (publicPaths.includes(to.path)) next();
+  else if (!store.state.loggedIn) next("/");
+  else next();
 });
 
 export default router;

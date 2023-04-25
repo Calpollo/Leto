@@ -12,7 +12,7 @@
       <spinner-logo />
     </div>
 
-    <div v-else v-for="praxis in praxisList" :key="praxis.id">
+    <div v-for="praxis in praxisList" :key="praxis.id">
       <h3 class="p-2 px-4">
         {{ praxis.name }}
         <span class="ml-2" v-b-tooltip.hover :title="praxis.id">

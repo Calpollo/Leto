@@ -69,13 +69,27 @@
 
         <div id="calendar">
           <CalendarComponent
-            :events="this.events"
+            :events="events"
             :length="calendarlength"
             @triggerUpdate="updateEventList"
           />
         </div>
       </div>
     </div>
+
+    <b-modal
+      id="praxisSelect"
+      title="Die aktive Praxis auswählen"
+      :modal-footer="{ visible: false }"
+      no-close-on-esc
+      no-close-on-backdrop
+      hide-header-close
+    >
+      <praxis-selection v-model="selectedPraxisId" />
+      <template #modal-footer>
+        <b-button @click="ok">Speichern</b-button>
+      </template>
+    </b-modal>
 
     <NeuesRezeptFormular id="neuesRezept" @done="updateEventList" />
 
@@ -94,17 +108,34 @@ import ConfigService from "@/services/ConfigService";
 import TerminService from "@/services/TerminService";
 import TherapeutService from "@/services/TherapeutService";
 import CalendarColorLegend from "@/components/calendar/CalendarColorLegend.vue";
+import PraxisService from "../services/PraxisService";
+import PraxisSelection from "../components/formsAndModals/PraxisSelection.vue";
 
 export default {
   name: "OverviewView",
   data() {
     return {
+      selectedPraxisId: null,
       events: [],
       therapeuten: [],
       calendarlength: ConfigService.getCalendar("defaultView"),
     };
   },
   methods: {
+    init() {
+      this.updateEventList();
+      TherapeutService.getAll().then((therapeuten) => {
+        this.therapeuten = therapeuten;
+      });
+    },
+    openPraxisSelectionModal() {
+      this.$bvModal.show("praxisSelect");
+    },
+    ok() {
+      ConfigService.setPraxis(this.selectedPraxisId);
+      this.$bvModal.hide("praxisSelect");
+      this.init();
+    },
     setCalendarLength(n) {
       this.calendarlength = n;
     },
@@ -126,12 +157,19 @@ export default {
     FolgeRezeptFormular,
     TerminAbsage,
     CalendarColorLegend,
+    PraxisSelection,
   },
   mounted() {
-    this.updateEventList();
-    TherapeutService.getAll().then((therapeuten) => {
-      this.therapeuten = therapeuten;
-    });
+    const id = ConfigService.getPraxis();
+    if (!id) this.openPraxisSelectionModal();
+    else {
+      PraxisService.getOne(id)
+        .then((praxis) => {
+          if (!praxis) this.openPraxisSelectionModal();
+          else this.init();
+        })
+        .catch(() => this.openPraxisSelectionModal());
+    }
   },
 };
 </script>

@@ -123,6 +123,7 @@ import { toLocale } from "@/utils/dates";
 import TherapeutService from "@/services/TherapeutService";
 import TherapeutEditFormular from "@/components/formsAndModals/TherapeutEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
+import { timeStringToDate } from "@/utils/events";
 
 export default {
   components: { TherapeutEditFormular, DeletionConfirmation },
@@ -203,6 +204,9 @@ export default {
       this.$refs.deletionConfirmation.show();
     },
     zeitZuString(event) {
+      if (typeof event.start == "string")
+        event.start = timeStringToDate(event.start);
+      if (typeof event.end == "string") event.end = timeStringToDate(event.end);
       return `${this.pad(new Date(event.start).getHours())}:${this.pad(
         new Date(event.start).getMinutes()
       )}- ${this.pad(new Date(event.end).getHours())}:${this.pad(

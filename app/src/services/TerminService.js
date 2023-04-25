@@ -1,9 +1,11 @@
+import router from "@/router";
 import DatabaseService from "./DatabaseService";
 
 class TerminService {
   getAll({ include = [] } = {}) {
     return DatabaseService.getTermine({ include }).catch((err) => {
       console.warn(err);
+      if ([403, 401].includes(err.response.status)) router.push("/");
       return [];
     });
   }
@@ -11,6 +13,7 @@ class TerminService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getTermine({ id, include }).catch((err) => {
       console.warn(err);
+      if ([403, 401].includes(err.response.status)) router.push("/");
       return null;
     });
   }

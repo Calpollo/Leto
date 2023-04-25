@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, shell } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
@@ -39,6 +39,11 @@ async function createWindow() {
   }
 
   win.setTitle(require("../package.json").displayName);
+
+  win.webContents.setWindowOpenHandler((edata) => {
+    shell.openExternal(edata.url);
+    return { action: "deny" };
+  });
 }
 
 // Quit when all windows are closed.

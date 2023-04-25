@@ -1,3 +1,4 @@
+import router from "@/router";
 import DatabaseService from "./DatabaseService";
 import DatumService from "./DatumService";
 import ZeitspanneService from "./ZeitspanneService";
@@ -6,6 +7,7 @@ class VertragService {
   getAll({ include = [] } = {}) {
     return DatabaseService.getVertrag({ include }).catch((err) => {
       console.warn(err);
+      if ([403, 401].includes(err.response.status)) router.push("/");
       return [];
     });
   }
@@ -13,6 +15,7 @@ class VertragService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getVertrag({ id, include }).catch((err) => {
       console.warn(err);
+      if ([403, 401].includes(err.response.status)) router.push("/");
       return null;
     });
   }

@@ -1,3 +1,4 @@
+import store from "@/store";
 import ConfigService from "./ConfigService";
 import axios from "axios";
 
@@ -15,6 +16,27 @@ class DatabaseService {
     return ConfigService.getVersion() == "Lokal";
   }
 
+  login(username, password) {
+    return ax
+      .post("/auth/login", { username, password })
+      .then((response) => {
+        ax.defaults.headers.common.Authorization =
+          "Bearer " + response.data.token;
+        store.commit("logIn");
+        return true;
+      })
+      .catch((err) => {
+        console.error(err);
+        return err;
+      });
+  }
+
+  me() {
+    return ax.get("/auth/me").then((response) => {
+      return response.data;
+    });
+  }
+
   // ############################
   // Get Instances from the database
   // ############################
@@ -23,8 +45,11 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getZeitspanne(data).then(JSON.parse);
     } else {
+      const params = { include: data.include };
       if (data.id)
-        return ax.get("/zeitspanne/" + data.id).then((res) => res.data);
+        return ax
+          .get("/zeitspanne/" + data.id, { params })
+          .then((res) => res.data);
       return ax.get("/zeitspanne/").then((res) => res.data);
     }
   }
@@ -33,8 +58,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getTermin(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/termin/" + data.id).then((res) => res.data);
-      return ax.get("/termin/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/termin/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/termin/", { params }).then((res) => res.data);
     }
   }
 
@@ -42,8 +69,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getKunde(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/kunde/" + data.id).then((res) => res.data);
-      return ax.get("/kunde/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/kunde/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/kunde/", { params }).then((res) => res.data);
     }
   }
 
@@ -51,9 +80,12 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getTherapeut(data).then(JSON.parse);
     } else {
+      const params = { include: data.include };
       if (data.id)
-        return ax.get("/therapeut/" + data.id).then((res) => res.data);
-      return ax.get("/therapeut/").then((res) => res.data);
+        return ax
+          .get("/therapeut/" + data.id, { params })
+          .then((res) => res.data);
+      return ax.get("/therapeut/", { params }).then((res) => res.data);
     }
   }
 
@@ -61,8 +93,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getPraxis(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/praxis/" + data.id).then((res) => res.data);
-      return ax.get("/praxis/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/praxis/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/praxis/", { params }).then((res) => res.data);
     }
   }
 
@@ -70,8 +104,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getRezept(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/rezept/" + data.id).then((res) => res.data);
-      return ax.get("/rezept/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/rezept/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/rezept/", { params }).then((res) => res.data);
     }
   }
 
@@ -79,9 +115,12 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getHeilmittel(data).then(JSON.parse);
     } else {
+      const params = { include: data.include };
       if (data.id)
-        return ax.get("/heilmittel/" + data.id).then((res) => res.data);
-      return ax.get("/heilmittel/").then((res) => res.data);
+        return ax
+          .get("/heilmittel/" + data.id, { params })
+          .then((res) => res.data);
+      return ax.get("/heilmittel/", { params }).then((res) => res.data);
     }
   }
 
@@ -89,8 +128,12 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getVertrag(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/vertrag/" + data.id).then((res) => res.data);
-      return ax.get("/vertrag/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax
+          .get("/vertrag/" + data.id, { params })
+          .then((res) => res.data);
+      return ax.get("/vertrag/", { params }).then((res) => res.data);
     }
   }
 
@@ -98,8 +141,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getDatum(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/datum/" + data.id).then((res) => res.data);
-      return ax.get("/datum/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/datum/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/datum/", { params }).then((res) => res.data);
     }
   }
 
@@ -107,9 +152,12 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getICD10Code(data).then(JSON.parse);
     } else {
+      const params = { include: data.include };
       if (data.id)
-        return ax.get("/icd10code/" + data.id).then((res) => res.data);
-      return ax.get("/icd10code/").then((res) => res.data);
+        return ax
+          .get("/icd10code/" + data.id, { params })
+          .then((res) => res.data);
+      return ax.get("/icd10code/", { params }).then((res) => res.data);
     }
   }
 
@@ -117,8 +165,10 @@ class DatabaseService {
     if (this.isLocal()) {
       return window.ipc.getArzt(data).then(JSON.parse);
     } else {
-      if (data.id) return ax.get("/arzt/" + data.id).then((res) => res.data);
-      return ax.get("/arzt/").then((res) => res.data);
+      const params = { include: data.include };
+      if (data.id)
+        return ax.get("/arzt/" + data.id, { params }).then((res) => res.data);
+      return ax.get("/arzt/", { params }).then((res) => res.data);
     }
   }
 

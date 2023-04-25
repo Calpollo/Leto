@@ -348,7 +348,7 @@ class LocalDbAdapter {
         primaryKey: true,
       },
       abk: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       name: {

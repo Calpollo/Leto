@@ -1,16 +1,6 @@
 <template>
   <div class="ausgebuchtliste">
-    <ul>
-      <li v-for="therapeut in this.therapeuten" :key="therapeut.id">
-        {{ therapeut.name }}:
-        <!-- TODO: update to a more exact method -->
-        {{
-          therapeut.Termins?.map((t) => new Date(t.start))
-            .sort((a, b) => new Date(b) - new Date(a))[0]
-            ?.toLocaleDateString("de-DE") || "braucht Termine"
-        }}
-      </li>
-    </ul>
+    <b-table :items="tableItems" />
   </div>
 </template>
 
@@ -24,6 +14,19 @@ export default {
   },
   mounted() {
     // console.table(this.therapeuten[0].Termins);
+  },
+  computed: {
+    tableItems() {
+      return this.therapeuten.map((t) => {
+        return {
+          Therapeut: t.name,
+          "ausgebucht bis":
+            t.Termins?.map((t) => new Date(t.start))
+              .sort((a, b) => new Date(b) - new Date(a))[0]
+              ?.toLocaleDateString("de-DE") || "braucht Termine",
+        };
+      });
+    },
   },
 };
 </script>

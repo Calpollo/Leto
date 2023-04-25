@@ -1,5 +1,5 @@
 <template>
-  <b-row class="calendar">
+  <b-row class="calendar" v-if="events && events.length > 0">
     <CalendarDay
       v-for="day in Array(numberOfDays).keys()"
       :key="day"
@@ -9,9 +9,11 @@
       @triggerUpdate="triggerUpdate"
     />
   </b-row>
+  <SpinnerLogo v-else />
 </template>
 
 <script>
+import SpinnerLogo from "../SpinnerLogo.vue";
 import CalendarDay from "./CalendarDay.vue";
 export default {
   name: "CalendarComponent",
@@ -66,7 +68,10 @@ export default {
       this.$emit("triggerUpdate");
     },
   },
-  components: { CalendarDay },
+  components: { CalendarDay, SpinnerLogo },
+  watch: {
+    events() {},
+  },
 };
 </script>
 

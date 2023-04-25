@@ -45,22 +45,22 @@ class ConfigService {
 
   setVersion(version) {
     this.config.version = version;
-    this.save();
+    // this.save();
   }
 
   setTherapeutColor(name, color) {
     this.config.calendar.therapeutColors[name] = color;
-    this.save();
+    // this.save();
   }
 
   setPraxis(id) {
     this.config.praxis = id;
-    this.save();
+    // this.save();
   }
 
   setHeilmittelTermine(hmTermine) {
     this.config.heilmittelTermine = hmTermine;
-    this.save();
+    // this.save();
   }
 }
 

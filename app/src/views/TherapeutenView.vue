@@ -12,10 +12,7 @@
       />
     </div>
 
-    <hr />
-
-    <div>
-      <h3>Ausgebucht bis:</h3>
+    <div class="mt-5">
       <AusgebuchtListe :therapeuten="this.therapeuten" />
     </div>
   </div>
