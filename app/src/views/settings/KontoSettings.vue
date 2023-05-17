@@ -6,34 +6,52 @@
       ändern.
     </p>
 
+    <!-- TODO: change to online/offline switch -->
     <div>
       <label for="version" class="mr-2">Version:</label>
       <b-dropdown id="version" :text="selectedVersion">
         <b-dropdown-item
           v-for="ver in availableVersions"
           :key="ver"
-          @click="() => setVersion(ver)"
-          >{{ ver }}</b-dropdown-item
+          @click="setVersion(ver)"
         >
+          {{ ver }}
+        </b-dropdown-item>
       </b-dropdown>
 
-      <SettingsEditBlock
-        class="my-2"
-        :value="kontodata"
-        @input="(e) => (kontodata = e)"
-      />
+      <b-card id="account-card">
+        <b-card-text>
+          <b-avatar variant="white" :src="Leto" />
+          <h1>
+            {{ $store.state.me.username }}
+          </h1>
+          <p>
+            {{ $store.state.me.email }}
+          </p>
+          <p>Aktueller Abo-Status: {{ $store.state.me.RoleName }}</p>
+
+          <b-button
+            variant="outline-primary"
+            href="https://leto.andreasnicklaus.de/account"
+            target="_blank"
+          >
+            Kontoverwaltung
+          </b-button>
+        </b-card-text>
+      </b-card>
     </div>
   </div>
 </template>
 
 <script>
-import SettingsEditBlock from "@/components/settings/SettingsEditBlock.vue";
 import ConfigService from "../../services/ConfigService";
+import Leto from "@/assets/Leto.svg";
 
 export default {
   data() {
     return {
-      selectedVersion: "Lokal",
+      Leto,
+      selectedVersion: ConfigService.getVersion(),
       availableVersions: ["Lokal", "Basis", "Premium"],
       kontodata: {
         username: {
@@ -51,7 +69,6 @@ export default {
       ConfigService.setVersion(ver);
     },
   },
-  components: { SettingsEditBlock },
 };
 </script>
 
@@ -75,5 +92,9 @@ export default {
     right: 0;
     position: absolute;
   }
+}
+
+#account-card {
+  text-align: center;
 }
 </style>
