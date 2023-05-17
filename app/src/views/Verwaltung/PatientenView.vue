@@ -76,7 +76,7 @@
       </b-row>
 
       <b-card v-for="patient in filteredPatients" :key="patient.id">
-        <b-card-header>
+        <b-card-header v-b-toggle="'collapse-' + patient.id">
           {{ patient.firstname }} {{ patient.lastname }}
           <span class="ml-2" v-b-tooltip.hover :title="patient.id">
             <b-icon-info-circle />
@@ -90,63 +90,65 @@
             </b-button>
           </b-button-group>
         </b-card-header>
-        <b-card-body>
-          <b-row>
-            <b-col>
-              <p v-if="patient.address">
-                <b-icon-house-fill class="mr-2" />
-                {{ patient.address }}
-              </p>
-              <p v-if="patient.email">
-                <b-icon-envelope-fill class="mr-2" />
-                <a :href="'mailto:' + patient.email">{{ patient.email }}</a>
-              </p>
-              <p v-if="patient.phone">
-                <b-icon-telephone-fill class="mr-2" />
-                <a :href="'tel:' + patient.phone">{{ patient.phone }}</a>
-              </p>
-              <p v-if="patient.Rezepts">
-                <b-icon-newspaper class="mr-2" />
-                {{ patient.Rezepts.length }} Rezept{{
-                  patient.Rezepts.length > 1 ? "e" : null
-                }}
-                ({{
-                  patient.Rezepts.map((r) => r.Termins.length).reduce(
-                    (partialSum, a) => partialSum + a,
-                    0
-                  )
-                }}
-                Termine)
-              </p>
-            </b-col>
-            <b-col>
-              <p v-if="patient.versichertenstatus">
-                <b-icon-lock-fill class="mr-2" />
-                {{ patient.versichertenstatus }}
-              </p>
-              <p
-                v-if="
-                  patient.versichertennummer &&
-                  patient.versichertenstatus != 'SZ'
-                "
-              >
-                <b-icon-hash class="mr-2" />
-                {{ patient.versichertennummer }}
-              </p>
-              <p
-                v-if="
-                  patient.versichertennummer &&
-                  patient.versichertenstatus != 'SZ'
-                "
-              >
-                <b-icon-building class="mr-2" />
-                {{ patient.Krankenkasse.name }} ({{
-                  patient.Krankenkasse.kostenträgerkennung
-                }})
-              </p>
-            </b-col>
-          </b-row>
-        </b-card-body>
+        <b-collapse :id="'collapse-' + patient.id" role="tabpanel">
+          <b-card-body>
+            <b-row>
+              <b-col>
+                <p v-if="patient.address">
+                  <b-icon-house-fill class="mr-2" />
+                  {{ patient.address }}
+                </p>
+                <p v-if="patient.email">
+                  <b-icon-envelope-fill class="mr-2" />
+                  <a :href="'mailto:' + patient.email">{{ patient.email }}</a>
+                </p>
+                <p v-if="patient.phone">
+                  <b-icon-telephone-fill class="mr-2" />
+                  <a :href="'tel:' + patient.phone">{{ patient.phone }}</a>
+                </p>
+                <p v-if="patient.Rezepts">
+                  <b-icon-newspaper class="mr-2" />
+                  {{ patient.Rezepts.length }} Rezept{{
+                    patient.Rezepts.length > 1 ? "e" : null
+                  }}
+                  ({{
+                    patient.Rezepts.map((r) => r.Termins.length).reduce(
+                      (partialSum, a) => partialSum + a,
+                      0
+                    )
+                  }}
+                  Termine)
+                </p>
+              </b-col>
+              <b-col>
+                <p v-if="patient.versichertenstatus">
+                  <b-icon-lock-fill class="mr-2" />
+                  {{ patient.versichertenstatus }}
+                </p>
+                <p
+                  v-if="
+                    patient.versichertennummer &&
+                    patient.versichertenstatus != 'SZ'
+                  "
+                >
+                  <b-icon-hash class="mr-2" />
+                  {{ patient.versichertennummer }}
+                </p>
+                <p
+                  v-if="
+                    patient.versichertennummer &&
+                    patient.versichertenstatus != 'SZ'
+                  "
+                >
+                  <b-icon-building class="mr-2" />
+                  {{ patient.Krankenkasse.name }} ({{
+                    patient.Krankenkasse.kostenträgerkennung
+                  }})
+                </p>
+              </b-col>
+            </b-row>
+          </b-card-body>
+        </b-collapse>
       </b-card>
 
       <b-modal id="editModal" scrollable title="Patienten-Informationen">
@@ -188,8 +190,8 @@
 
 <script>
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import KundenService from "@/services/KundenService";
-import HeilmittelService from "@/services/HeilmittelService";
+import KundenService from "@/services/dbServices/KundenService";
+import HeilmittelService from "@/services/dbServices/HeilmittelService";
 import PatientEditFormular from "@/components/formsAndModals/PatientEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 

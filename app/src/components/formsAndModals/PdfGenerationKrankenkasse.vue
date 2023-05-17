@@ -69,7 +69,7 @@
 
 <script>
 import KrankenkasseAbrechnung from "@/pdfTemplates/KrankenkasseAbrechnung.vue";
-import RezeptService from "@/services/RezeptService";
+import RezeptService from "@/services/dbServices/RezeptService";
 // import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
 // import TerminUebersichtPdf from "@/pdfTemplates/TerminUebersichtPdf.vue";
 import { toLocale } from "@/utils/dates";

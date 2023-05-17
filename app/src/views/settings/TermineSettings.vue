@@ -93,7 +93,7 @@
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 import HeilmittelEditFormular from "@/components/formsAndModals/HeilmittelEditFormular.vue";
 import ConfigService from "@/services/ConfigService";
-import HeilmittelService from "@/services/HeilmittelService";
+import HeilmittelService from "@/services/dbServices/HeilmittelService";
 export default {
   name: "TermineSettings",
   data() {

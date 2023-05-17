@@ -126,9 +126,9 @@
 </template>
 
 <script>
-import HeilmittelService from "@/services/HeilmittelService";
-import ICD10Service from "@/services/ICD10Service";
-import ArztService from "@/services/ArztService";
+import HeilmittelService from "@/services/dbServices/HeilmittelService";
+import ICD10Service from "@/services/dbServices/ICD10Service";
+import ArztService from "@/services/dbServices/ArztService";
 
 export default {
   name: "RezeptDaten",

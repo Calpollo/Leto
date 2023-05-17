@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import KundenService from "@/services/KundenService";
-import TerminService from "@/services/TerminService";
-import RezeptService from "@/services/RezeptService";
+import KundenService from "@/services/dbServices/KundenService";
+import TerminService from "@/services/dbServices/TerminService";
+import RezeptService from "@/services/dbServices/RezeptService";
 import { toLocale, toLocaleTime } from "@/utils/dates";
 export default {
   name: "PatientNichtErschienen",

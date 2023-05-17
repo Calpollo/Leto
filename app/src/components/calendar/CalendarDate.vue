@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import KundenService from "@/services/KundenService";
-import TerminService from "@/services/TerminService";
+import KundenService from "@/services/dbServices/KundenService";
+import TerminService from "@/services/dbServices/TerminService";
 import { therapeutToColor } from "@/utils/events";
 import DeletionConfirmation from "../formsAndModals/DeletionConfirmation.vue";
 export default {

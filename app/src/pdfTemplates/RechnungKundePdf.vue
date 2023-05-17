@@ -95,7 +95,7 @@
           <footer>
             <small
               >Automatisch generiert von
-              <a href="https://leto.app">Leto</a>.</small
+              <a href="https://leto.andreasnicklaus.de">Leto</a>.</small
             >
           </footer>
         </div>
@@ -105,9 +105,9 @@
 </template>
 
 <script>
-import RezeptService from "@/services/RezeptService";
+import RezeptService from "@/services/dbServices/RezeptService";
 import VueHtml2pdf from "vue-html2pdf";
-import PraxisService from "@/services/PraxisService";
+import PraxisService from "@/services/dbServices/PraxisService";
 import ConfigService from "@/services/ConfigService";
 import { toLocaleTime, toLocale } from "@/utils/dates";
 

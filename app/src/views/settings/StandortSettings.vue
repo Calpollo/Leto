@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import PraxisService from "@/services/PraxisService";
+import PraxisService from "@/services/dbServices/PraxisService";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import { toLocale, toLocaleTime } from "@/utils/dates";
 import ConfigService from "@/services/ConfigService";

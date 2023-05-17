@@ -1,5 +1,5 @@
 import router from "@/router";
-import DatabaseService from "./DatabaseService";
+import DatabaseService from "../DatabaseService";
 
 class TerminService {
   getAll({ include = [] } = {}) {

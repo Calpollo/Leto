@@ -403,7 +403,7 @@
 </template>
 
 <script>
-import HeilmittelService from "@/services/HeilmittelService";
+import HeilmittelService from "@/services/dbServices/HeilmittelService";
 export default {
   name: "TherapeutEditFormular",
   data() {

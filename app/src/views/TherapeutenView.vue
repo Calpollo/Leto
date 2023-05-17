@@ -21,7 +21,7 @@
 <script>
 import ArbeitszeitOverview from "@/components/therapeut/ArbeitszeitOverview.vue";
 import AusgebuchtListe from "@/components/therapeut/AusgebuchtListe.vue";
-import TherapeutService from "@/services/TherapeutService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
 export default {
   data() {
     return {

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import TherapeutService from "@/services/TherapeutService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
 export default {
   name: "TerminVorschlaege",
   props: {

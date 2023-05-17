@@ -105,11 +105,11 @@ import FolgeRezeptFormular from "@/components/formsAndModals/FolgeRezeptFormular
 import NeuesRezeptFormular from "@/components/formsAndModals/NeuesRezeptFormular.vue";
 import TerminAbsage from "@/components/formsAndModals/TerminAbsage.vue";
 import ConfigService from "@/services/ConfigService";
-import TerminService from "@/services/TerminService";
-import TherapeutService from "@/services/TherapeutService";
+import TerminService from "@/services/dbServices/TerminService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
+import PraxisService from "@/services/dbServices/PraxisService";
 import CalendarColorLegend from "@/components/calendar/CalendarColorLegend.vue";
-import PraxisService from "../services/PraxisService";
-import PraxisSelection from "../components/formsAndModals/PraxisSelection.vue";
+import PraxisSelection from "@/components/formsAndModals/PraxisSelection.vue";
 
 export default {
   name: "OverviewView",

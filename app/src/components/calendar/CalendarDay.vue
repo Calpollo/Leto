@@ -37,7 +37,7 @@ import {
   fullDayHours,
 } from "@/utils/events";
 import CalendarDate from "./CalendarDate.vue";
-import PraxisService from "@/services/PraxisService";
+import PraxisService from "@/services/dbServices/PraxisService";
 import SpinnerLogo from "../SpinnerLogo.vue";
 import ConfigService from "@/services/ConfigService";
 import { toLocale } from "@/utils/dates";

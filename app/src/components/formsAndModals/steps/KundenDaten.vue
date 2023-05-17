@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import KundenService from "@/services/KundenService";
+import KundenService from "@/services/dbServices/KundenService";
 import PatientEditFormular from "../PatientEditFormular.vue";
 export default {
   components: { PatientEditFormular },

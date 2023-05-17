@@ -108,8 +108,8 @@
 <script>
 import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
 import TerminUebersichtPdf from "@/pdfTemplates/TerminUebersichtPdf.vue";
-import KundenService from "@/services/KundenService";
-import RezeptService from "@/services/RezeptService";
+import KundenService from "@/services/dbServices/KundenService";
+import RezeptService from "@/services/dbServices/RezeptService";
 import { toLocale } from "@/utils/dates";
 export default {
   name: "PdfGenerationAuswahl",

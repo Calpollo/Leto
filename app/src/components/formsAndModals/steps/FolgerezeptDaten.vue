@@ -65,8 +65,8 @@
 </template>
 
 <script>
-import KundenService from "@/services/KundenService";
-import RezeptService from "@/services/RezeptService";
+import KundenService from "@/services/dbServices/KundenService";
+import RezeptService from "@/services/dbServices/RezeptService";
 import { toLocale } from "@/utils/dates";
 import RezeptDaten from "@/components/formsAndModals/steps/RezeptDaten.vue";
 export default {

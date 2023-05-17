@@ -120,7 +120,7 @@
 
 <script>
 import { toLocale } from "@/utils/dates";
-import TherapeutService from "@/services/TherapeutService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
 import TherapeutEditFormular from "@/components/formsAndModals/TherapeutEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 import { timeStringToDate } from "@/utils/events";

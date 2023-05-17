@@ -1,5 +1,5 @@
 import router from "@/router";
-import DatabaseService from "./DatabaseService";
+import DatabaseService from "../DatabaseService";
 import VertragService from "./VertragService";
 
 class TherapeutService {

@@ -76,7 +76,7 @@
       </b-row>
 
       <b-card v-for="rezept in filteredRezepte" :key="rezept.id">
-        <b-card-header>
+        <b-card-header v-b-toggle="'collapse-' + rezept.id">
           {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }} :
           {{ rezept.Kunde.firstname }}
           {{ rezept.Kunde.lastname }}
@@ -84,84 +84,86 @@
             <b-icon-info-circle />
           </span>
         </b-card-header>
-        <b-card-body>
-          <b-row>
-            <b-col>
-              <p>
-                <span v-b-tooltip.hover title="Aussteller">
-                  <b-icon-arrow-left class="mr-2" />
-                  {{ rezept.ArztLanr }}
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Ausstellungsdatum">
-                  <b-icon-calendar-date class="mr-2" />
-                  {{ dateToLocale(rezept.ausstellungsdatum) }}
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Terminanzahl">
-                  <b-icon-calendar-plus class="mr-2" />
-                  {{ rezept.Termins.length }} Termine
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Zeitraum der Termine">
-                  <b-icon-calendar-range class="mr-2" />
-                  im Zeitraum: {{ getDateRange(rezept.id) }}
-                </span>
-              </p>
-            </b-col>
-            <b-col>
-              <p>
-                <span v-b-tooltip.hover title="icd10code">
-                  <b-icon-code-square class="mr-2" />
-                  {{ rezept.icd10code.primärschlüssel }}:
-                  {{ rezept.icd10code.text }}
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Indikation">
-                  <b-icon-bullseye class="mr-2" />
-                  {{ rezept.indikation }}
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Therapiebericht verlangt">
-                  <b-icon-journal-text class="mr-2" />
-                  {{ rezept.therapieBericht ? "" : "kein" }} Therapiebericht
-                  verlangt
-                </span>
-              </p>
-              <p>
-                <span v-b-tooltip.hover title="Hausbesuche verschrieben">
-                  <b-icon-house class="mr-2" />
-                  {{ rezept.hausbesuch ? "" : "kein" }} Hausbesuch
-                </span>
-              </p>
-            </b-col>
-          </b-row>
+        <b-collapse :id="'collapse-' + rezept.id" role="tabpanel">
+          <b-card-body>
+            <b-row>
+              <b-col>
+                <p>
+                  <span v-b-tooltip.hover title="Aussteller">
+                    <b-icon-arrow-left class="mr-2" />
+                    {{ rezept.ArztLanr }}
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Ausstellungsdatum">
+                    <b-icon-calendar-date class="mr-2" />
+                    {{ dateToLocale(rezept.ausstellungsdatum) }}
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Terminanzahl">
+                    <b-icon-calendar-plus class="mr-2" />
+                    {{ rezept.Termins.length }} Termine
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Zeitraum der Termine">
+                    <b-icon-calendar-range class="mr-2" />
+                    im Zeitraum: {{ getDateRange(rezept.id) }}
+                  </span>
+                </p>
+              </b-col>
+              <b-col>
+                <p>
+                  <span v-b-tooltip.hover title="icd10code">
+                    <b-icon-code-square class="mr-2" />
+                    {{ rezept.icd10code.primärschlüssel }}:
+                    {{ rezept.icd10code.text }}
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Indikation">
+                    <b-icon-bullseye class="mr-2" />
+                    {{ rezept.indikation }}
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Therapiebericht verlangt">
+                    <b-icon-journal-text class="mr-2" />
+                    {{ rezept.therapieBericht ? "" : "kein" }} Therapiebericht
+                    verlangt
+                  </span>
+                </p>
+                <p>
+                  <span v-b-tooltip.hover title="Hausbesuche verschrieben">
+                    <b-icon-house class="mr-2" />
+                    {{ rezept.hausbesuch ? "" : "kein" }} Hausbesuch
+                  </span>
+                </p>
+              </b-col>
+            </b-row>
 
-          <rechnung-kunde-pdf
-            :ref="'rechnungkunde-' + rezept.id"
-            :rezept-id="rezept.id.toString()"
-          />
-          <termin-uebersicht-pdf
-            :ref="'terminuebersicht-' + rezept.id"
-            :rezept-id="rezept.id.toString()"
-          />
+            <rechnung-kunde-pdf
+              :ref="'rechnungkunde-' + rezept.id"
+              :rezept-id="rezept.id.toString()"
+            />
+            <termin-uebersicht-pdf
+              :ref="'terminuebersicht-' + rezept.id"
+              :rezept-id="rezept.id.toString()"
+            />
 
-          <b-button-group>
-            <b-button @click="generateRechnung(rezept.id)">
-              <b-icon-file-earmark></b-icon-file-earmark>
-              Rechnung
-            </b-button>
-            <b-button @click="generateTermine(rezept.id)">
-              <b-icon-file-earmark></b-icon-file-earmark>
-              Terminübersicht
-            </b-button>
-          </b-button-group>
-        </b-card-body>
+            <b-button-group>
+              <b-button @click="generateRechnung(rezept.id)">
+                <b-icon-file-earmark></b-icon-file-earmark>
+                Rechnung
+              </b-button>
+              <b-button @click="generateTermine(rezept.id)">
+                <b-icon-file-earmark></b-icon-file-earmark>
+                Terminübersicht
+              </b-button>
+            </b-button-group>
+          </b-card-body>
+        </b-collapse>
       </b-card>
     </div>
   </div>
@@ -170,7 +172,7 @@
 <script>
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import { toLocale } from "@/utils/dates";
-import RezeptService from "@/services/RezeptService";
+import RezeptService from "@/services/dbServices/RezeptService";
 import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
 import TerminUebersichtPdf from "@/pdfTemplates/TerminUebersichtPdf.vue";
 

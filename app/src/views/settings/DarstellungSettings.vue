@@ -20,7 +20,7 @@
 
 <script>
 import ConfigService from "@/services/ConfigService";
-import TherapeutService from "@/services/TherapeutService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
 export default {
   name: "DarstellungsSettings",
   data() {

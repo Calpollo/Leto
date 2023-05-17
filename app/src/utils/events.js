@@ -1,7 +1,7 @@
 import ConfigService from "@/services/ConfigService";
-import KundenService from "@/services/KundenService";
-import RezeptService from "@/services/RezeptService";
-import TerminService from "@/services/TerminService";
+import KundenService from "@/services/dbServices/KundenService";
+import RezeptService from "@/services/dbServices/RezeptService";
+import TerminService from "@/services/dbServices/TerminService";
 
 const millisecondsPerHour = 3600000;
 const millisecondsPerDay = millisecondsPerHour * 24;

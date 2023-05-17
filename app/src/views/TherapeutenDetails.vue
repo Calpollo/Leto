@@ -27,7 +27,7 @@
 <script>
 import ArbeitszeitOverview from "@/components/therapeut/ArbeitszeitOverview.vue";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import TherapeutService from "@/services/TherapeutService";
+import TherapeutService from "@/services/dbServices/TherapeutService";
 export default {
   components: { ArbeitszeitOverview, SpinnerLogo },
   data() {

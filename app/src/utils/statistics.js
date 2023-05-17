@@ -1,5 +1,5 @@
-import KundenService from "@/services/KundenService";
-import RezeptService from "@/services/RezeptService";
+import KundenService from "@/services/dbServices/KundenService";
+import RezeptService from "@/services/dbServices/RezeptService";
 
 // eslint-disable-next-line no-unused-vars
 export async function generateStatistics(numberOfStats = 3) {

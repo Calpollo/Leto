@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import PraxisService from "@/services/PraxisService";
+import PraxisService from "@/services/dbServices/PraxisService";
 export default {
   name: "PraxisSelection",
   props: {

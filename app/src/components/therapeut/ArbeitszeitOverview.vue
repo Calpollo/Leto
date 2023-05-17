@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import TerminService from "@/services/TerminService";
+import TerminService from "@/services/dbServices/TerminService";
 export default {
   name: "ArbeitszeitOverview",
   props: {
