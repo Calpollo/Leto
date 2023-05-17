@@ -11,6 +11,9 @@ import ConfigService from "./services/ConfigService";
 
 export default {
   components: { SideMenu },
+  mounted() {
+    if (this.$store.state.loggedIn) this.$store.commit("updateMe");
+  },
   onclose() {
     ConfigService.save();
   },

@@ -40,7 +40,7 @@
     </div>
     <div id="bottomNav">
       <nav>
-        <router-link :to="{ name: 'Start' }">
+        <router-link :to="{ name: 'Einstellungen.Konto' }">
           <b-icon-person-square class="mr-2" />
           Konto
         </router-link>
@@ -77,11 +77,6 @@ export default {
   z-index: 2;
 }
 
-img {
-  padding: 20px;
-  width: 200px;
-}
-
 nav {
   display: grid;
   flex-direction: column;
@@ -113,5 +108,12 @@ nav {
     // color: var(--accent);
     background-color: var(--background-accent);
   }
+}
+</style>
+
+<style lang="scss" scoped>
+img {
+  padding: 20px;
+  width: 200px;
 }
 </style>

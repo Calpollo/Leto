@@ -26,11 +26,6 @@
         </b-col>
       </b-row>
     </b-card>
-
-    <b-card v-else :title="me.username">
-      <b-avatar />
-      <p>{{ me.email }}</p>
-    </b-card>
   </div>
 </template>
 
@@ -43,7 +38,6 @@ export default {
     return {
       username: null,
       password: null,
-      me: null,
     };
   },
   methods: {
@@ -59,11 +53,10 @@ export default {
   },
   mounted() {
     if (this.loggedIn) {
-      DatabaseService.me().then((me) => {
-        this.me = me;
+      DatabaseService.me().then(() => {
+        this.$router.push("/home");
       });
     }
-    // console.log(process.env);
   },
   computed: {
     loggedIn() {

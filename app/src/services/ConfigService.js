@@ -45,7 +45,7 @@ class ConfigService {
 
   setVersion(version) {
     this.config.version = version;
-    // this.save();
+    this.save();
   }
 
   setTherapeutColor(name, color) {

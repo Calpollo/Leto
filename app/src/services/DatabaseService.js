@@ -1,16 +1,6 @@
 import store from "@/store";
 import ConfigService from "./ConfigService";
-import axios from "axios";
-
-const ax = axios.create({
-  baseURL:
-    process.env.NODE_ENV == "production"
-      ? "https://leto.andreasnicklaus.de/api/"
-      : "http://localhost:8080/",
-  // timeout: 1000,
-  // headers: { 'X-Custom-Header': 'foobar' }
-});
-
+import ax from "@/services/RequestService";
 class DatabaseService {
   isLocal() {
     return ConfigService.getVersion() == "Lokal";
@@ -23,6 +13,7 @@ class DatabaseService {
         ax.defaults.headers.common.Authorization =
           "Bearer " + response.data.token;
         store.commit("logIn");
+        sessionStorage.setItem("authToken", response.data.token);
         return true;
       })
       .catch((err) => {
@@ -40,7 +31,6 @@ class DatabaseService {
   // ############################
   // Get Instances from the database
   // ############################
-  // TODO: add rest of data options for other versions than "Lokal"
   getZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.getZeitspanne(data).then(JSON.parse);
@@ -175,181 +165,244 @@ class DatabaseService {
   // ############################
   // Create Instances in the database
   // ############################
-  // TODO: add support for other versions than 'Lokal'
   createZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.createZeitspanne(data).then(JSON.parse);
+    } else {
+      return ax.post("/zeitspanne/", data).then((res) => res.data);
     }
   }
 
   createTermine(data) {
     if (this.isLocal()) {
       return window.ipc.createTermin(data).then(JSON.parse);
+    } else {
+      return ax.post("/termin/", data).then((res) => res.data);
     }
   }
 
   createKunde(data) {
     if (this.isLocal()) {
       return window.ipc.createKunde(data).then(JSON.parse);
+    } else {
+      return ax.post("/kunde/", data).then((res) => res.data);
     }
   }
 
   createTherapeut(data) {
     if (this.isLocal()) {
       return window.ipc.createTherapeut(data).then(JSON.parse);
+    } else {
+      return ax.post("/therapeut/", data).then((res) => res.data);
     }
   }
 
   createRezept(data) {
     if (this.isLocal()) {
       return window.ipc.createRezept(data).then(JSON.parse);
+    } else {
+      return ax.post("/rezept/", data).then((res) => res.data);
     }
   }
 
   createHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.createHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax.post("/heilmittel/", data).then((res) => res.data);
     }
   }
 
   createVertrag(data) {
     if (this.isLocal()) {
       return window.ipc.createVertrag(data).then(JSON.parse);
+    } else {
+      return ax.post("/vertrag/", data).then((res) => res.data);
     }
   }
 
   createDatum(data) {
     if (this.isLocal()) {
       return window.ipc.createDatum(data).then(JSON.parse);
+    } else {
+      return ax.post("/datum/", data).then((res) => res.data);
     }
   }
 
   createArzt(data) {
     if (this.isLocal()) {
       return window.ipc.createArzt(data).then(JSON.parse);
+    } else {
+      return ax.post("/arzt/", data).then((res) => res.data);
     }
   }
 
   // ############################
   // Update Instances in the database
   // ############################
-  // TODO: add support for other versions than 'Lokal'
-
   updateZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.updateZeitspanne(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/zeitspanne/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateTermine(data) {
     if (this.isLocal()) {
       return window.ipc.updateTermin(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/termin/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateKunde(data) {
     if (this.isLocal()) {
       return window.ipc.updateKunde(data).then(JSON.parse);
+    } else {
+      return ax.put("/kunde/" + data.id, data.instance).then((res) => res.data);
     }
   }
 
   updateTherapeut(data) {
     if (this.isLocal()) {
       return window.ipc.updateTherapeut(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/therapeut/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateRezept(data) {
     if (this.isLocal()) {
       return window.ipc.updateRezept(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/rezept/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.updateHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/heilmittel/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateVertrag(data) {
     if (this.isLocal()) {
       return window.ipc.updateVertrag(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/vertrag/" + data.id, data.instance)
+        .then((res) => res.data);
     }
   }
 
   updateDatum(data) {
     if (this.isLocal()) {
       return window.ipc.updateDatum(data).then(JSON.parse);
+    } else {
+      return ax.put("/datum/" + data.id, data.instance).then((res) => res.data);
     }
   }
 
   // ############################
   // Setting Associations
   // ############################
-  // TODO: add support for other versions than 'Lokal'
-
   setTherapeutHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.setTherapeutHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax
+        .post("/therapeut/heilmittel/" + data.therapeutId, { hms: data.hms })
+        .then((res) => res.data);
     }
   }
 
   setRezeptHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.setRezeptHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax
+        .post("/rezept/heilmittel/" + data.rezeptId, { hms: data.hms })
+        .then((res) => res.data);
     }
   }
 
   // ############################
   // Remove Instances in the database
   // ############################
-  // TODO: add support for other versions than 'Lokal'
-
   removeZeitspanne(data) {
     if (this.isLocal()) {
       return window.ipc.removeZeitspanne(data).then(JSON.parse);
+    } else {
+      return ax.delete("/zeitspanne/" + data.id).then((res) => res.data);
     }
   }
 
   removeTermine(data) {
     if (this.isLocal()) {
       return window.ipc.removeTermin(data).then(JSON.parse);
+    } else {
+      return ax.delete("/termin/" + data.id).then((res) => res.data);
     }
   }
 
   removeKunde(data) {
     if (this.isLocal()) {
       return window.ipc.removeKunde(data).then(JSON.parse);
+    } else {
+      return ax.delete("/kunde/" + data.id).then((res) => res.data);
     }
   }
 
   removeTherapeut(data) {
     if (this.isLocal()) {
       return window.ipc.removeTherapeut(data).then(JSON.parse);
+    } else {
+      return ax.delete("/therapeut/" + data.id).then((res) => res.data);
     }
   }
 
   removeRezept(data) {
     if (this.isLocal()) {
       return window.ipc.removeRezept(data).then(JSON.parse);
+    } else {
+      return ax.delete("/rezept/" + data.id).then((res) => res.data);
     }
   }
 
   removeHeilmittel(data) {
     if (this.isLocal()) {
       return window.ipc.removeHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax.delete("/heilmittel/" + data.id).then((res) => res.data);
     }
   }
 
   removeVertrag(data) {
     if (this.isLocal()) {
       return window.ipc.removeVertrag(data).then(JSON.parse);
+    } else {
+      return ax.delete("/vertrag/" + data.id).then((res) => res.data);
     }
   }
 
   removeDatum(data) {
     if (this.isLocal()) {
       return window.ipc.removeDatum(data).then(JSON.parse);
+    } else {
+      return ax.delete("/zeitspanne/" + data.id).then((res) => res.data);
     }
   }
 }
