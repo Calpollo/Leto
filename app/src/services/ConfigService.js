@@ -2,7 +2,18 @@
 
 class ConfigService {
   constructor() {
-    this.config = require("@/../config/leto.config.json");
+    // TODO: move the user config online
+    try {
+      this.config = require("@/../config/leto.config.json");
+    } catch (error) {
+      console.warn(error);
+      this.config = {
+        version: "Basis",
+        calendar: {
+          defaultView: "3",
+        },
+      };
+    }
     this.checkConfig();
   }
 
