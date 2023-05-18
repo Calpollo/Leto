@@ -75,7 +75,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .calendar {
   width: 100%;
   margin: 0;

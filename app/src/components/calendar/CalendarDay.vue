@@ -136,7 +136,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .calendarday {
   display: grid;
   border: 1px rgba(128, 128, 128, 0.267) solid;

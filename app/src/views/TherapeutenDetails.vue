@@ -45,7 +45,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #calendar {
   margin-top: 200px;
   font-size: xx-large;

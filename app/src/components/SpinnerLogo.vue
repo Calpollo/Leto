@@ -2,7 +2,7 @@
   <img src="@/assets/Leto.svg" alt="" />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 img {
   width: 80px;
   margin: 30px;
