@@ -26,4 +26,4 @@ pnpm-debug.log*
 *.sw?
 
 #Electron-builder output
-app/dist_electron
+app/dist_electron/*
