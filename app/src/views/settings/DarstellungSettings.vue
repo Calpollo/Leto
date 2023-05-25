@@ -12,14 +12,13 @@
         id="Acolorpicker"
         type="color"
         :value="therapeut.color ?? '#666666'"
-        @input="onColorChange(therapeut.name, ...arguments)"
+        @input="onColorChange(therapeut.id, ...arguments)"
       ></b-input>
     </div>
   </div>
 </template>
 
 <script>
-import ConfigService from "@/services/ConfigService";
 import TherapeutService from "@/services/dbServices/TherapeutService";
 export default {
   name: "DarstellungsSettings",
@@ -30,16 +29,15 @@ export default {
   },
   mounted() {
     TherapeutService.getAll().then((therapeuten) => {
-      const colors = ConfigService.getCalendar("therapeutColors");
-      this.therapeuten = therapeuten.map(({ id, name }) => {
-        return { id, name, color: colors[name] };
+      console.table(therapeuten);
+      this.therapeuten = therapeuten.map(({ id, name, color }) => {
+        return { id, name, color };
       });
     });
   },
   methods: {
-    onColorChange(name, color) {
-      // console.log(name, color);
-      ConfigService.setTherapeutColor(name, color);
+    onColorChange(id, color) {
+      TherapeutService.update({ id, color });
     },
   },
 };

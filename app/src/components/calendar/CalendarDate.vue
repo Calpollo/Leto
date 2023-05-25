@@ -62,7 +62,6 @@
 <script>
 import KundenService from "@/services/dbServices/KundenService";
 import TerminService from "@/services/dbServices/TerminService";
-import { therapeutToColor } from "@/utils/events";
 import DeletionConfirmation from "../formsAndModals/DeletionConfirmation.vue";
 export default {
   name: "CalendarDate",
@@ -90,7 +89,7 @@ export default {
     },
     getDateStyles() {
       return {
-        backgroundColor: therapeutToColor(this.event.Therapeut.name),
+        backgroundColor: this.event.Therapeut.color,
       };
     },
     deleteDate() {

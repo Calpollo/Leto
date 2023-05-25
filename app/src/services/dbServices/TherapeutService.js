@@ -19,14 +19,14 @@ class TherapeutService {
     });
   }
 
-  create(name, geschlecht, Vertrag) {
-    console.log(name, geschlecht, Vertrag);
+  create(name, geschlecht, color, Vertrag) {
+    console.log(name, geschlecht, color, Vertrag);
     return DatabaseService.createTherapeut({
       where: {
         name,
         geschlecht,
+        color,
       },
-      findIfExists: false,
     }).then(async (th) => {
       console.log({ th });
       if (Vertrag) {

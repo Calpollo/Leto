@@ -89,8 +89,8 @@ class LocalDbAdapter {
 
     await Promise.all(
       Therapeuten.map((t) => {
-        const { name, geschlecht } = t;
-        return this.Therapeut.create({ name, geschlecht }).then((th) => {
+        const { name, geschlecht, color } = t;
+        return this.Therapeut.create({ name, geschlecht, color }).then((th) => {
           const { wochenstunden, hausbesuchsstunden, urlaubstage } = t.Vertrag;
           const vertragCreation = this.Vertrag.create({
             wochenstunden,
@@ -447,6 +447,11 @@ class LocalDbAdapter {
         allowNull: false,
         validate: { isIn: [["m", "w", "d"]] },
       },
+      color: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "#333333",
+      },
     });
 
     this.Rezept = this.sequelize.define("Rezept", {
@@ -698,16 +703,11 @@ class LocalDbAdapter {
     return table.findAll({ include });
   }
 
-  create(table, { where, findIfExists = true, bulkCreate = false }) {
+  create(table, { where, bulkCreate = false }) {
     if (bulkCreate) {
       return table.bulkCreate(where);
     }
-
-    if (findIfExists) {
-      return table.findOrCreate({ where });
-    } else {
-      return table.create(where);
-    }
+    return table.create(where);
   }
 
   update(table, { id, instance }) {

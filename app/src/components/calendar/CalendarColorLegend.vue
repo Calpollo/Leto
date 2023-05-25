@@ -7,7 +7,7 @@
           cy="20"
           r="20"
           stroke-width="3"
-          :fill="therapeutToColor(therapeut.name)"
+          :fill="therapeut.color"
         />
       </svg>
       <span>{{ therapeut.name }}</span>
@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { therapeutToColor } from "@/utils/events";
 export default {
   name: "CalendarColorLegend",
   props: {
@@ -24,9 +23,6 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  methods: {
-    therapeutToColor,
   },
 };
 </script>

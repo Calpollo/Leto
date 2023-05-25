@@ -92,26 +92,23 @@ export function dateRowEnd(event, openingHours) {
 }
 
 export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
-  // console.log(kunde, rezept);
-  // console.log(termine);
+  console.log(termine, rezept);
+  console.log(kunde);
 
   let createdKunde = null;
-  let kundeSuccess = false;
-  if (kunde) {
+  if (!kunde || kunde.id) {
+    createdKunde = await KundenService.getOne(kunde?.id || rezept.Kunde.id);
+  } else {
     const { lastname, firstname, email, phone, address } = kunde;
-    // eslint-disable-next-line no-unused-vars
-    [createdKunde, kundeSuccess] = await KundenService.create(
+    createdKunde = await KundenService.create(
       lastname,
       firstname,
       email,
       phone,
       address
     );
-  } else {
-    createdKunde = await KundenService.getOne(kunde?.id || rezept.Kunde.id);
-    // kundeSuccess = true;
   }
-  console.log(createdKunde, kundeSuccess);
+  console.log(createdKunde);
   const {
     ausstellungsdatum,
     Heilmittels,
@@ -121,7 +118,6 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
     icd10codeId,
     indikation,
   } = rezept;
-  console.log(Heilmittels);
   return RezeptService.create(
     ausstellungsdatum,
     createdKunde.id,
@@ -146,10 +142,4 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
       })
     ).then((termine) => [termine, createdKunde, createdRezept]);
   });
-}
-
-export function therapeutToColor(id) {
-  let colors = ConfigService.getCalendar()?.therapeutColors;
-  if (!colors) return "grey";
-  else return colors[id];
 }

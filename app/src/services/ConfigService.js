@@ -59,11 +59,6 @@ class ConfigService {
     this.save();
   }
 
-  setTherapeutColor(name, color) {
-    this.config.calendar.therapeutColors[name] = color;
-    // this.save();
-  }
-
   setPraxis(id) {
     this.config.praxis = id;
     // this.save();

@@ -2,6 +2,7 @@
   {
     "name": "Tanja Therapeutin",
     "geschlecht": "w",
+    "color": "#7c009e",
     "Heilmittel": [
       "KG-6",
       "KG-Gruppe-6",
@@ -51,6 +52,7 @@
   {
     "name": "Peter Physio",
     "geschlecht": "m",
+    "color": "#026431",
     "Heilmittel": [
       "KG-6",
       "KG-Gruppe-6",
