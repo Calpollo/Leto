@@ -31,4 +31,29 @@ const sessionAuthToken = sessionStorage.getItem("authToken");
 if (sessionAuthToken)
   ax.defaults.headers.common.Authorization = "Bearer " + sessionAuthToken;
 
-export default ax;
+class RequestService {
+  login(username, password) {
+    return ax
+      .post("/auth/login", { username, password })
+      .then((response) => {
+        ax.defaults.headers.common.Authorization =
+          "Bearer " + response.data.token;
+        store.commit("logIn");
+        sessionStorage.setItem("authToken", response.data.token);
+        return true;
+      })
+      .catch((err) => {
+        console.error(err);
+        return err;
+      });
+  }
+
+  me() {
+    return ax.get("/auth/me").then((response) => {
+      return response.data;
+    });
+  }
+}
+
+export default new RequestService();
+export { ax };

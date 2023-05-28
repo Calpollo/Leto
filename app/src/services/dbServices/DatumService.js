@@ -18,12 +18,13 @@ class DatumService {
     });
   }
 
-  create(datum, yearlyRepetition, VertragId) {
+  create(datum, yearlyRepetition, { VertragId = null, PraxisId = null } = {}) {
     return DatabaseService.createDatum({
       where: {
         datum,
         yearlyRepetition,
         VertragId,
+        PraxisId,
       },
     });
   }

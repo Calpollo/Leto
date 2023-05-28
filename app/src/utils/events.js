@@ -6,11 +6,11 @@ import TerminService from "@/services/dbServices/TerminService";
 const millisecondsPerHour = 3600000;
 const millisecondsPerDay = millisecondsPerHour * 24;
 
-export function timeStringToDate(str, dateString = null) {
-  const d = dateString ? new Date(dateString) : new Date();
-  let [hours, minutes, seconds] = str.split(":");
-  return d.setHours(hours, minutes, seconds);
-}
+// export function timeStringToDate(str, dateString = null) {
+//   const d = dateString ? new Date(dateString) : new Date();
+//   let [hours, minutes, seconds] = str.split(":");
+//   return d.setHours(hours, minutes, seconds);
+// }
 
 export function eventHours(event) {
   if (!event) return 0;
@@ -60,21 +60,19 @@ export function eventListToConcurringEventnumber(eventList) {
 
 export function fullDayHours(openingHours) {
   let { start, end } = openingHours.Zeitspanne;
-  if (typeof start == "string") start = timeStringToDate(start);
-  if (typeof end == "string") end = timeStringToDate(end);
   return Math.ceil((end - start) / millisecondsPerHour);
 }
 
 export function dateRowStart(event, openingHours) {
-  if (typeof event.start == "string")
-    event.start = timeStringToDate(
-      event.start.split("T")[1].substring(0, 9),
-      event.start
-    );
-  if (typeof openingHours.Zeitspanne.start == "string")
-    openingHours.Zeitspanne.start = timeStringToDate(
-      openingHours.Zeitspanne.start
-    );
+  // if (typeof event.start == "string")
+  //   event.start = timeStringToDate(
+  //     event.start.split("T")[1].substring(0, 9),
+  //     event.start
+  //   );
+  // if (typeof openingHours.Zeitspanne.start == "string")
+  //   openingHours.Zeitspanne.start = timeStringToDate(
+  //     openingHours.Zeitspanne.start
+  //   );
 
   let timeDiff =
     new Date(event.start) - new Date(openingHours.Zeitspanne.start);

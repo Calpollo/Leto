@@ -31,7 +31,7 @@
 
 <script>
 import store from "@/store";
-import DatabaseService from "../services/DatabaseService";
+import RequestService from "../services/RequestService";
 export default {
   name: "LoginView",
   data() {
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     login() {
-      DatabaseService.login(this.username, this.password)
+      RequestService.login(this.username, this.password)
         .then(() => {
           this.$router.push("/home");
         })
@@ -53,7 +53,7 @@ export default {
   },
   mounted() {
     if (this.loggedIn) {
-      DatabaseService.me().then(() => {
+      RequestService.me().then(() => {
         this.$router.push("/home");
       });
     }

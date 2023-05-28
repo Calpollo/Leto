@@ -87,9 +87,21 @@
     >
       <praxis-selection v-model="selectedPraxisId" />
       <template #modal-footer>
-        <b-button @click="ok">Speichern</b-button>
+        <b-button @click="ok" variant="primary" :disabled="!selectedPraxisId">
+          Speichern
+        </b-button>
+        <b-button @click="createNewPraxis" variant="outline-secondary">
+          Neue Praxis anlegen
+        </b-button>
       </template>
     </b-modal>
+
+    <PraxisEditFormular
+      id="praxisEdit"
+      ref="praxisEdit"
+      @done="confirmPraxisCreation"
+      @cancel="backToPraxisSelection"
+    />
 
     <NeuesRezeptFormular id="neuesRezept" @done="updateEventList" />
 
@@ -110,6 +122,7 @@ import TherapeutService from "@/services/dbServices/TherapeutService";
 import PraxisService from "@/services/dbServices/PraxisService";
 import CalendarColorLegend from "@/components/calendar/CalendarColorLegend.vue";
 import PraxisSelection from "@/components/formsAndModals/PraxisSelection.vue";
+import PraxisEditFormular from "../components/formsAndModals/PraxisEditFormular.vue";
 
 export default {
   name: "OverviewView",
@@ -133,8 +146,52 @@ export default {
     },
     ok() {
       ConfigService.setPraxis(this.selectedPraxisId);
+      this.$refs.praxisEdit.hideModal();
       this.$bvModal.hide("praxisSelect");
       this.init();
+    },
+    backToPraxisSelection() {
+      // this.$bvModal.hide("praxisCreation");
+      this.$refs.praxisEdit.hideModal();
+      this.openPraxisSelectionModal();
+    },
+    createNewPraxis() {
+      this.$bvModal.hide("praxisSelect");
+      // this.$bvModal.show("praxisCreation");
+      this.$refs.praxisEdit.openModal();
+    },
+    confirmPraxisCreation(praxisToCreate) {
+      console.log(praxisToCreate);
+
+      const {
+        name,
+        email,
+        address,
+        phone,
+        ikNummer,
+        Feiertage,
+        montagsZeit,
+        dienstagsZeit,
+        mittwochsZeit,
+        donnerstagsZeit,
+        freitagsZeit,
+      } = praxisToCreate;
+      PraxisService.create(
+        name,
+        email,
+        address,
+        phone,
+        ikNummer,
+        Feiertage,
+        montagsZeit,
+        dienstagsZeit,
+        mittwochsZeit,
+        donnerstagsZeit,
+        freitagsZeit
+      ).then((praxis) => {
+        this.selectedPraxisId = praxis.id;
+        this.ok();
+      });
     },
     setCalendarLength(n) {
       this.calendarlength = n;
@@ -158,6 +215,7 @@ export default {
     TerminAbsage,
     CalendarColorLegend,
     PraxisSelection,
+    PraxisEditFormular,
   },
   mounted() {
     const id = ConfigService.getPraxis();

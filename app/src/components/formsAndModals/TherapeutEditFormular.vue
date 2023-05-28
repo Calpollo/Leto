@@ -1,5 +1,5 @@
 <template>
-  <b-form class="HeilmittelEditFormular">
+  <b-form class="TherapeutEditFormular">
     <b-form-group
       id="therapeutname-group"
       label="Name:"

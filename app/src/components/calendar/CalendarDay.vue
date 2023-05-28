@@ -50,8 +50,8 @@ export default {
       openingHours: null,
       defaultOpeningHours: {
         Zeitspanne: {
-          start: new Date().setHours(8, 0, 0, 0),
-          end: new Date().setHours(19, 30, 0, 0),
+          start: new Date().setHours(8, 0, 0, 0).valueOf(),
+          end: new Date().setHours(19, 30, 0, 0).valueOf(),
         },
       },
     };
@@ -85,7 +85,9 @@ export default {
         this.openingHours = this.defaultOpeningHours;
         // this.openingHours = { weekend: true };
       } else {
-        this.openingHours = { Zeitspanne: week[dayOfTheWeek] };
+        if (typeof hours.start == "string") hours.start = parseInt(hours.start);
+        if (typeof hours.end == "string") hours.end = parseInt(hours.end);
+        this.openingHours = { Zeitspanne: hours };
       }
     });
   },

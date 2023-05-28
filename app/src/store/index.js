@@ -1,5 +1,5 @@
 import router from "@/router";
-import DatabaseService from "@/services/DatabaseService";
+import RequestService from "@/services/RequestService";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -14,7 +14,7 @@ export default new Vuex.Store({
   mutations: {
     logIn: (state) => {
       state.loggedIn = true;
-      DatabaseService.me().then((me) => (state.me = me));
+      RequestService.me().then((me) => (state.me = me));
     },
     logOut: (state) => {
       state.loggedIn = false;
@@ -23,7 +23,7 @@ export default new Vuex.Store({
       router.push("/");
     },
     updateMe: (state) => {
-      DatabaseService.me().then((me) => (state.me = me));
+      RequestService.me().then((me) => (state.me = me));
     },
   },
   actions: {},

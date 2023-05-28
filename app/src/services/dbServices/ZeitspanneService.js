@@ -27,11 +27,12 @@ class ZeitspanneService {
     });
   }
   bulkCreate(dataList) {
+    // console.log("bulkCreating Zeitspanne with", dataList);
     return DatabaseService.createZeitspanne({
       where: dataList.map((z) => {
         return {
-          start: new Date(z.start),
-          end: new Date(z.end),
+          start: typeof z.start == "number" ? z.start : new Date(z.start),
+          end: typeof z.end == "number" ? z.end : new Date(z.end),
         };
       }),
       bulkCreate: true,

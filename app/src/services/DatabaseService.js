@@ -1,38 +1,18 @@
-import store from "@/store";
 import ConfigService from "./ConfigService";
-import ax from "@/services/RequestService";
+import { ax } from "@/services/RequestService";
 class DatabaseService {
-  isLocal() {
-    return ConfigService.getVersion() == "Lokal";
+  isOffline() {
+    return !ConfigService.getOnline();
   }
 
-  login(username, password) {
-    return ax
-      .post("/auth/login", { username, password })
-      .then((response) => {
-        ax.defaults.headers.common.Authorization =
-          "Bearer " + response.data.token;
-        store.commit("logIn");
-        sessionStorage.setItem("authToken", response.data.token);
-        return true;
-      })
-      .catch((err) => {
-        console.error(err);
-        return err;
-      });
-  }
-
-  me() {
-    return ax.get("/auth/me").then((response) => {
-      return response.data;
-    });
-  }
+  //! FIXME: all entites are being displayed without considering the PraxisId
+  // TODO: add a where-filter for the PraxisId
 
   // ############################
   // Get Instances from the database
   // ############################
   getZeitspanne(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getZeitspanne(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -45,7 +25,7 @@ class DatabaseService {
   }
 
   getTermine(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getTermin(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -56,7 +36,7 @@ class DatabaseService {
   }
 
   getKunde(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getKunde(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -67,7 +47,7 @@ class DatabaseService {
   }
 
   getTherapeut(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getTherapeut(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -80,7 +60,7 @@ class DatabaseService {
   }
 
   getPraxis(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getPraxis(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -91,7 +71,7 @@ class DatabaseService {
   }
 
   getRezept(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getRezept(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -102,7 +82,7 @@ class DatabaseService {
   }
 
   getHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getHeilmittel(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -115,7 +95,7 @@ class DatabaseService {
   }
 
   getVertrag(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getVertrag(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -128,7 +108,7 @@ class DatabaseService {
   }
 
   getDatum(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getDatum(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -139,7 +119,7 @@ class DatabaseService {
   }
 
   getICD10Code(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getICD10Code(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -152,7 +132,7 @@ class DatabaseService {
   }
 
   getArzt(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.getArzt(data).then(JSON.parse);
     } else {
       const params = { include: data.include };
@@ -166,7 +146,7 @@ class DatabaseService {
   // Create Instances in the database
   // ############################
   createZeitspanne(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createZeitspanne(data).then(JSON.parse);
     } else {
       return ax.post("/zeitspanne/", data).then((res) => res.data);
@@ -174,7 +154,7 @@ class DatabaseService {
   }
 
   createTermine(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createTermin(data).then(JSON.parse);
     } else {
       return ax.post("/termin/", data).then((res) => res.data);
@@ -182,7 +162,7 @@ class DatabaseService {
   }
 
   createKunde(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createKunde(data).then(JSON.parse);
     } else {
       return ax.post("/kunde/", data).then((res) => res.data);
@@ -190,15 +170,23 @@ class DatabaseService {
   }
 
   createTherapeut(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createTherapeut(data).then(JSON.parse);
     } else {
       return ax.post("/therapeut/", data).then((res) => res.data);
     }
   }
 
+  createPraxis(data) {
+    if (this.isOffline()) {
+      return window.ipc.createPraxis(data).then(JSON.parse);
+    } else {
+      return ax.post("/praxis/", data).then((res) => res.data);
+    }
+  }
+
   createRezept(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createRezept(data).then(JSON.parse);
     } else {
       return ax.post("/rezept/", data).then((res) => res.data);
@@ -206,7 +194,7 @@ class DatabaseService {
   }
 
   createHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createHeilmittel(data).then(JSON.parse);
     } else {
       return ax.post("/heilmittel/", data).then((res) => res.data);
@@ -214,7 +202,7 @@ class DatabaseService {
   }
 
   createVertrag(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createVertrag(data).then(JSON.parse);
     } else {
       return ax.post("/vertrag/", data).then((res) => res.data);
@@ -222,7 +210,7 @@ class DatabaseService {
   }
 
   createDatum(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createDatum(data).then(JSON.parse);
     } else {
       return ax.post("/datum/", data).then((res) => res.data);
@@ -230,7 +218,7 @@ class DatabaseService {
   }
 
   createArzt(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.createArzt(data).then(JSON.parse);
     } else {
       return ax.post("/arzt/", data).then((res) => res.data);
@@ -241,7 +229,7 @@ class DatabaseService {
   // Update Instances in the database
   // ############################
   updateZeitspanne(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateZeitspanne(data).then(JSON.parse);
     } else {
       return ax
@@ -251,7 +239,7 @@ class DatabaseService {
   }
 
   updateTermine(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateTermin(data).then(JSON.parse);
     } else {
       return ax
@@ -261,7 +249,7 @@ class DatabaseService {
   }
 
   updateKunde(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateKunde(data).then(JSON.parse);
     } else {
       return ax.put("/kunde/" + data.id, data.instance).then((res) => res.data);
@@ -269,7 +257,7 @@ class DatabaseService {
   }
 
   updateTherapeut(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateTherapeut(data).then(JSON.parse);
     } else {
       return ax
@@ -279,7 +267,7 @@ class DatabaseService {
   }
 
   updateRezept(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateRezept(data).then(JSON.parse);
     } else {
       return ax
@@ -289,7 +277,7 @@ class DatabaseService {
   }
 
   updateHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateHeilmittel(data).then(JSON.parse);
     } else {
       return ax
@@ -299,7 +287,7 @@ class DatabaseService {
   }
 
   updateVertrag(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateVertrag(data).then(JSON.parse);
     } else {
       return ax
@@ -309,7 +297,7 @@ class DatabaseService {
   }
 
   updateDatum(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.updateDatum(data).then(JSON.parse);
     } else {
       return ax.put("/datum/" + data.id, data.instance).then((res) => res.data);
@@ -320,7 +308,7 @@ class DatabaseService {
   // Setting Associations
   // ############################
   setTherapeutHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.setTherapeutHeilmittel(data).then(JSON.parse);
     } else {
       return ax
@@ -330,7 +318,7 @@ class DatabaseService {
   }
 
   setRezeptHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.setRezeptHeilmittel(data).then(JSON.parse);
     } else {
       return ax
@@ -343,7 +331,7 @@ class DatabaseService {
   // Remove Instances in the database
   // ############################
   removeZeitspanne(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeZeitspanne(data).then(JSON.parse);
     } else {
       return ax.delete("/zeitspanne/" + data.id).then((res) => res.data);
@@ -351,7 +339,7 @@ class DatabaseService {
   }
 
   removeTermine(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeTermin(data).then(JSON.parse);
     } else {
       return ax.delete("/termin/" + data.id).then((res) => res.data);
@@ -359,7 +347,7 @@ class DatabaseService {
   }
 
   removeKunde(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeKunde(data).then(JSON.parse);
     } else {
       return ax.delete("/kunde/" + data.id).then((res) => res.data);
@@ -367,7 +355,7 @@ class DatabaseService {
   }
 
   removeTherapeut(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeTherapeut(data).then(JSON.parse);
     } else {
       return ax.delete("/therapeut/" + data.id).then((res) => res.data);
@@ -375,7 +363,7 @@ class DatabaseService {
   }
 
   removeRezept(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeRezept(data).then(JSON.parse);
     } else {
       return ax.delete("/rezept/" + data.id).then((res) => res.data);
@@ -383,7 +371,7 @@ class DatabaseService {
   }
 
   removeHeilmittel(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeHeilmittel(data).then(JSON.parse);
     } else {
       return ax.delete("/heilmittel/" + data.id).then((res) => res.data);
@@ -391,7 +379,7 @@ class DatabaseService {
   }
 
   removeVertrag(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeVertrag(data).then(JSON.parse);
     } else {
       return ax.delete("/vertrag/" + data.id).then((res) => res.data);
@@ -399,7 +387,7 @@ class DatabaseService {
   }
 
   removeDatum(data) {
-    if (this.isLocal()) {
+    if (this.isOffline()) {
       return window.ipc.removeDatum(data).then(JSON.parse);
     } else {
       return ax.delete("/zeitspanne/" + data.id).then((res) => res.data);

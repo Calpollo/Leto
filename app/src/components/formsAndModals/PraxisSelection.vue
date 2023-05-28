@@ -11,7 +11,6 @@
         @input="onInput"
         >{{ option.name }}</b-form-radio
       >
-      <!-- TODO: add creation option if no praxis exist -->
     </b-form-group>
   </div>
 </template>
