@@ -9,38 +9,66 @@
 
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
+    <b-card
+      v-for="[key, vorsch] in Object.entries(vorschlaege)"
+      :key="key"
+      :title="key"
+    >
+      <!-- TODO: allow changes -->
+      <b-card-header>
+        <b-icon-exclamation-octagon
+          v-if="
+            !(
+              vorsch.filter((v) => v.selected).length ==
+              vorsch[0].Heilmittel.terminNumber
+            )
+          "
+          variant="danger"
+        />
+        <b-icon-check-circle v-else variant="success" />
 
-    <b-row>
-      <b-col
-        v-for="[vorschlag, id] in vorschlaege.map((v) => {
-          return [v, vorschlaege.indexOf(v)];
-        })"
-        :key="id"
-        cols="3"
-      >
-        <b-button
-          :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
-          class="m-2"
-          :disabled="!vorschlag.selected && selectionCount == maxSelectionNum"
-          @click="selectVorschlag(vorschlag)"
-        >
-          {{
-            vorschlag.date.toLocaleString("de-DE", {
-              weekday: "short",
-            })
-          }},
-          {{
-            vorschlag.date.toLocaleDateString("de-DE", {
-              month: "2-digit",
-              day: "2-digit",
-            })
-          }}
-          {{ vorschlag.date.getHours() }}:{{ pad(vorschlag.date.getMinutes()) }}
-          {{ vorschlag.Therapeut.name.split(" ")[0] }}
-        </b-button>
-      </b-col>
-    </b-row>
-
+        {{ vorsch.filter((v) => v.selected).length }} von
+        {{ vorsch[0].Heilmittel.terminNumber }} ausgewählt
+      </b-card-header>
+      <b-card-text>
+        <b-row>
+          <b-col
+            v-for="[vorschlag, id] in vorsch.map((v) => {
+              return [v, vorsch.indexOf(v)];
+            })"
+            :key="id"
+            cols="3"
+          >
+            <b-button
+              :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
+              class="m-2"
+              :disabled="
+                !vorschlag.selected &&
+                vorsch.filter((v) => v.selected).length ==
+                  heilmittel.find((hm) => hm.name == key).terminNumber
+              "
+              @click="selectVorschlag(vorschlag)"
+            >
+              {{
+                vorschlag.date.toLocaleString("de-DE", {
+                  weekday: "short",
+                })
+              }},
+              {{
+                vorschlag.date.toLocaleDateString("de-DE", {
+                  month: "2-digit",
+                  day: "2-digit",
+                })
+              }}
+              {{ vorschlag.date.getHours() }}:{{
+                pad(vorschlag.date.getMinutes())
+              }}
+              {{ vorschlag.Therapeut.name.split(" ")[0] }}
+            </b-button>
+          </b-col>
+        </b-row>
+      </b-card-text>
+    </b-card>
     <br />
 
     <b-button
@@ -67,6 +95,7 @@
 
 <script>
 import TherapeutService from "@/services/dbServices/TherapeutService";
+import TerminService from "@/services/dbServices/TerminService";
 export default {
   name: "TerminVorschlaege",
   props: {
@@ -78,25 +107,68 @@ export default {
   },
   data() {
     return {
-      // maxSelectionNum: this.heilmittel.terminNumber,
-      vorschlaege: [],
+      vorschlaege: {},
     };
   },
   methods: {
-    // TODO: improve
     async generateVorschläge() {
-      return TherapeutService.getAll().then((therapeutListe) => {
-        return [...Array(this.maxSelectionNum * 4)].map((item, index) => {
-          return {
-            date: this.roundToFullHour(
-              new Date(new Date().getTime() + 2 * index * 60 * 60 * 1000)
-            ),
-            selected: index < this.maxSelectionNum,
-            Therapeut: therapeutListe[0],
-            TherapeutId: therapeutListe[0].id,
-          };
-        });
-      });
+      const therapeutenQuery = TherapeutService.getAll();
+      // TODO: filter out if therapeut has not the heilmittel in its capabilities
+      const terminQuery = TerminService.getAll().then((terminList) =>
+        terminList.filter((t) => new Date(t.start) >= new Date())
+      );
+
+      return Promise.all([therapeutenQuery, terminQuery]).then(
+        // eslint-disable-next-line no-unused-vars
+        ([therapeutList, terminList]) => {
+          let vorschlagDict = {};
+
+          for (let hm of this.heilmittel) {
+            let hmVorschlagList = [];
+            let searchStartDate = new Date(
+              new Date().valueOf() -
+                (new Date().valueOf() % (5 * 1000 * 60)) +
+                5 * 1000 * 60
+            );
+
+            while (hmVorschlagList.length < hm.terminNumber * 2) {
+              const foundSlots = therapeutList
+                .map((therapeut) => {
+                  // if therapeut has an opening at the searchStartDate
+                  if (
+                    // TODO: filter out times outside the opening hours
+                    terminList.filter(
+                      (t) =>
+                        t.TherapeutId == therapeut.id &&
+                        Math.abs(new Date(t.start) - searchStartDate) <=
+                          hm.terminMinutes * 1000 * 60
+                    ).length == 0
+                  ) {
+                    return {
+                      date: new Date(searchStartDate),
+                      selected: hmVorschlagList.length < hm.terminNumber,
+                      Therapeut: therapeut,
+                      TherapeutId: therapeut.id,
+                      Heilmittel: hm,
+                      HeilmittelId: hm.id,
+                    };
+                  } else {
+                    return null;
+                  }
+                })
+                .filter((a) => a != null);
+              const minuteStep = foundSlots.length == 0 ? 5 : hm.terminMinutes;
+              searchStartDate = new Date(
+                searchStartDate.getTime() + minuteStep * 1000 * 60
+              );
+              hmVorschlagList.push(...foundSlots);
+            }
+            vorschlagDict[hm.name] = hmVorschlagList;
+          }
+
+          return vorschlagDict;
+        }
+      );
     },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
@@ -105,35 +177,43 @@ export default {
       return String(number).padStart(2, "0");
     },
     selectVorschlag(vorschlag) {
-      let found_v = this.vorschlaege.find((v) => v.date == vorschlag.date);
-
-      if (found_v.selected) found_v.selected = !found_v.selected;
-      else if (this.selectionCount < this.maxSelectionNum)
-        found_v.selected = !found_v.selected;
+      vorschlag.selected = !vorschlag.selected;
       this.save();
     },
     save() {
       this.$emit(
         "save",
-        this.vorschlaege
-          .filter((v) => v.selected)
-          .map((v) => {
-            return { date: v.date, TherapeutId: v.TherapeutId };
+        [].concat(
+          ...Object.values(this.vorschlaege).map((vorsch) => {
+            return vorsch
+              .filter((v) => v.selected)
+              .map((v) => {
+                return { date: v.date, TherapeutId: v.TherapeutId };
+              });
           })
+        )
       );
       this.$emit(
         "input",
-        this.vorschlaege
-          .filter((v) => v.selected)
-          .map((v) => {
-            return { date: v.date, TherapeutId: v.TherapeutId };
+        [].concat(
+          ...Object.values(this.vorschlaege).map((vorsch) => {
+            return vorsch
+              .filter((v) => v.selected)
+              .map((v) => {
+                return { date: v.date, TherapeutId: v.TherapeutId };
+              });
           })
+        )
       );
     },
   },
   computed: {
     selectionCount() {
-      return this.vorschlaege.filter((v) => v.selected).length;
+      let sum = 0;
+      Object.values(this.vorschlaege).forEach((hmVorschlagList) => {
+        sum += hmVorschlagList.filter((v) => v.selected).length;
+      });
+      return sum;
     },
     maxSelectionNum() {
       let sum = 0;
@@ -144,8 +224,8 @@ export default {
     },
   },
   mounted() {
-    this.generateVorschläge().then((vorschlagsliste) => {
-      this.vorschlaege = vorschlagsliste;
+    this.generateVorschläge().then((vorschlaege) => {
+      this.vorschlaege = vorschlaege;
       this.save();
     });
     // this.save();

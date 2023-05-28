@@ -23,14 +23,9 @@
         Mindestens 1 Heilmittel hinzufügen
       </div>
 
-      <b-dropdown
-        id="heilmitteltyp"
-        :text="
-          rezept.Heilmittels?.map((hm) => hm.abk).join(', ') || 'hinzufügen'
-        "
-      >
+      <b-dropdown id="heilmitteltyp" text="Hinzufügen">
         <b-dropdown-item
-          v-for="typ in heilmittel"
+          v-for="typ in nonSelectedHeilmittel"
           :key="typ.id"
           @click="addHeilmittel(typ.id)"
           >{{ typ.abk }}</b-dropdown-item
@@ -172,10 +167,7 @@ export default {
     removeHeilmittel(HeilmittelId) {
       const hm = this.rezept.Heilmittels.find((hm) => hm.id == HeilmittelId);
       const idx = this.rezept.Heilmittels.indexOf(hm);
-      this.rezept = {
-        ...this.rezept,
-        Heilmittels: this.rezept.Heilmittels.slice(idx, idx),
-      };
+      this.rezept.Heilmittels.splice(idx, 1);
       this.$emit("input", this.rezept);
     },
     setICD10Code(icd10) {
@@ -203,6 +195,11 @@ export default {
         this.rezept.Heilmittel &&
         this.rezept.ausstellungsdatum &&
         this.rezept.aussteller
+      );
+    },
+    nonSelectedHeilmittel() {
+      return this.heilmittel.filter(
+        (hm) => !this.rezept.Heilmittels.map((rhm) => rhm.id).includes(hm.id)
       );
     },
   },

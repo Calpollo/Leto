@@ -8,7 +8,7 @@ class ConfigService {
     } catch (error) {
       console.warn(error);
       this.config = {
-        version: "Basis",
+        online: false,
         calendar: {
           defaultView: "3",
         },
@@ -18,11 +18,6 @@ class ConfigService {
   }
 
   checkConfig() {
-    const versionList = ["Lokal", "Basis", "Premium"];
-    if (!versionList.includes(this.getVersion()))
-      throw new Error(
-        "The programm version must be in " + JSON.stringify(versionList)
-      );
     if (!["1", "3", "week", "month"].includes(this.getCalendar("defaultView")))
       throw new Error(
         'The calendar default view must be in ["1", "3", "week", "month"]'
@@ -35,6 +30,10 @@ class ConfigService {
 
   getVersion() {
     return this.config.version;
+  }
+
+  getOnline() {
+    return this.config.online;
   }
 
   getCalendar(key = null) {
@@ -54,8 +53,8 @@ class ConfigService {
     return this.config.defaultPause;
   }
 
-  setVersion(version) {
-    this.config.version = version;
+  setOnline(online) {
+    this.config.online = online;
     this.save();
   }
 

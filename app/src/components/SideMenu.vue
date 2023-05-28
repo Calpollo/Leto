@@ -1,19 +1,19 @@
 <template>
-  <div
-    class="sideMenu"
-    :style="{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-    }"
-  >
-    <div id="topNav">
-      <router-link :to="{ name: 'Home' }">
-        <!-- <h1>Leto</h1> -->
-        <img src="@/assets/Leto - Text.svg" />
-      </router-link>
+  <div class="sideMenu">
+    <b-overlay
+      :show="!loggedIn"
+      :style="{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
+      }"
+    >
+      <div id="topNav">
+        <router-link :to="{ name: 'Home' }">
+          <img src="@/assets/Leto - Text.svg" />
+        </router-link>
 
-      <b-overlay :show="!loggedIn">
         <nav>
           <router-link :to="{ name: 'Home' }">
             <b-icon-house-fill class="mr-2" />
@@ -32,20 +32,19 @@
             Einstellungen
           </router-link>
         </nav>
-
-        <template #overlay>
-          <b-icon-lock-fill />
-        </template>
-      </b-overlay>
-    </div>
-    <div id="bottomNav">
-      <nav>
-        <router-link :to="{ name: 'Einstellungen.Konto' }">
-          <b-icon-person-square class="mr-2" />
-          Konto
-        </router-link>
-      </nav>
-    </div>
+      </div>
+      <div id="bottomNav">
+        <nav>
+          <router-link :to="{ name: 'Einstellungen.Konto' }">
+            <b-icon-person-square class="mr-2" />
+            Konto
+          </router-link>
+        </nav>
+      </div>
+      <template #overlay>
+        <b-icon-lock-fill />
+      </template>
+    </b-overlay>
   </div>
 </template>
 

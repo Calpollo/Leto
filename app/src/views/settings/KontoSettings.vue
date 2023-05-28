@@ -6,20 +6,12 @@
       ändern.
     </p>
 
-    <!-- TODO: change to online/offline switch -->
     <div>
-      <label for="version" class="mr-2">Version:</label>
-      <b-dropdown id="version" :text="selectedVersion">
-        <b-dropdown-item
-          v-for="ver in availableVersions"
-          :key="ver"
-          @click="setVersion(ver)"
-        >
-          {{ ver }}
-        </b-dropdown-item>
-      </b-dropdown>
+      <b-form-checkbox v-model="online" switch> Online </b-form-checkbox>
 
-      <b-card id="account-card">
+      <spinner-logo v-if="!$store.state.me" />
+
+      <b-card id="account-card" v-else>
         <b-card-text>
           <b-avatar variant="white" :src="Leto" />
           <h1>
@@ -44,15 +36,17 @@
 </template>
 
 <script>
-import ConfigService from "../../services/ConfigService";
 import Leto from "@/assets/Leto.svg";
+import ConfigService from "../../services/ConfigService";
+import SpinnerLogo from "../../components/SpinnerLogo.vue";
 
 export default {
+  name: "KontoSettings",
+  components: { SpinnerLogo },
   data() {
     return {
       Leto,
-      selectedVersion: ConfigService.getVersion(),
-      availableVersions: ["Lokal", "Basis", "Premium"],
+      online: ConfigService.getOnline(),
       kontodata: {
         username: {
           name: "Benutzername",
@@ -63,10 +57,9 @@ export default {
       },
     };
   },
-  methods: {
-    setVersion(ver) {
-      this.selectedVersion = ver;
-      ConfigService.setVersion(ver);
+  watch: {
+    online() {
+      ConfigService.setOnline(this.online);
     },
   },
 };
