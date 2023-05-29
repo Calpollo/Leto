@@ -1,6 +1,7 @@
 import router from "@/router";
 import store from "@/store";
 import axios from "axios";
+import ConfigService from "./ConfigService";
 
 const ax = axios.create({
   baseURL:
@@ -15,6 +16,9 @@ ax.interceptors.response.use(
   (response) => response,
   (error) => {
     console.error(error);
+    if (error.code == "ERR_NETWORK") {
+      throw error;
+    }
     switch (error.response.status) {
       case 401:
         store.commit("logOut");
@@ -23,7 +27,7 @@ ax.interceptors.response.use(
         store.commit("logOut");
         return router.push("/");
     }
-    return error;
+    throw error;
   }
 );
 
@@ -44,11 +48,25 @@ class RequestService {
       })
       .catch((err) => {
         console.error(err);
+        if (err.code == "ERR_NETWORK") {
+          ConfigService.setOnline(false);
+          store.commit("logIn");
+          return new Promise((resolve) => resolve(true));
+        }
         return err;
       });
   }
 
   me() {
+    if (!ConfigService.getOnline()) {
+      return new Promise((resolve) => {
+        resolve({
+          username: "OfflineUser",
+          RoleName: "Standard",
+          email: "offline",
+        });
+      });
+    }
     return ax.get("/auth/me").then((response) => {
       return response.data;
     });

@@ -55,7 +55,7 @@ class ConfigService {
 
   setOnline(online) {
     this.config.online = online;
-    this.save();
+    // this.save();
   }
 
   setPraxis(id) {

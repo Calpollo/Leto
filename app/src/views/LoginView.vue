@@ -14,6 +14,9 @@
       <b-row>
         <b-col>
           <b-button variant="primary" @click="login">Login</b-button>
+          <b-button variant="outline-primary" @click="workOffline" class="ml-2">
+            Offline arbeiten
+          </b-button>
         </b-col>
         <b-col :style="{ textAlign: 'end' }">
           <b-button
@@ -32,6 +35,7 @@
 <script>
 import store from "@/store";
 import RequestService from "../services/RequestService";
+import ConfigService from "../services/ConfigService";
 export default {
   name: "LoginView",
   data() {
@@ -49,6 +53,11 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+    workOffline() {
+      ConfigService.setOnline(false);
+      this.$store.commit("logIn");
+      this.$router.push("/home");
     },
   },
   mounted() {
