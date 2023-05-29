@@ -14,7 +14,6 @@
       :key="key"
       :title="key"
     >
-      <!-- TODO: allow changes -->
       <b-card-header>
         <b-icon-exclamation-octagon
           v-if="
@@ -67,6 +66,70 @@
             </b-button>
           </b-col>
         </b-row>
+        <b-row>
+          <b-col>
+            <b-row>
+              <b-col>
+                <b-form-group label="Datum" label-for="date-input">
+                  <b-form-input
+                    id="date-input"
+                    type="date"
+                    v-model="newVorschlagDate"
+                  />
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group label="Zeit" label-for="time-input">
+                  <b-form-input
+                    id="time-input"
+                    type="time"
+                    v-model="newVorschlagTime"
+                  />
+                </b-form-group>
+              </b-col>
+              <b-col>
+                <b-form-group label="Therapeut" label-for="therapeut-search">
+                  <b-form-input
+                    id="therapeut-search"
+                    type="search"
+                    v-model="newVorschlagTherapeut"
+                    list="therapeutList"
+                  >
+                  </b-form-input>
+                  <datalist id="therapeutList">
+                    <option
+                      v-for="therapeut in therapeuten"
+                      :key="therapeut.id"
+                      :value="therapeut.name"
+                    >
+                      {{ therapeut.id }}
+                    </option>
+                  </datalist>
+                </b-form-group>
+              </b-col>
+              <b-col cols="auto">
+                <b-button
+                  :variant="
+                    newVorschlagDate &&
+                    newVorschlagTime &&
+                    newVorschlagTherapeut
+                      ? 'success'
+                      : 'outline-secondary'
+                  "
+                  class="m-2"
+                  :style="{ height: '70%' }"
+                  :disabled="
+                    vorsch.filter((v) => v.selected).length ==
+                    heilmittel.find((hm) => hm.name == key).terminNumber
+                  "
+                  @click="addVorschlag(key)"
+                >
+                  <b-icon-plus />
+                </b-button>
+              </b-col>
+            </b-row>
+          </b-col>
+        </b-row>
       </b-card-text>
     </b-card>
     <br />
@@ -108,6 +171,10 @@ export default {
   data() {
     return {
       vorschlaege: {},
+      therapeuten: [],
+      newVorschlagDate: null,
+      newVorschlagTime: null,
+      newVorschlagTherapeut: null,
     };
   },
   methods: {
@@ -180,6 +247,39 @@ export default {
       vorschlag.selected = !vorschlag.selected;
       this.save();
     },
+    addVorschlag(hmName) {
+      console.log(
+        hmName,
+        this.newVorschlagDate,
+        this.newVorschlagTime,
+        this.newVorschlagTherapeut
+      );
+      const heilmittel = this.heilmittel.find((hm) => hm.name == hmName);
+      const therapeut = this.therapeuten.find(
+        (t) => t.name == this.newVorschlagTherapeut
+      );
+      console.log(heilmittel, therapeut, this.vorschlaege[hmName].length);
+      if (
+        !heilmittel ||
+        !therapeut ||
+        this.vorschlaege[hmName].filter((v) => v.selected).length >=
+          heilmittel.terminNumber
+      )
+        return;
+
+      const newVorschlag = {
+        date: new Date(this.newVorschlagDate + " " + this.newVorschlagTime),
+        selected: true,
+        Therapeut: therapeut,
+        TherapeutId: therapeut.id,
+        Heilmittel: heilmittel,
+        HeilmittelId: heilmittel.id,
+      };
+      console.log(this.vorschlaege[hmName].length);
+
+      this.vorschlaege[hmName].push(newVorschlag);
+      console.log(this.vorschlaege[hmName].length);
+    },
     save() {
       this.$emit(
         "save",
@@ -224,6 +324,9 @@ export default {
     },
   },
   mounted() {
+    TherapeutService.getAll().then(
+      (therapeutList) => (this.therapeuten = therapeutList)
+    );
     this.generateVorschläge().then((vorschlaege) => {
       this.vorschlaege = vorschlaege;
       this.save();

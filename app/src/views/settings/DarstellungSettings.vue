@@ -29,7 +29,7 @@ export default {
   },
   mounted() {
     TherapeutService.getAll().then((therapeuten) => {
-      console.table(therapeuten);
+      // console.table(therapeuten);
       this.therapeuten = therapeuten.map(({ id, name, color }) => {
         return { id, name, color };
       });
