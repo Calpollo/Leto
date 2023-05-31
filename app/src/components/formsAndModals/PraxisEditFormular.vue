@@ -9,16 +9,16 @@
     scrollable
     size="lg"
   >
-    <SpinnerLogo v-if="!praxis" />
-    <!-- TODO: validate input before submit (logic validation) -->
+    <SpinnerLogo v-if="!value" />
     <b-form class="PraxisEditFormular" v-else @submit="done">
       <b-form-group id="praxisname-group" label="Name:" label-for="praxis-name">
         <b-form-input
           id="praxis-name"
           type="text"
-          v-model="praxis.name"
+          :value="value.name"
+          @input="setName"
           required
-          :state="praxis.name == null ? null : praxis.name.length > 0"
+          :state="value.name == null ? null : value.name.length > 0"
         />
         <b-form-invalid-feedback id="praxis-name-feedback">
           Der Name deiner Praxis ist <b>nicht optional</b>
@@ -33,9 +33,10 @@
         <b-form-input
           id="praxis-address"
           type="text"
-          v-model="praxis.address"
+          :value="value.address"
+          @input="setAddress"
           required
-          :state="praxis.address == null ? null : praxis.address.length > 0"
+          :state="value.address == null ? null : value.address.length > 0"
         />
         <b-form-invalid-feedback id="praxis-address-feedback">
           Die Adresse deiner Praxis ist <b>nicht optional</b>
@@ -50,13 +51,14 @@
         <b-form-input
           id="praxis-email"
           type="email"
-          v-model="praxis.email"
+          :value="value.email"
+          @input="setEmail"
           required
           :state="
-            praxis.email == null
+            value.email == null
               ? null
-              : praxis.email.length > 5 &&
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(praxis.email)
+              : value.email.length > 5 &&
+                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.email)
           "
         />
         <b-form-invalid-feedback id="praxis-email-feedback">
@@ -72,12 +74,13 @@
       >
         <b-form-input
           id="praxis-phone"
-          v-model="praxis.phone"
+          :value="value.phone"
+          @input="setPhone"
           required
           :state="
-            praxis.phone == null
+            value.phone == null
               ? null
-              : praxis.phone.length > 6 && /\+?[0-9 ]*/.test(praxis.phone)
+              : value.phone.length > 6 && /\+?[0-9 ]*/.test(value.phone)
           "
         />
         <b-form-invalid-feedback id="praxis-phone-feedback">
@@ -93,9 +96,10 @@
       >
         <b-input
           id="praxis-ikNummer"
-          v-model="praxis.ikNummer"
+          :value="value.ikNummer"
+          @input="setIkNummer"
           required
-          :state="praxis.ikNummer == null ? null : praxis.ikNummer.length > 5"
+          :state="value.ikNummer == null ? null : value.ikNummer.length > 5"
         />
         <b-form-invalid-feedback id="praxis-iknummer-feedback">
           Die IK-Nummer deiner Praxis muss
@@ -108,7 +112,7 @@
 
       <b-form-group id="praxisfeiertage-group" label-for="praxis-feiertage">
         <b-row
-          v-for="(feiertag, index) in praxis.Feiertage"
+          v-for="(feiertag, index) in value.Feiertage"
           :key="feiertag.id"
           align-v="center"
         >
@@ -160,22 +164,25 @@
               step="300"
               required
               :state="
-                praxis.montagsZeit?.start && praxis.montagsZeit?.end
-                  ? praxis.montagsZeit.start < praxis.montagsZeit.end
+                value.montagsZeit?.start && value.montagsZeit?.end
+                  ? value.montagsZeit.start < value.montagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.montagsZeit.start).toLocaleTimeString('de-DE', {
+                new Date(value.montagsZeit.start).toLocaleTimeString('de-DE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })
               "
               @change="
-                (value) =>
-                  (praxis.montagsZeit.start = updateTime(
-                    praxis.montagsZeit.start,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    montagsZeit: {
+                      ...value.montagsZeit,
+                      start: updateTime(value.montagsZeit.start, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback
@@ -191,22 +198,25 @@
               step="300"
               required
               :state="
-                praxis.montagsZeit?.start && praxis.montagsZeit?.end
-                  ? praxis.montagsZeit.start < praxis.montagsZeit.end
+                value.montagsZeit?.start && value.montagsZeit?.end
+                  ? value.montagsZeit.start < value.montagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.montagsZeit.end).toLocaleTimeString('de-DE', {
+                new Date(value.montagsZeit.end).toLocaleTimeString('de-DE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })
               "
               @change="
-                (value) =>
-                  (praxis.montagsZeit.end = updateTime(
-                    praxis.montagsZeit.end,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    montagsZeit: {
+                      ...value.montagsZeit,
+                      end: updateTime(value.montagsZeit.end, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback id="praxis-öffnungszeiten-mo-end-feedback">
@@ -230,12 +240,12 @@
               step="300"
               required
               :state="
-                praxis.dienstagsZeit?.start && praxis.dienstagsZeit?.end
-                  ? praxis.dienstagsZeit.start < praxis.dienstagsZeit.end
+                value.dienstagsZeit?.start && value.dienstagsZeit?.end
+                  ? value.dienstagsZeit.start < value.dienstagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.dienstagsZeit.start).toLocaleTimeString(
+                new Date(value.dienstagsZeit.start).toLocaleTimeString(
                   'de-DE',
                   {
                     hour: '2-digit',
@@ -244,11 +254,14 @@
                 )
               "
               @change="
-                (value) =>
-                  (praxis.dienstagsZeit.start = updateTime(
-                    praxis.dienstagsZeit.start,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    dienstagsZeit: {
+                      ...value.dienstagsZeit,
+                      start: updateTime(value.dienstagsZeit.start, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback
@@ -264,22 +277,25 @@
               step="300"
               required
               :state="
-                praxis.dienstagsZeit?.start && praxis.dienstagsZeit?.end
-                  ? praxis.dienstagsZeit.start < praxis.dienstagsZeit.end
+                value.dienstagsZeit?.start && value.dienstagsZeit?.end
+                  ? value.dienstagsZeit.start < value.dienstagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.dienstagsZeit.end).toLocaleTimeString('de-DE', {
+                new Date(value.dienstagsZeit.end).toLocaleTimeString('de-DE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })
               "
               @change="
-                (value) =>
-                  (praxis.dienstagsZeit.end = updateTime(
-                    praxis.dienstagsZeit.end,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    dienstagsZeit: {
+                      ...value.dienstagsZeit,
+                      end: updateTime(value.dienstagsZeit.end, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback id="praxis-öffnungszeiten-di-end-feedback">
@@ -303,12 +319,12 @@
               step="300"
               required
               :state="
-                praxis.mittwochsZeit?.start && praxis.mittwochsZeit?.end
-                  ? praxis.mittwochsZeit.start < praxis.mittwochsZeit.end
+                value.mittwochsZeit?.start && value.mittwochsZeit?.end
+                  ? value.mittwochsZeit.start < value.mittwochsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.mittwochsZeit.start).toLocaleTimeString(
+                new Date(value.mittwochsZeit.start).toLocaleTimeString(
                   'de-DE',
                   {
                     hour: '2-digit',
@@ -317,11 +333,14 @@
                 )
               "
               @change="
-                (value) =>
-                  (praxis.mittwochsZeit.start = updateTime(
-                    praxis.mittwochsZeit.start,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    mittwochsZeit: {
+                      ...value.mittwochsZeit,
+                      start: updateTime(value.mittwochsZeit.start, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback
@@ -337,22 +356,25 @@
               step="300"
               required
               :state="
-                praxis.mittwochsZeit?.start && praxis.mittwochsZeit?.end
-                  ? praxis.mittwochsZeit.start < praxis.mittwochsZeit.end
+                value.mittwochsZeit?.start && value.mittwochsZeit?.end
+                  ? value.mittwochsZeit.start < value.mittwochsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.mittwochsZeit.end).toLocaleTimeString('de-DE', {
+                new Date(value.mittwochsZeit.end).toLocaleTimeString('de-DE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })
               "
               @change="
-                (value) =>
-                  (praxis.mittwochsZeit.end = updateTime(
-                    praxis.mittwochsZeit.end,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    mittwochsZeit: {
+                      ...value.montagsZeit,
+                      end: updateTime(value.mittwochsZeit.end, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback id="praxis-öffnungszeiten-mi-end-feedback">
@@ -376,12 +398,12 @@
               step="300"
               required
               :state="
-                praxis.donnerstagsZeit?.start && praxis.donnerstagsZeit?.end
-                  ? praxis.donnerstagsZeit.start < praxis.donnerstagsZeit.end
+                value.donnerstagsZeit?.start && value.donnerstagsZeit?.end
+                  ? value.donnerstagsZeit.start < value.donnerstagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.donnerstagsZeit.start).toLocaleTimeString(
+                new Date(value.donnerstagsZeit.start).toLocaleTimeString(
                   'de-DE',
                   {
                     hour: '2-digit',
@@ -390,11 +412,14 @@
                 )
               "
               @change="
-                (value) =>
-                  (praxis.donnerstagsZeit.start = updateTime(
-                    praxis.donnerstagsZeit.start,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    donnerstagsZeit: {
+                      ...value.donnerstagsZeit,
+                      start: updateTime(value.donnerstagsZeit.start, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback
@@ -410,12 +435,12 @@
               step="300"
               required
               :state="
-                praxis.donnerstagsZeit?.start && praxis.donnerstagsZeit?.end
-                  ? praxis.donnerstagsZeit.start < praxis.donnerstagsZeit.end
+                value.donnerstagsZeit?.start && value.donnerstagsZeit?.end
+                  ? value.donnerstagsZeit.start < value.donnerstagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.donnerstagsZeit.end).toLocaleTimeString(
+                new Date(value.donnerstagsZeit.end).toLocaleTimeString(
                   'de-DE',
                   {
                     hour: '2-digit',
@@ -424,11 +449,14 @@
                 )
               "
               @change="
-                (value) =>
-                  (praxis.donnerstagsZeit.end = updateTime(
-                    praxis.donnerstagsZeit.end,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    donnerstagsZeit: {
+                      ...value.donnerstagsZeit,
+                      end: updateTime(value.donnerstagsZeit.end, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback id="praxis-öffnungszeiten-do-end-feedback">
@@ -452,25 +480,25 @@
               step="300"
               required
               :state="
-                praxis.freitagsZeit?.start && praxis.freitagsZeit?.end
-                  ? praxis.freitagsZeit.start < praxis.freitagsZeit.end
+                value.freitagsZeit?.start && value.freitagsZeit?.end
+                  ? value.freitagsZeit.start < value.freitagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.freitagsZeit.start).toLocaleTimeString(
-                  'de-DE',
-                  {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  }
-                )
+                new Date(value.freitagsZeit.start).toLocaleTimeString('de-DE', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
               "
               @change="
-                (value) =>
-                  (praxis.freitagsZeit.start = updateTime(
-                    praxis.freitagsZeit.start,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    freitagsZeit: {
+                      ...value.freitagsZeit,
+                      start: updateTime(value.freitagsZeit.start, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback
@@ -486,22 +514,25 @@
               step="300"
               required
               :state="
-                praxis.freitagsZeit?.start && praxis.freitagsZeit?.end
-                  ? praxis.freitagsZeit.start < praxis.freitagsZeit.end
+                value.freitagsZeit?.start && value.freitagsZeit?.end
+                  ? value.freitagsZeit.start < value.freitagsZeit.end
                   : null
               "
               :value="
-                new Date(praxis.freitagsZeit.end).toLocaleTimeString('de-DE', {
+                new Date(value.freitagsZeit.end).toLocaleTimeString('de-DE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })
               "
               @change="
-                (value) =>
-                  (praxis.freitagsZeit.end = updateTime(
-                    praxis.freitagsZeit.end,
-                    value
-                  ))
+                (v) =>
+                  save({
+                    ...value,
+                    freitagsZeit: {
+                      ...value.freitagsZeit,
+                      end: updateTime(value.freitagsZeit.end, v),
+                    },
+                  })
               "
             />
             <b-form-invalid-feedback id="praxis-öffnungszeiten-fr-end-feedback">
@@ -537,17 +568,15 @@ import SpinnerLogo from "../SpinnerLogo.vue";
 export default {
   name: "PraxisEditFormular",
   components: { SpinnerLogo },
-  data() {
-    return {
-      praxis: this.value,
-    };
-  },
   props: {
     value: Object,
   },
   mounted() {
-    if (!this.praxis) {
-      this.praxis = {
+    this.init();
+  },
+  methods: {
+    resetValue() {
+      this.save({
         name: null,
         address: null,
         email: null,
@@ -559,15 +588,33 @@ export default {
         mittwochsZeit: {},
         donnerstagsZeit: {},
         freitagsZeit: {},
-      };
-    }
-  },
-  methods: {
+      });
+    },
+    init() {
+      if (!this.value) this.resetValue();
+    },
     openModal() {
+      this.init();
       this.$bvModal.show("praxisCreation");
     },
     hideModal() {
+      this.resetValue();
       this.$bvModal.hide("praxisCreation");
+    },
+    setName(name) {
+      this.save({ ...this.value, name });
+    },
+    setAddress(address) {
+      this.save({ ...this.value, address });
+    },
+    setEmail(email) {
+      this.save({ ...this.value, email });
+    },
+    setPhone(phone) {
+      this.save({ ...this.value, phone });
+    },
+    setIkNummer(ikNummer) {
+      this.save({ ...this.value, ikNummer });
     },
     updateTime(variable, value) {
       const [hours, minutes] = value.split(":");
@@ -575,42 +622,55 @@ export default {
       let newDate = new Date(variable || null);
       newDate.setHours(hours);
       newDate.setMinutes(minutes);
-      setTimeout(() => (this.praxis = { ...this.praxis }), 200);
       return newDate.valueOf();
     },
     removeFeiertag(tag) {
-      this.praxis.Feiertage.splice(this.praxis.Feiertage.indexOf(tag), 1);
+      this.save({
+        ...this.value,
+        Feiertage: [...this.value.Feiertage].splice(
+          this.value.Feiertage.indexOf(tag),
+          1
+        ),
+      });
     },
     addFeiertag() {
-      this.praxis.Feiertage.push({
+      const Feiertage = [...this.value.Feiertage];
+      Feiertage.push({
         datum: new Date().toString(),
         yearlyRepetition: false,
-        PraxisId: this.praxis.id,
+        PraxisId: this.value.id,
+      });
+      this.save({
+        ...this.value,
+        Feiertage,
       });
     },
     done() {
-      this.$emit("done", this.praxis);
+      this.$emit("done", this.value);
+    },
+    save(value) {
+      this.$emit("input", value);
     },
   },
   computed: {
     praxisToCreateIsValid() {
       return Boolean(
-        this.praxis &&
-          this.praxis.name &&
-          this.praxis.address &&
-          this.praxis.email &&
-          this.praxis.phone &&
-          this.praxis.ikNummer &&
-          this.praxis.montagsZeit.start &&
-          this.praxis.montagsZeit.end &&
-          this.praxis.dienstagsZeit.start &&
-          this.praxis.dienstagsZeit.end &&
-          this.praxis.mittwochsZeit.start &&
-          this.praxis.mittwochsZeit.end &&
-          this.praxis.donnerstagsZeit.start &&
-          this.praxis.donnerstagsZeit.end &&
-          this.praxis.freitagsZeit.start &&
-          this.praxis.freitagsZeit.end
+        this.value &&
+          this.value.name &&
+          this.value.address &&
+          this.value.email &&
+          this.value.phone &&
+          this.value.ikNummer &&
+          this.value.montagsZeit.start &&
+          this.value.montagsZeit.end &&
+          this.value.dienstagsZeit.start &&
+          this.value.dienstagsZeit.end &&
+          this.value.mittwochsZeit.start &&
+          this.value.mittwochsZeit.end &&
+          this.value.donnerstagsZeit.start &&
+          this.value.donnerstagsZeit.end &&
+          this.value.freitagsZeit.start &&
+          this.value.freitagsZeit.end
       );
     },
   },

@@ -101,6 +101,17 @@ class PraxisService {
       return praxis;
     });
   }
+
+  update(praxis) {
+    return DatabaseService.updatePraxis({
+      id: praxis.id,
+      instance: praxis,
+    });
+  }
+
+  remove(id) {
+    return DatabaseService.removePraxis({ id });
+  }
 }
 
 export default new PraxisService();
