@@ -5,9 +5,6 @@ class DatabaseService {
     return !ConfigService.getOnline();
   }
 
-  //! FIXME: all entites are being displayed without considering the PraxisId
-  // TODO: add a where-filter for the PraxisId
-
   // ############################
   // Get Instances from the database
   // ############################
@@ -25,6 +22,7 @@ class DatabaseService {
   }
 
   getTermine(data) {
+    data.where = { ...data.where, PraxisId: ConfigService.getPraxis() };
     if (this.isOffline()) {
       return window.ipc.getTermin(data).then(JSON.parse);
     } else {
@@ -276,6 +274,16 @@ class DatabaseService {
     }
   }
 
+  updatePraxis(data) {
+    if (this.isOffline()) {
+      return window.ipc.updatePraxis(data).then(JSON.parse);
+    } else {
+      return ax
+        .put("/praxis/" + data.id, data.instance)
+        .then((res) => res.data);
+    }
+  }
+
   updateHeilmittel(data) {
     if (this.isOffline()) {
       return window.ipc.updateHeilmittel(data).then(JSON.parse);
@@ -367,6 +375,13 @@ class DatabaseService {
       return window.ipc.removeRezept(data).then(JSON.parse);
     } else {
       return ax.delete("/rezept/" + data.id).then((res) => res.data);
+    }
+  }
+  removePraxis(data) {
+    if (this.isOffline()) {
+      return window.ipc.removePraxis(data).then(JSON.parse);
+    } else {
+      return ax.delete("/praxis/" + data.id).then((res) => res.data);
     }
   }
 
