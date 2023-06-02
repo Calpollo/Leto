@@ -1,11 +1,9 @@
-import router from "@/router";
 import DatabaseService from "../DatabaseService";
 
 class HeilmittelService {
   getAll({ include = [] } = {}) {
     return DatabaseService.getHeilmittel({ include }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return [];
     });
   }
@@ -13,7 +11,6 @@ class HeilmittelService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getHeilmittel({ id, include }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return null;
     });
   }

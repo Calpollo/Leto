@@ -1,4 +1,3 @@
-import router from "@/router";
 import DatabaseService from "../DatabaseService";
 import VertragService from "./VertragService";
 
@@ -6,7 +5,6 @@ class TherapeutService {
   getAll({ include = [] } = {}) {
     return DatabaseService.getTherapeut({ include }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return [];
     });
   }
@@ -14,7 +12,6 @@ class TherapeutService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getTherapeut({ id, include }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return null;
     });
   }

@@ -1,11 +1,9 @@
-import router from "@/router";
 import DatabaseService from "../DatabaseService";
 
 class DatumService {
   getAll({ include = [], where = {} } = {}) {
     return DatabaseService.getDatum({ include, where }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return [];
     });
   }
@@ -13,7 +11,6 @@ class DatumService {
   getOne(id, { include = [] } = {}) {
     return DatabaseService.getDatum({ id, include }).catch((err) => {
       console.warn(err);
-      if ([403, 401].includes(err.response.status)) router.push("/");
       return null;
     });
   }
