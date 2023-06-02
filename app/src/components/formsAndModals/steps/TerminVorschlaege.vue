@@ -19,7 +19,7 @@
           v-if="
             !(
               vorsch.filter((v) => v.selected).length ==
-              vorsch[0].Heilmittel.terminNumber
+              vorsch[0]?.Heilmittel.terminNumber
             )
           "
           variant="danger"
@@ -27,11 +27,31 @@
         <b-icon-check-circle v-else variant="success" />
 
         {{ vorsch.filter((v) => v.selected).length }} von
-        {{ vorsch[0].Heilmittel.terminNumber }} ausgewählt
+        {{ vorsch[0]?.Heilmittel.terminNumber }} ausgewählt
       </b-card-header>
       <b-card-text>
         <b-row>
+          <b-col v-if="vorsch.length == 0">
+            <b-alert show variant="danger">
+              <b-icon-exclamation-triangle-fill />
+              Das System konnte keinen Vorschlag generieren. Du kannst Termine
+              nur händisch erstellen.
+              <hr />
+              Das kann mehrere Gründe haben:
+              <ul class="ml-4">
+                <li>
+                  Es stehen keine Therapeuten zur Verfügung, die das Heilmittel
+                  behandeln können.
+                </li>
+                <li>
+                  Es gibt keine Termine mit der notwendigen Länge in den
+                  nächsten 12 Monaten.
+                </li>
+              </ul>
+            </b-alert>
+          </b-col>
           <b-col
+            v-else
             v-for="[vorschlag, id] in vorsch.map((v) => {
               return [v, vorsch.indexOf(v)];
             })"
@@ -183,8 +203,9 @@ export default {
   },
   methods: {
     generateVorschläge() {
-      const therapeutenQuery = TherapeutService.getAll();
-      // TODO: filter out if therapeut has not the heilmittel in its capabilities
+      const therapeutenQuery = TherapeutService.getAll({
+        include: "Heilmittels",
+      });
       const terminQuery = TerminService.getAll().then((terminList) =>
         terminList.filter((t) => new Date(t.start) >= new Date())
       );
@@ -201,16 +222,27 @@ export default {
                 (new Date().valueOf() % (5 * 1000 * 60)) +
                 5 * 1000 * 60
             );
+            const therapeutListHmFiltered = therapeutList.filter((t) =>
+              t.Heilmittels.some((thm) => thm.id == hm.id)
+            );
+
+            if (therapeutListHmFiltered.length == 0) {
+              vorschlagDict[hm.name] = [];
+              continue;
+            }
 
             while (
               hmVorschlagList.length <
-              hm.terminNumber * 2 * therapeutList.length
+              hm.terminNumber * 2 * therapeutListHmFiltered.length
             ) {
               const foundSlots = [];
-              for (let therapeut of therapeutList) {
-                // if therapeut has an opening at the searchStartDate
+              for (let therapeut of therapeutListHmFiltered) {
+                // if therapeut has an opening at the searchStartDate within the openingHours
                 if (
                   // TODO: filter out times outside the opening hours
+                  // the relevant openinHours depend on the weekday of searchStartDate
+                  // start lies after or at the start of openingHours
+                  // end lies at least hm.terminMinutes before the end of openingHours
                   terminList.filter(
                     (t) =>
                       t.TherapeutId == therapeut.id &&
