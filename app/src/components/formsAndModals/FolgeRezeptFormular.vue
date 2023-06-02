@@ -104,11 +104,9 @@ export default {
   },
   methods: {
     done(terminVorschlagsList) {
-      console.log(this.rezept, terminVorschlagsList);
       return createNewRezept(this.rezept, terminVorschlagsList).then(
+        // eslint-disable-next-line no-unused-vars
         ([termine, createdKunde, createdRezept]) => {
-          console.table(termine);
-          console.log(createdKunde, createdRezept);
           this.rezept = { ...this.rezept, ...createdRezept };
           this.$emit("done");
         }
