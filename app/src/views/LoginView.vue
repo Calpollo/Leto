@@ -14,7 +14,12 @@
       <b-row>
         <b-col>
           <b-button variant="primary" @click="login">Login</b-button>
-          <b-button variant="outline-primary" @click="workOffline" class="ml-2">
+          <b-button
+            variant="outline-primary"
+            v-if="!isInBrowser"
+            @click="workOffline"
+            class="ml-2"
+          >
             Offline arbeiten
           </b-button>
         </b-col>
@@ -70,6 +75,9 @@ export default {
   computed: {
     loggedIn() {
       return store.state.loggedIn;
+    },
+    isInBrowser() {
+      return !window.ipc;
     },
   },
 };
