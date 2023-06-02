@@ -27,6 +27,18 @@ class TerminService {
     return DatabaseService.getTermine({ where: { RezeptId: rID }, include });
   }
 
+  getByKunde(kID, { include = [] } = {}) {
+    if (!Array.isArray(include)) include = [include];
+    include.push("Rezept");
+    include = [...new Set(include)];
+    return DatabaseService.getTermine({
+      where: {
+        "$Rezept.KundeId$": kID,
+      },
+      include,
+    });
+  }
+
   create(start, minutes, PraxisId, RezeptId, TherapeutId) {
     console.log("Creating new Termin with", {
       start,

@@ -36,22 +36,56 @@
       </datalist>
     </b-form-group>
 
-    <template #modal-footer="{ ok, cancel }">
-      <!-- TODO: change @click for meaningful reaction -->
-      <b-button size="sm" variant="success" @click="ok()">Speichern</b-button>
+    <template #modal-footer="{}">
+      <b-button
+        size="sm"
+        variant="outline-primary"
+        @click="openMoveModal"
+        :disabled="!termin"
+      >
+        Verschieben
+      </b-button>
+      <b-button
+        size="sm"
+        variant="danger"
+        @click="openDeleteModal"
+        :disabled="!termin"
+      >
+        Löschen
+      </b-button>
       <b-button size="sm" variant="outline-danger" @click="cancel()">
         Abbrechen
       </b-button>
     </template>
+
+    <TerminMove
+      v-if="termin"
+      :event="termin"
+      :ref="'terminMove'"
+      @done="moveDate"
+    />
+
+    <DeletionConfirmation
+      :ref="'deletionConfirmation'"
+      @confirm="confirmDeletion"
+    >
+      <p>
+        Bist du sicher, dass du diesen Termin entfernen willst? Du kannst diese
+        Entscheidung nicht mehr rückgängig machen!
+      </p>
+    </DeletionConfirmation>
   </b-modal>
 </template>
 
 <script>
 import KundenService from "@/services/dbServices/KundenService";
 import TerminService from "@/services/dbServices/TerminService";
-import RezeptService from "@/services/dbServices/RezeptService";
+// import RezeptService from "@/services/dbServices/RezeptService";
 import { toLocale, toLocaleTime } from "@/utils/dates";
+import TerminMove from "./TerminMove.vue";
+import DeletionConfirmation from "./DeletionConfirmation.vue";
 export default {
+  components: { TerminMove, DeletionConfirmation },
   name: "PatientNichtErschienen",
   data() {
     return {
@@ -66,18 +100,25 @@ export default {
     toLocaleTime,
     updateTermine() {
       const p = this.patienten.find((p) => p.id == this.selectedPatientId);
-      RezeptService.getByLastnameAndFirstname(p.lastname, p.firstname)
-        .then((rezeptList) => {
-          if (Array.isArray(rezeptList)) {
-            return Promise.all(
-              rezeptList.map((r) => TerminService.getByRezept(r.id))
-            );
-          } else return TerminService.getByRezept(rezeptList.id);
-        })
-        .then((terminList) => {
-          if (Array.isArray(terminList)) this.termine = terminList.flat();
-          else this.termine = terminList;
-        });
+      TerminService.getByKunde(p.id, {
+        include: [{ association: "Rezept", include: "Heilmittels" }],
+      }).then((terminList) => {
+        this.termine = terminList.filter(
+          (t) => t.start > new Date().setDate(new Date().getDate() - 7)
+        );
+      });
+      // RezeptService.getByLastnameAndFirstname(p.lastname, p.firstname)
+      //   .then((rezeptList) => {
+      //     if (Array.isArray(rezeptList)) {
+      //       return Promise.all(
+      //         rezeptList.map((r) => TerminService.getByRezept(r.id))
+      //       );
+      //     } else return TerminService.getByRezept(rezeptList.id);
+      //   })
+      //   .then((terminList) => {
+      //     if (Array.isArray(terminList)) this.termine = terminList.flat();
+      //     else this.termine = terminList;
+      //   });
     },
     changePatient(lastnamefirstname) {
       const [lastname, firstname] = lastnamefirstname.split(", ");
@@ -99,6 +140,29 @@ export default {
       if (found) this.selectedTerminId = found.id;
       else this.selectedTerminId = "";
     },
+    openMoveModal() {
+      this.$refs.terminMove.show();
+    },
+    openDeleteModal() {
+      this.$refs.deletionConfirmation.show();
+    },
+    moveDate([{ TherapeutId, date }]) {
+      TerminService.update({
+        ...this.termin,
+        TherapeutId,
+        start: new Date(date),
+      }).then(() => {
+        this.cancel();
+      });
+    },
+    confirmDeletion() {
+      TerminService.remove(this.termin.id).then(() => {
+        this.cancel();
+      });
+    },
+    cancel() {
+      this.$bvModal.hide("terminAbsage");
+    },
   },
   mounted() {
     KundenService.getAll().then((kundenList) => (this.patienten = kundenList));
@@ -106,6 +170,11 @@ export default {
   watch: {
     selectedPatientId() {
       this.updateTermine();
+    },
+  },
+  computed: {
+    termin() {
+      return this.termine.find((t) => t.id == this.selectedTerminId);
     },
   },
 };

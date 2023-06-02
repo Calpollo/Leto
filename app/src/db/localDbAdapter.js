@@ -517,6 +517,10 @@ class LocalDbAdapter {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        get() {
+          const rawValue = this.getDataValue("start");
+          return new Date(rawValue).valueOf();
+        },
       },
       minutes: {
         type: DataTypes.INTEGER,
