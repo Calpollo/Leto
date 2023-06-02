@@ -104,6 +104,19 @@
           </b-tab>
         </b-tabs>
       </b-card>
+
+      <DeletionConfirmation
+        :ref="'deletionConfirmation-' + praxis.id"
+        @confirm="confirmableFunction"
+      >
+        <p>
+          Bist du sicher, dass du diesen Standort entfernen willst? Du kannst
+          diese Entscheidung nicht mehr rückgängig machen!
+        </p>
+        <p>
+          <b>{{ praxis.name }}</b>
+        </p>
+      </DeletionConfirmation>
     </div>
 
     <PraxisEditFormular
@@ -120,16 +133,18 @@
 import PraxisService from "@/services/dbServices/PraxisService";
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
 import PraxisEditFormular from "@/components/formsAndModals/PraxisEditFormular.vue";
+import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
 import { toLocale, toLocaleTime } from "@/utils/dates";
 import ConfigService from "@/services/ConfigService";
 export default {
   name: "StandortSettings",
-  components: { SpinnerLogo, PraxisEditFormular },
+  components: { SpinnerLogo, PraxisEditFormular, DeletionConfirmation },
   data() {
     return {
       praxisList: [],
       activePraxisId: null,
       selectedPraxis: null,
+      confirmableFunction: () => {},
     };
   },
   mounted() {
@@ -211,11 +226,13 @@ export default {
     editCancel() {
       this.$refs.praxisEdit.hideModal();
     },
-    // TODO: wait for confirmation
     deletePraxis(praxis) {
-      PraxisService.remove(praxis.id).then(() => {
-        this.init();
-      });
+      this.confirmableFunction = () => {
+        PraxisService.remove(praxis.id).then(() => {
+          this.init();
+        });
+      };
+      this.$refs["deletionConfirmation-" + praxis.id][0].show();
     },
   },
 };
