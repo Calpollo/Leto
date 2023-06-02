@@ -30,12 +30,32 @@
       </p>
       <p>{{ this.event.Praxis.name }}</p>
 
-      <b-button class="mx-2" @click="deleteDate()" pill variant="outline-light">
+      <b-button class="mx-2" @click="moveOrDelete" pill variant="outline-light">
         <b-icon-trash-fill />
       </b-button>
     </b-tooltip>
 
-    <!-- TODO: move instead of delete -->
+    <TerminMove
+      :event="event"
+      :ref="'terminMove-' + event.id"
+      @done="moveDate"
+    />
+
+    <TerminMoveOrDelete
+      :ref="'terminMoveOrDelete-' + event.id"
+      @delete="deleteDate"
+      @move="openMoveModal"
+    >
+      <p>Du kannst den Termin entweder verschieben oder löschen.</p>
+      <p>
+        <b
+          >{{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
+          -
+          {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}</b
+        ><br />
+        Therapeut: {{ this.event.Therapeut.name }}
+      </p>
+    </TerminMoveOrDelete>
     <DeletionConfirmation
       :ref="'deletionConfirmation-' + event.id"
       @confirm="confirmableFunction"
@@ -63,6 +83,8 @@
 import KundenService from "@/services/dbServices/KundenService";
 import TerminService from "@/services/dbServices/TerminService";
 import DeletionConfirmation from "../formsAndModals/DeletionConfirmation.vue";
+import TerminMoveOrDelete from "../formsAndModals/TerminMoveOrDelete.vue";
+import TerminMove from "../formsAndModals/TerminMove.vue";
 export default {
   name: "CalendarDate",
   props: {
@@ -92,6 +114,22 @@ export default {
         backgroundColor: this.event.Therapeut.color,
       };
     },
+    moveOrDelete() {
+      this.$refs["terminMoveOrDelete-" + this.event.id].show();
+    },
+    openMoveModal() {
+      this.$refs["terminMove-" + this.event.id].show();
+    },
+    moveDate([{ TherapeutId, date }]) {
+      console.log("moveDate", this.event, TherapeutId, date);
+      TerminService.update({
+        ...this.event,
+        TherapeutId,
+        start: new Date(date),
+      }).then(() => {
+        this.$emit("triggerUpdate");
+      });
+    },
     deleteDate() {
       this.confirmableFunction = () => {
         TerminService.remove(this.event.id);
@@ -105,7 +143,7 @@ export default {
       return (this.kunde = k);
     });
   },
-  components: { DeletionConfirmation },
+  components: { DeletionConfirmation, TerminMoveOrDelete, TerminMove },
 };
 </script>
 

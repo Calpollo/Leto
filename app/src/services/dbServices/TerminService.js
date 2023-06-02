@@ -59,6 +59,14 @@ class TerminService {
       bulkCreate: true,
     });
   }
+
+  update(termin) {
+    console.log(termin);
+    return DatabaseService.updateTermin({
+      id: termin.id,
+      instance: termin,
+    });
+  }
 }
 
 export default new TerminService();

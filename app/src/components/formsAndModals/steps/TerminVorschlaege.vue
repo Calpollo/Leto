@@ -167,6 +167,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    preSelect: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -178,7 +182,7 @@ export default {
     };
   },
   methods: {
-    async generateVorschläge() {
+    generateVorschläge() {
       const therapeutenQuery = TherapeutService.getAll();
       // TODO: filter out if therapeut has not the heilmittel in its capabilities
       const terminQuery = TerminService.getAll().then((terminList) =>
@@ -198,32 +202,34 @@ export default {
                 5 * 1000 * 60
             );
 
-            while (hmVorschlagList.length < hm.terminNumber * 2) {
-              const foundSlots = therapeutList
-                .map((therapeut) => {
-                  // if therapeut has an opening at the searchStartDate
-                  if (
-                    // TODO: filter out times outside the opening hours
-                    terminList.filter(
-                      (t) =>
-                        t.TherapeutId == therapeut.id &&
-                        Math.abs(new Date(t.start) - searchStartDate) <=
-                          hm.terminMinutes * 1000 * 60
-                    ).length == 0
-                  ) {
-                    return {
-                      date: new Date(searchStartDate),
-                      selected: hmVorschlagList.length < hm.terminNumber,
-                      Therapeut: therapeut,
-                      TherapeutId: therapeut.id,
-                      Heilmittel: hm,
-                      HeilmittelId: hm.id,
-                    };
-                  } else {
-                    return null;
-                  }
-                })
-                .filter((a) => a != null);
+            while (
+              hmVorschlagList.length <
+              hm.terminNumber * 2 * therapeutList.length
+            ) {
+              const foundSlots = [];
+              for (let therapeut of therapeutList) {
+                // if therapeut has an opening at the searchStartDate
+                if (
+                  // TODO: filter out times outside the opening hours
+                  terminList.filter(
+                    (t) =>
+                      t.TherapeutId == therapeut.id &&
+                      Math.abs(new Date(t.start) - searchStartDate) <=
+                        hm.terminMinutes * 1000 * 60
+                  ).length == 0
+                ) {
+                  foundSlots.push({
+                    date: new Date(searchStartDate),
+                    selected:
+                      this.preSelect &&
+                      hmVorschlagList.length < hm.terminNumber,
+                    Therapeut: therapeut,
+                    TherapeutId: therapeut.id,
+                    Heilmittel: hm,
+                    HeilmittelId: hm.id,
+                  });
+                }
+              }
               const minuteStep = foundSlots.length == 0 ? 5 : hm.terminMinutes;
               searchStartDate = new Date(
                 searchStartDate.getTime() + minuteStep * 1000 * 60
@@ -248,17 +254,10 @@ export default {
       this.save();
     },
     addVorschlag(hmName) {
-      console.log(
-        hmName,
-        this.newVorschlagDate,
-        this.newVorschlagTime,
-        this.newVorschlagTherapeut
-      );
       const heilmittel = this.heilmittel.find((hm) => hm.name == hmName);
       const therapeut = this.therapeuten.find(
         (t) => t.name == this.newVorschlagTherapeut
       );
-      console.log(heilmittel, therapeut, this.vorschlaege[hmName].length);
       if (
         !heilmittel ||
         !therapeut ||
@@ -275,10 +274,8 @@ export default {
         Heilmittel: heilmittel,
         HeilmittelId: heilmittel.id,
       };
-      console.log(this.vorschlaege[hmName].length);
 
       this.vorschlaege[hmName].push(newVorschlag);
-      console.log(this.vorschlaege[hmName].length);
     },
     save() {
       this.$emit(

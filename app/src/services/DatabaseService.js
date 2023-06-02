@@ -236,7 +236,7 @@ class DatabaseService {
     }
   }
 
-  updateTermine(data) {
+  updateTermin(data) {
     if (this.isOffline()) {
       return window.ipc.updateTermin(data).then(JSON.parse);
     } else {
