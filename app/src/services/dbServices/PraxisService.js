@@ -1,4 +1,3 @@
-import router from "@/router";
 import DatabaseService from "../DatabaseService";
 import DatumService from "./DatumService";
 import ZeitspanneService from "./ZeitspanneService";

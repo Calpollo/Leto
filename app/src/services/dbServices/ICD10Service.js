@@ -1,4 +1,3 @@
-import router from "@/router";
 import DatabaseService from "../DatabaseService";
 
 class ICD10Service {
