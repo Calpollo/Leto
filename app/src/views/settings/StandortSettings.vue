@@ -13,32 +13,40 @@
     </div>
 
     <div v-for="praxis in praxisList" :key="praxis.id" class="mb-2">
-      <h3
-        class="p-2 px-4"
-        :class="activePraxisId !== praxis.id ? '' : 'selected'"
+      <b-row
+        :class="
+          'p-2 praxisHeading ' +
+          (activePraxisId !== praxis.id ? '' : 'selected')
+        "
       >
-        {{ praxis.name }}
-        <b-dropdown class="ml-2">
-          <template #button-content>
-            <b-icon-plus />
-          </template>
-          <b-dropdown-item
-            v-if="activePraxisId !== praxis.id"
-            @click="choosePraxis(praxis.id)"
-          >
-            <b-icon-check-circle />
-            auswählen
-          </b-dropdown-item>
-          <b-dropdown-item @click="editPraxis(praxis)">
-            <b-icon-pen />
-            bearbeiten
-          </b-dropdown-item>
-          <b-dropdown-item @click="deletePraxis(praxis)">
-            <b-icon-trash />
-            löschen
-          </b-dropdown-item>
-        </b-dropdown>
-      </h3>
+        <b-col cols="auto">
+          <h3 class="m-0 p-0">{{ praxis.name }}</h3>
+        </b-col>
+        <b-col :style="{ textAlign: 'right' }">
+          <b-dropdown class="ml-2" variant="transparent" right no-caret>
+            <template #button-content>
+              <b-icon-three-dots
+                :color="activePraxisId !== praxis.id ? null : 'white'"
+              />
+            </template>
+            <b-dropdown-item
+              v-if="activePraxisId !== praxis.id"
+              @click="choosePraxis(praxis.id)"
+            >
+              <b-icon-check-circle />
+              auswählen
+            </b-dropdown-item>
+            <b-dropdown-item @click="editPraxis(praxis)">
+              <b-icon-pen />
+              bearbeiten
+            </b-dropdown-item>
+            <b-dropdown-item @click="deletePraxis(praxis)">
+              <b-icon-trash />
+              löschen
+            </b-dropdown-item>
+          </b-dropdown>
+        </b-col>
+      </b-row>
 
       <p>
         Existiert seit:
@@ -262,7 +270,7 @@ export default {
   }
 }
 
-h3 {
+.praxisHeading {
   background-color: var(--primary);
   color: var(--background);
   border-radius: 4px;

@@ -131,7 +131,7 @@ export default {
       selectedPraxisId: null,
       events: [],
       therapeuten: [],
-      calendarlength: ConfigService.getCalendar("defaultView"),
+      calendarlength: ConfigService.getCalendarDefault(),
     };
   },
   methods: {

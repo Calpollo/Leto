@@ -17,15 +17,19 @@ ax.interceptors.response.use(
   (error) => {
     console.error(error);
     if (error.code == "ERR_NETWORK") {
+      ConfigService.setOnline(false);
+      router.push("/");
       throw error;
     }
     switch (error.response.status) {
       case 401:
         store.commit("logOut");
-        return router.push("/");
+        return router.currentRoute.name != "Start"
+          ? router.push({ name: "Start" })
+          : null;
       case 403:
         store.commit("logOut");
-        return router.push("/");
+        return router.push({ name: "Start" });
     }
     throw error;
   }
@@ -67,9 +71,14 @@ class RequestService {
         });
       });
     }
-    return ax.get("/auth/me").then((response) => {
-      return response.data;
-    });
+    return ax
+      .get("/auth/me")
+      .then((response) => {
+        return response.data;
+      })
+      .catch(() => {
+        return null;
+      });
   }
 }
 

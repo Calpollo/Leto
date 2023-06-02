@@ -1,4 +1,5 @@
-import router from "@/router";
+// import router from "@/router";
+
 import RequestService from "@/services/RequestService";
 import Vue from "vue";
 import Vuex from "vuex";
@@ -14,13 +15,15 @@ export default new Vuex.Store({
   mutations: {
     logIn: (state) => {
       state.loggedIn = true;
-      RequestService.me().then((me) => (state.me = me));
+      RequestService.me().then((me) => {
+        state.me = me;
+      });
     },
     logOut: (state) => {
       state.loggedIn = false;
       state.me = null;
       sessionStorage.removeItem("authToken");
-      router.push("/");
+      // router.push("/");
     },
     updateMe: (state) => {
       RequestService.me().then((me) => (state.me = me));

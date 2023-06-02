@@ -29,6 +29,9 @@
           >
             Kontoverwaltung
           </b-button>
+          <b-button v-if="online" variant="outline-danger" @click="logout">
+            Abmelden
+          </b-button>
         </b-card-text>
       </b-card>
     </div>
@@ -37,7 +40,13 @@
       <b-col>
         <b-form-group label="Zahlungsfrist für Kunden">
           <b-input-group append="Tage">
-            <b-form-input v-model="paymentDeadlineDays" type="number" min="0" />
+            <b-form-input
+              v-model="paymentDeadlineDays"
+              @change="updatePaymentDeadlineDays"
+              type="number"
+              min="0"
+              :disabled="!online"
+            />
           </b-input-group>
         </b-form-group>
       </b-col>
@@ -71,8 +80,20 @@ export default {
   watch: {
     online() {
       ConfigService.setOnline(this.online);
+      if (this.online) this.$store.commit("logIn");
+      else {
+        this.$store.commit("logIn");
+      }
     },
-    paymentDeadlineDays() {
+  },
+  methods: {
+    logout() {
+      this.$store.commit("logOut");
+      this.$router.currentRoute.name != "Start"
+        ? this.$router.push({ name: "Start" })
+        : null;
+    },
+    updatePaymentDeadlineDays() {
       ConfigService.setPaymentDeadlineDays(this.paymentDeadlineDays);
     },
   },

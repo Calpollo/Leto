@@ -1,79 +1,67 @@
-// import config from "@/../config/leto.config.json";
+import store from "@/store";
+import { ax } from "@/services/RequestService";
+
+const defaultConfig = {
+  calendarDefault: 3,
+  paymentDeadlineDays: 30,
+};
 
 class ConfigService {
   constructor() {
-    // TODO: move the user config online
-    try {
-      this.config = require("@/../config/leto.config.json");
-    } catch (error) {
-      console.warn(error);
-      this.config = {
-        online: false,
-        calendar: {
-          defaultView: "3",
-        },
-      };
-    }
-    this.checkConfig();
+    this.configOverrides = { online: true };
   }
-
-  checkConfig() {
-    if (!["1", "3", "week", "month"].includes(this.getCalendar("defaultView")))
-      throw new Error(
-        'The calendar default view must be in ["1", "3", "week", "month"]'
-      );
+  config() {
+    const me = store.state.me;
+    const interimConfig = Object.assign(defaultConfig, this.configOverrides);
+    if (!me) return interimConfig;
+    // eslint-disable-next-line no-unused-vars
+    const { username, email, ...config } = store.state.me;
+    const result = Object.assign(interimConfig, config);
+    return result;
   }
 
   save() {
-    window.fileWriter.saveConfig(this.config);
-  }
-
-  getVersion() {
-    return this.config.version;
+    window.fileWriter.saveConfig(this.config());
   }
 
   getOnline() {
-    return this.config.online;
+    return Boolean(window.ipc) && this.config().online;
   }
 
-  getCalendar(key = null) {
-    if (key) return this.config.calendar[key];
-    return this.config.calendar;
+  getCalendarDefault() {
+    return this.config().calendarDefault;
   }
 
   getPraxis() {
-    return this.config.praxis;
-  }
-
-  getHeilmittelTermine() {
-    return this.config.heilmittelTermine || [];
+    return this.config().praxis;
   }
 
   getDefaultPause() {
-    return this.config.defaultPause;
+    return this.config().defaultPause;
   }
 
   getPaymentDeadlineDays() {
-    return this.config.paymentDeadlineDays || 0;
+    return this.config().paymentDeadlineDays || 0;
+  }
+
+  setCalendarDefault(calendarDefault) {
+    return ax.put("/auth/" + store.state.me.id, {
+      calendarDefault,
+    });
   }
 
   setOnline(online) {
-    this.config.online = online;
-    // this.save();
+    this.configOverrides.online = online;
   }
-  setpaymentDeadlineDays(paymentDeadlineDays) {
-    this.config.paymentDeadlineDays = paymentDeadlineDays;
-    // this.save();
+
+  setPaymentDeadlineDays(paymentDeadlineDays) {
+    return ax.put("/auth/" + store.state.me.id, {
+      paymentDeadlineDays,
+    });
   }
 
   setPraxis(id) {
-    this.config.praxis = id;
-    // this.save();
-  }
-
-  setHeilmittelTermine(hmTermine) {
-    this.config.heilmittelTermine = hmTermine;
-    // this.save();
+    this.configOverrides.praxis = id;
   }
 }
 
