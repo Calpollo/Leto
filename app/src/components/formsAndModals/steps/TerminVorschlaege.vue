@@ -179,6 +179,12 @@
 <script>
 import TherapeutService from "@/services/dbServices/TherapeutService";
 import TerminService from "@/services/dbServices/TerminService";
+import PraxisService from "@/services/dbServices/PraxisService";
+import ConfigService from "../../../services/ConfigService";
+
+const milliSecondsPerMinute = 1000 * 60;
+const milliSecondsPerDay = milliSecondsPerMinute * 60 * 24;
+
 export default {
   name: "TerminVorschlaege",
   props: {
@@ -199,6 +205,7 @@ export default {
       newVorschlagDate: null,
       newVorschlagTime: null,
       newVorschlagTherapeut: null,
+      praxis: null,
     };
   },
   methods: {
@@ -210,9 +217,13 @@ export default {
         terminList.filter((t) => new Date(t.start) >= new Date())
       );
 
-      return Promise.all([therapeutenQuery, terminQuery]).then(
+      return Promise.all([
+        therapeutenQuery,
+        terminQuery,
+        this.loadPraxis(),
+      ]).then(
         // eslint-disable-next-line no-unused-vars
-        ([therapeutList, terminList]) => {
+        ([therapeutList, terminList, praxis]) => {
           let vorschlagDict = {};
 
           for (let hm of this.heilmittel) {
@@ -235,31 +246,54 @@ export default {
               hmVorschlagList.length <
               hm.terminNumber * 2 * therapeutListHmFiltered.length
             ) {
+              const dayOfTheWeek = new Date(searchStartDate).getDay();
+              const week = [
+                null, // Sunday
+                this.praxis?.montagsZeit, // Monday
+                this.praxis?.dienstagsZeit, // Tuesday
+                this.praxis?.mittwochsZeit, // Wednesday
+                this.praxis?.donnerstagsZeit, // Thursday
+                this.praxis?.freitagsZeit, // Friday
+                null, // Saturday
+              ];
+              const hours = week[dayOfTheWeek];
               const foundSlots = [];
-              for (let therapeut of therapeutListHmFiltered) {
-                // if therapeut has an opening at the searchStartDate within the openingHours
-                if (
-                  // TODO: filter out times outside the opening hours
-                  // the relevant openinHours depend on the weekday of searchStartDate
-                  // start lies after or at the start of openingHours
-                  // end lies at least hm.terminMinutes before the end of openingHours
-                  terminList.filter(
-                    (t) =>
-                      t.TherapeutId == therapeut.id &&
-                      Math.abs(new Date(t.start) - searchStartDate) <=
-                        hm.terminMinutes * 1000 * 60
-                  ).length == 0
-                ) {
-                  foundSlots.push({
-                    date: new Date(searchStartDate),
-                    selected:
-                      this.preSelect &&
-                      hmVorschlagList.length < hm.terminNumber,
-                    Therapeut: therapeut,
-                    TherapeutId: therapeut.id,
-                    Heilmittel: hm,
-                    HeilmittelId: hm.id,
-                  });
+              let searchStartDateIsWithinOpeningHours;
+              if (hours == null) searchStartDateIsWithinOpeningHours = false;
+              else {
+                const msSearchStartDay = searchStartDate % milliSecondsPerDay;
+                const msHoursStart = hours.start % milliSecondsPerDay;
+                const msHoursEnd = hours.end % milliSecondsPerDay;
+                searchStartDateIsWithinOpeningHours =
+                  msSearchStartDay - msHoursStart > -milliSecondsPerMinute &&
+                  msSearchStartDay +
+                    hm.terminMinutes * milliSecondsPerMinute -
+                    msHoursEnd <=
+                    0;
+              }
+
+              if (searchStartDateIsWithinOpeningHours) {
+                for (let therapeut of therapeutListHmFiltered) {
+                  // if therapeut has an opening at the searchStartDate within the openingHours
+                  if (
+                    terminList.filter(
+                      (t) =>
+                        t.TherapeutId == therapeut.id &&
+                        Math.abs(new Date(t.start) - searchStartDate) <=
+                          hm.terminMinutes * 1000 * 60
+                    ).length == 0
+                  ) {
+                    foundSlots.push({
+                      date: new Date(searchStartDate),
+                      selected:
+                        this.preSelect &&
+                        hmVorschlagList.length < hm.terminNumber,
+                      Therapeut: therapeut,
+                      TherapeutId: therapeut.id,
+                      Heilmittel: hm,
+                      HeilmittelId: hm.id,
+                    });
+                  }
                 }
               }
               const minuteStep = foundSlots.length == 0 ? 5 : hm.terminMinutes;
@@ -274,6 +308,11 @@ export default {
           return vorschlagDict;
         }
       );
+    },
+    loadPraxis() {
+      return PraxisService.getOne(ConfigService.getPraxis(), {
+        include: { all: true },
+      }).then((praxis) => (this.praxis = praxis));
     },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
