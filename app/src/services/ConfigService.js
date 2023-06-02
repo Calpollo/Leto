@@ -53,8 +53,16 @@ class ConfigService {
     return this.config.defaultPause;
   }
 
+  getPaymentDeadlineDays() {
+    return this.config.paymentDeadlineDays || 0;
+  }
+
   setOnline(online) {
     this.config.online = online;
+    // this.save();
+  }
+  setpaymentDeadlineDays(paymentDeadlineDays) {
+    this.config.paymentDeadlineDays = paymentDeadlineDays;
     // this.save();
   }
 

@@ -32,6 +32,16 @@
         </b-card-text>
       </b-card>
     </div>
+
+    <b-row class="mt-3">
+      <b-col>
+        <b-form-group label="Zahlungsfrist für Kunden">
+          <b-input-group append="Tage">
+            <b-form-input v-model="paymentDeadlineDays" type="number" min="0" />
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -55,11 +65,15 @@ export default {
         },
         password: { name: "Passwort", value: "superPass", type: "password" },
       },
+      paymentDeadlineDays: ConfigService.getPaymentDeadlineDays(),
     };
   },
   watch: {
     online() {
       ConfigService.setOnline(this.online);
+    },
+    paymentDeadlineDays() {
+      ConfigService.setPaymentDeadlineDays(this.paymentDeadlineDays);
     },
   },
 };
@@ -80,7 +94,7 @@ export default {
 
     width: 100%;
     height: 100%;
-    opacity: 0.5;
+    opacity: 0.2;
     bottom: 0;
     right: 0;
     position: absolute;

@@ -157,8 +157,9 @@ export default {
     },
   },
   mounted() {
-    // TODO: configure the paymentdeadline
-    this.PaymentDeadline.setDate(new Date().getDate() + 14);
+    this.PaymentDeadline.setDate(
+      new Date().getDate() + ConfigService.getPaymentDeadlineDays()
+    );
     this.updateRezept(this.RezeptId);
     PraxisService.getOne(ConfigService.getPraxis()).then((praxis) => {
       this.Praxis = praxis;
