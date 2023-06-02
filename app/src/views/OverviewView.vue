@@ -59,9 +59,9 @@
           >
         </b-button-group>
 
-        <b-button
-          ><b-icon-arrow-counterclockwise @click="updateEventList"
-        /></b-button>
+        <b-button>
+          <b-icon-arrow-counterclockwise @click="updateEventList" />
+        </b-button>
       </b-row>
 
       <div>

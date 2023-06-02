@@ -1,5 +1,5 @@
 <template>
-  <b-row class="calendar" v-if="events && events.length > 0">
+  <b-row class="calendar" v-if="events">
     <CalendarDay
       v-for="day in Array(numberOfDays).keys()"
       :key="day"

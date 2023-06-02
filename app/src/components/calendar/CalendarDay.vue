@@ -73,11 +73,11 @@ export default {
       const dayOfTheWeek = new Date(this.date).getDay();
       const week = [
         null, // Sunday
-        praxis.montagsZeit, // Monday
-        praxis.dienstagsZeit, // Tuesday
-        praxis.mittwochsZeit, // Wednesday
-        praxis.donnerstagsZeit, // Thursday
-        praxis.freitagsZeit, // Friday
+        praxis?.montagsZeit, // Monday
+        praxis?.dienstagsZeit, // Tuesday
+        praxis?.mittwochsZeit, // Wednesday
+        praxis?.donnerstagsZeit, // Thursday
+        praxis?.freitagsZeit, // Friday
         null, // Saturday
       ];
       const hours = week[dayOfTheWeek];
