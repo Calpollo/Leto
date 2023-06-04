@@ -3,38 +3,48 @@
     <h2>Verwaltung</h2>
 
     <div class="boxes">
-      <div class="warningbox error">
-        <h3>
-          <b-icon-exclamation-circle-fill />
-          3 Fehler
-        </h3>
-        <ul>
-          <li>28 Patienten haben noch fehlende Termine</li>
-          <li>
-            4 Termine liegen außerhalb der gesetzl. vorgeschriebenen Zeiten
-          </li>
-          <li>2 Termine überschneiden sich</li>
-        </ul>
-        <router-link to="Home" class="r-arrow">
-          <b-icon-arrow-right-circle />
-        </router-link>
-      </div>
+      <b-overlay show rounded="lg" variant="dark" aria-busy="false">
+        <div class="warningbox error" aria-hidden="true">
+          <h3>
+            <b-icon-exclamation-circle-fill />
+            3 Fehler
+          </h3>
+          <ul class="ml-3">
+            <li>28 Patienten haben noch fehlende Termine</li>
+            <li>
+              4 Termine liegen außerhalb der gesetzl. vorgeschriebenen Zeiten
+            </li>
+            <li>2 Termine überschneiden sich</li>
+          </ul>
+          <router-link to="Home" class="r-arrow">
+            <b-icon-arrow-right-circle />
+          </router-link>
+        </div>
+        <template #overlay>
+          <b :style="{ color: 'var(--light)' }">Demnächst verfügbar</b>
+        </template>
+      </b-overlay>
 
-      <div class="warningbox">
-        <h3>
-          <b-icon-exclamation-triangle />
-          2 Warnungen
-        </h3>
-        <ul>
-          <li>1 Therapeut ist in KW 22 nicht ausgelastet</li>
-          <li>
-            2 Therapeuten haben Termine außerhalb der regulären Arbeitszeiten
-          </li>
-        </ul>
-        <router-link to="Home" class="r-arrow">
-          <b-icon-arrow-right-circle />
-        </router-link>
-      </div>
+      <b-overlay show rounded="lg" variant="dark" aria-busy="false">
+        <div class="warningbox" aria-hidden="true">
+          <h3>
+            <b-icon-exclamation-triangle />
+            2 Warnungen
+          </h3>
+          <ul class="ml-3">
+            <li>1 Therapeut ist in KW 22 nicht ausgelastet</li>
+            <li>
+              2 Therapeuten haben Termine außerhalb der regulären Arbeitszeiten
+            </li>
+          </ul>
+          <router-link to="Home" class="r-arrow">
+            <b-icon-arrow-right-circle />
+          </router-link>
+        </div>
+        <template #overlay>
+          <b :style="{ color: 'var(--light)' }">Demnächst verfügbar</b>
+        </template>
+      </b-overlay>
     </div>
 
     <div class="statistics" :style="getStatisticsStyle()">
