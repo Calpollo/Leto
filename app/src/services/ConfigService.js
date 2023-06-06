@@ -8,7 +8,7 @@ const defaultConfig = {
 
 class ConfigService {
   constructor() {
-    this.configOverrides = { online: true };
+    this.configOverrides = { online: Boolean(window.ipc) };
   }
   config() {
     const me = store.state.me;

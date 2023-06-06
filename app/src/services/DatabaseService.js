@@ -2,7 +2,7 @@ import ConfigService from "./ConfigService";
 import { ax } from "@/services/RequestService";
 class DatabaseService {
   isOffline() {
-    return !ConfigService.getOnline();
+    return window.ipc && !ConfigService.getOnline();
   }
 
   // ############################
