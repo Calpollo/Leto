@@ -12,6 +12,8 @@ contextBridge.exposeInMainWorld("fileWriter", {
 });
 
 contextBridge.exposeInMainWorld("ipc", {
+  seed: () => ipcRenderer.invoke("seed"),
+
   getZeitspanne: (data) => ipcRenderer.invoke("getZeitspanne", data),
   getTermin: (data) => ipcRenderer.invoke("getTermin", data),
   getVertrag: (data) => ipcRenderer.invoke("getVertrag", data),

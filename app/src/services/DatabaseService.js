@@ -6,6 +6,17 @@ class DatabaseService {
   }
 
   // ############################
+  // Seed instances into the database
+  // ############################
+  seed() {
+    if (this.isOffline()) {
+      return window.ipc.seed();
+    } else {
+      return ax.get("/seed").then((res) => res.data);
+    }
+  }
+
+  // ############################
   // Get Instances from the database
   // ############################
   getZeitspanne(data) {

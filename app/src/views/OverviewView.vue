@@ -49,14 +49,6 @@
             :variant="this.calendarlength == 7 ? 'dark' : 'secondary'"
             >W</b-button
           >
-          <b-button
-            v-b-tooltip.hover
-            title="aktueller Monat"
-            @click="setCalendarLength(30)"
-            :variant="this.calendarlength == 30 ? 'dark' : 'secondary'"
-            disabled
-            >M</b-button
-          >
         </b-button-group>
 
         <b-button>
@@ -65,11 +57,15 @@
       </b-row>
 
       <div>
-        <calendar-color-legend :therapeuten="therapeuten" class="my-2 mx-0" />
+        <calendar-color-legend
+          :therapeuten="therapeuten"
+          v-model="selectedTherapeuten"
+          class="my-2 mx-0"
+        />
 
         <div id="calendar">
           <CalendarComponent
-            :events="events"
+            :events="filteredEvents"
             :length="calendarlength"
             @triggerUpdate="updateEventList"
           />
@@ -85,8 +81,17 @@
       no-close-on-backdrop
       hide-header-close
     >
-      <praxis-selection v-model="selectedPraxisId" />
+      <praxis-selection v-model="selectedPraxisId" :key="showSeedButton" />
       <template #modal-footer>
+        <b-button
+          @click="seed"
+          v-if="showSeedButton"
+          variant="success"
+          id="seedButton"
+        >
+          <SpinnerLogo id="spinnerButton" v-if="seeding" />
+          <span v-else> Seed </span>
+        </b-button>
         <b-button @click="ok" variant="primary" :disabled="!selectedPraxisId">
           Speichern
         </b-button>
@@ -117,12 +122,14 @@ import FolgeRezeptFormular from "@/components/formsAndModals/FolgeRezeptFormular
 import NeuesRezeptFormular from "@/components/formsAndModals/NeuesRezeptFormular.vue";
 import TerminAbsage from "@/components/formsAndModals/TerminAbsage.vue";
 import ConfigService from "@/services/ConfigService";
+import DatabaseService from "@/services/DatabaseService";
 import TerminService from "@/services/dbServices/TerminService";
 import TherapeutService from "@/services/dbServices/TherapeutService";
 import PraxisService from "@/services/dbServices/PraxisService";
 import CalendarColorLegend from "@/components/calendar/CalendarColorLegend.vue";
 import PraxisSelection from "@/components/formsAndModals/PraxisSelection.vue";
 import PraxisEditFormular from "../components/formsAndModals/PraxisEditFormular.vue";
+import SpinnerLogo from "../components/SpinnerLogo.vue";
 
 export default {
   name: "OverviewView",
@@ -131,10 +138,29 @@ export default {
       selectedPraxisId: null,
       events: [],
       therapeuten: [],
+      selectedTherapeuten: [],
       calendarlength: ConfigService.getCalendarDefault(),
+      showSeedButton: false,
+      seeding: false,
     };
   },
   methods: {
+    mountMethod() {
+      const id = ConfigService.getPraxis();
+      if (!id) this.openPraxisSelectionModal();
+      else {
+        PraxisService.getOne(id)
+          .then((praxis) => {
+            if (!praxis) this.openPraxisSelectionModal();
+            else this.init();
+          })
+          .catch(() => this.openPraxisSelectionModal());
+      }
+
+      PraxisService.getAll().then((praxisList) => {
+        this.showSeedButton = praxisList.length == 0;
+      });
+    },
     init() {
       this.updateEventList();
       TherapeutService.getAll().then((therapeuten) => {
@@ -207,6 +233,13 @@ export default {
         this.events = termine;
       });
     },
+    seed() {
+      this.seeding = true;
+      DatabaseService.seed().then(() => {
+        this.mountMethod();
+        this.seeding = false;
+      });
+    },
   },
   components: {
     CalendarComponent,
@@ -216,18 +249,19 @@ export default {
     CalendarColorLegend,
     PraxisSelection,
     PraxisEditFormular,
+    SpinnerLogo,
   },
   mounted() {
-    const id = ConfigService.getPraxis();
-    if (!id) this.openPraxisSelectionModal();
-    else {
-      PraxisService.getOne(id)
-        .then((praxis) => {
-          if (!praxis) this.openPraxisSelectionModal();
-          else this.init();
-        })
-        .catch(() => this.openPraxisSelectionModal());
-    }
+    this.mountMethod();
+  },
+  computed: {
+    filteredEvents() {
+      return this.events.filter(
+        (e) =>
+          this.selectedTherapeuten.length == 0 ||
+          this.selectedTherapeuten.includes(e.TherapeutId)
+      );
+    },
   },
 };
 </script>
@@ -239,5 +273,14 @@ export default {
 .btn-stretch {
   width: 100%;
   height: 100%;
+}
+#seedButton {
+  min-width: 70px;
+}
+#spinnerButton {
+  height: 20px;
+  width: 20px;
+  margin: 0;
+  filter: grayscale(100%) brightness(500%);
 }
 </style>

@@ -16,6 +16,13 @@ let {
 } = localDB;
 
 // ############################
+// Seed Instances into the database
+// ############################
+ipcMain.handle("seed", async () => {
+  return JSON.stringify(await localDB.seed());
+});
+
+// ############################
 // Query Instances in the database
 // ############################
 
