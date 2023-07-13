@@ -27,49 +27,25 @@
 
     <div>
       <b-row class="my-4 mx-0" align-h="between">
-        <b-button-group id="calendarlengthSelection" size="sm">
-          <b-button
-            v-b-tooltip.hover
-            title="Heute"
-            @click="setCalendarLength(1)"
-            :variant="this.calendarlength == 1 ? 'dark' : 'secondary'"
-            >T</b-button
-          >
-          <b-button
-            v-b-tooltip.hover
-            title="Heute, Morgen und Übermorgen"
-            @click="setCalendarLength(3)"
-            :variant="this.calendarlength == 3 ? 'dark' : 'secondary'"
-            >3 Tage</b-button
-          >
-          <b-button
-            v-b-tooltip.hover
-            title="aktuelle Woche"
-            @click="setCalendarLength(7)"
-            :variant="this.calendarlength == 7 ? 'dark' : 'secondary'"
-            >W</b-button
-          >
-        </b-button-group>
-
-        <b-button>
-          <b-icon-arrow-counterclockwise @click="updateEventList" />
-        </b-button>
-      </b-row>
-
-      <div>
         <calendar-color-legend
           :therapeuten="therapeuten"
           v-model="selectedTherapeuten"
           class="my-2 mx-0"
         />
+        <b-button>
+          <b-icon-arrow-counterclockwise @click="updateEventList" />
+        </b-button>
+      </b-row>
 
-        <div id="calendar">
-          <CalendarComponent
-            :events="filteredEvents"
-            :length="calendarlength"
-            @triggerUpdate="updateEventList"
-          />
-        </div>
+      <hr />
+
+      <div id="calendar">
+        <CalendarComponent
+          v-if="events"
+          :key="filteredEvents.length"
+          :events="filteredEvents"
+          @triggerUpdate="updateEventList"
+        />
       </div>
     </div>
 
@@ -139,7 +115,6 @@ export default {
       events: [],
       therapeuten: [],
       selectedTherapeuten: [],
-      calendarlength: ConfigService.getCalendarDefault(),
       showSeedButton: false,
       seeding: false,
     };
@@ -218,9 +193,6 @@ export default {
         this.selectedPraxisId = praxis.id;
         this.ok();
       });
-    },
-    setCalendarLength(n) {
-      this.calendarlength = n;
     },
     updateEventList() {
       TerminService.getAll({

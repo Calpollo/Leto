@@ -66,7 +66,7 @@
             query: { rezept: event?.RezeptId },
           }"
         >
-          {{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}
+          Rezept ({{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }})
         </router-link>
       </p>
 

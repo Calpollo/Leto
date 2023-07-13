@@ -41,9 +41,9 @@ import {
   fullDayHours,
 } from "@/utils/events";
 import CalendarDate from "./CalendarDate.vue";
-import PraxisService from "@/services/dbServices/PraxisService";
+// import PraxisService from "@/services/dbServices/PraxisService";
 import SpinnerLogo from "../SpinnerLogo.vue";
-import ConfigService from "@/services/ConfigService";
+// import ConfigService from "@/services/ConfigService";
 import { toLocale } from "@/utils/dates";
 
 export default {
@@ -51,13 +51,6 @@ export default {
   data() {
     return {
       pixelPerHour: 160,
-      openingHours: null,
-      defaultOpeningHours: {
-        Zeitspanne: {
-          start: new Date().setHours(8, 0, 0, 0).valueOf(),
-          end: new Date().setHours(19, 30, 0, 0).valueOf(),
-        },
-      },
     };
   },
   props: {
@@ -69,44 +62,31 @@ export default {
       type: Number,
       required: true,
     },
-  },
-  mounted() {
-    PraxisService.getOne(ConfigService.getPraxis(), {
-      include: { all: true },
-    }).then((praxis) => {
-      const dayOfTheWeek = new Date(this.date).getDay();
-      const week = [
-        null, // Sunday
-        praxis?.montagsZeit, // Monday
-        praxis?.dienstagsZeit, // Tuesday
-        praxis?.mittwochsZeit, // Wednesday
-        praxis?.donnerstagsZeit, // Thursday
-        praxis?.freitagsZeit, // Friday
-        null, // Saturday
-      ];
-      const hours = week[dayOfTheWeek];
-      if (!hours) {
-        this.openingHours = this.defaultOpeningHours;
-        // this.openingHours = { weekend: true };
-      } else {
-        if (typeof hours.start == "string") hours.start = parseInt(hours.start);
-        if (typeof hours.end == "string") hours.end = parseInt(hours.end);
-        this.openingHours = { Zeitspanne: hours };
-      }
-    });
+    openingHours: {
+      type: Object,
+      default: () => {
+        return {
+          Zeitspanne: {
+            start: new Date().setHours(8, 0, 0, 0).valueOf(),
+            end: new Date().setHours(19, 30, 0, 0).valueOf(),
+          },
+        };
+      },
+    },
   },
   components: { CalendarDate, SpinnerLogo },
   methods: {
     toLocale,
     getDayStyle() {
       const dayLengthInHours = fullDayHours(this.openingHours);
+      const backgroundColor = this.isToday ? "#EEE" : "transparent";
       const result = {
         gridTemplateRows: `repeat(${dayLengthInHours * 4}, ${
           this.pixelPerHour / 4
         }px)`,
         background: `repeating-linear-gradient(
-          transparent,
-          transparent ${this.pixelPerHour / 4 - 1}px,
+          ${backgroundColor},
+          ${backgroundColor} ${this.pixelPerHour / 4 - 1}px,
           rgba(128, 128, 128, 0.267) ${this.pixelPerHour / 4}px
         )`,
       };
@@ -135,6 +115,12 @@ export default {
       const concurrentEvents = eventListToConcurringEventnumber(this.events);
       const result = Math.max(...concurrentEvents.values());
       return result;
+    },
+    isToday() {
+      return (
+        Math.abs(new Date(this.date).setHours(12) - new Date().setHours(12)) <
+        12 * 60 * 60 * 1000
+      );
     },
   },
 };

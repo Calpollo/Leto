@@ -2,7 +2,7 @@ import store from "@/store";
 import { ax } from "@/services/RequestService";
 
 const defaultConfig = {
-  calendarDefault: 7,
+  calendarDefault: 5,
   paymentDeadlineDays: 30,
 };
 

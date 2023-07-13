@@ -1,39 +1,78 @@
 <template>
-  <b-row class="calendar" v-if="events">
-    <CalendarDay
-      v-for="day in Array(numberOfDays).keys()"
-      :key="day"
-      :events="relevantEvents(day)?.sort(sortByStartTime)"
-      :date="new Date().setDate(new Date().getDate() + day)"
-      :style="{ width: (1 / numberOfDays) * 100 + '%' }"
-      @triggerUpdate="triggerUpdate"
-    />
-  </b-row>
-  <SpinnerLogo v-else />
+  <div>
+    <b-row>
+      <b-col>
+        <b-button pill variant="light" @click="decreaseDayOffset">
+          <b-icon-caret-left-fill />
+        </b-button>
+      </b-col>
+      <b-col :style="{ textAlign: 'center' }">
+        <b-button-group id="calendarlengthSelection" size="sm">
+          <b-button
+            v-b-tooltip.hover
+            @click="setCalendarLength(1)"
+            :variant="this.length == 1 ? 'dark' : 'secondary'"
+            >1 Tag</b-button
+          >
+          <b-button
+            v-b-tooltip.hover
+            @click="setCalendarLength(3)"
+            :variant="this.length == 3 ? 'dark' : 'secondary'"
+            >3 Tage</b-button
+          >
+          <b-button
+            v-b-tooltip.hover
+            @click="setCalendarLength(5)"
+            :variant="this.length == 5 ? 'dark' : 'secondary'"
+            >Woche</b-button
+          >
+        </b-button-group>
+        <br />
+        <b-button variant="link" @click="resetDayOffset">Heute</b-button>
+      </b-col>
+      <b-col :style="{ textAlign: 'right' }">
+        <b-button pill variant="light" @click="increaseDayOffset">
+          <b-icon-caret-right-fill />
+        </b-button>
+      </b-col>
+    </b-row>
+    <b-row class="calendar" v-if="events && !loading">
+      <CalendarDay
+        v-for="day in dayOffsetArray"
+        :key="day"
+        :events="relevantEvents(day)?.sort(sortByStartTime)"
+        :date="new Date().setDate(startDay.getDate() + day)"
+        :style="{ width: (1 / length) * 100 + '%' }"
+        @triggerUpdate="triggerUpdate"
+      />
+    </b-row>
+    <b-row v-else align-h="around">
+      <SpinnerLogo />
+    </b-row>
+  </div>
 </template>
 
 <script>
 import SpinnerLogo from "../SpinnerLogo.vue";
 import CalendarDay from "./CalendarDay.vue";
+import PraxisService from "@/services/dbServices/PraxisService";
+import ConfigService from "@/services/ConfigService";
+
 export default {
   name: "CalendarComponent",
+  data() {
+    return {
+      dayOffsetArray: [],
+      length: ConfigService.getCalendarDefault(),
+      dayOffset: 0,
+      loading: false,
+    };
+  },
   props: {
     events: Array,
-    startDay: {
-      type: [String, Date],
-      default: () => new Date(),
-    },
     hideWeekend: {
       type: Boolean,
       default: true,
-    },
-    length: {
-      type: [String, Number],
-    },
-  },
-  computed: {
-    numberOfDays() {
-      return this.calculateNumberOfDays();
     },
   },
   methods: {
@@ -60,29 +99,94 @@ export default {
     sortByStartTime(a, b) {
       return a.start - b.start;
     },
-    calculateNumberOfDays() {
-      if (typeof this.length == "number") return this.length;
+    calcDayOffsetArray() {
+      this.loading = true;
+      const now = this.startDay;
+      const numberOfDays = this.length;
+      let runningIndex = [1, 3].includes(numberOfDays) ? 0 : -now.getDay();
 
-      switch (this.length) {
-        case "1": {
-          return 1;
+      let res = [];
+      if (!this.events) return res;
+
+      // TODO: optimize by loading praxis once
+      PraxisService.getOne(ConfigService.getPraxis(), {
+        include: [
+          "montagsZeit",
+          "dienstagsZeit",
+          "mittwochsZeit",
+          "donnerstagsZeit",
+          "freitagsZeit",
+        ],
+      }).then((praxis) => {
+        if (praxis && !Array.isArray(praxis)) {
+          while (res.length < numberOfDays) {
+            const virtualDate = new Date(
+              new Date().setDate(now.getDate() + runningIndex)
+            );
+            const virtualWeekdayIndex = virtualDate.getDay();
+            const week = [
+              null, // Sunday
+              praxis?.montagsZeit, // Monday
+              praxis?.dienstagsZeit, // Tuesday
+              praxis?.mittwochsZeit, // Wednesday
+              praxis?.donnerstagsZeit, // Thursday
+              praxis?.freitagsZeit, // Friday
+              null, // Saturday
+            ];
+            if (week[virtualWeekdayIndex]) res.push(runningIndex);
+            runningIndex++;
+          }
         }
-        case "3": {
-          return 3;
-        }
-        case "week":
-          return this.hideWeekend ? 5 : 7;
-        default:
-          return 3;
-      }
+        this.dayOffsetArray = res;
+        this.loading = false;
+      });
     },
     triggerUpdate() {
       this.$emit("triggerUpdate");
     },
+    setCalendarLength(n) {
+      this.length = n;
+    },
+    decreaseDayOffset() {
+      this.dayOffset -= this.length;
+      const weekDayIndex = new Date(
+        new Date().setDate(new Date().getDate() + this.dayOffset)
+      ).getDay();
+      if (weekDayIndex == 0) this.dayOffset -= 2;
+      // if (weekDayIndex == 6) this.dayOffset -= 1;
+      this.calcDayOffsetArray();
+    },
+    increaseDayOffset() {
+      this.dayOffset += this.length;
+      const weekDayIndex = new Date(
+        new Date().setDate(new Date().getDate() + this.dayOffset)
+      ).getDay();
+      if (weekDayIndex == 6) this.dayOffset += 2;
+      // if (weekDayIndex == 0) this.dayOffset += 1;
+      this.calcDayOffsetArray();
+    },
+    resetDayOffset() {
+      if (this.dayOffset != 0) {
+        this.dayOffset = 0;
+        this.calcDayOffsetArray();
+      }
+    },
+  },
+  computed: {
+    startDay() {
+      return new Date(
+        new Date().setDate(new Date().getDate() + this.dayOffset)
+      );
+    },
   },
   components: { CalendarDay, SpinnerLogo },
+  mounted() {
+    this.calcDayOffsetArray();
+  },
   watch: {
-    events() {},
+    length() {
+      this.calcDayOffsetArray();
+    },
   },
 };
 </script>
