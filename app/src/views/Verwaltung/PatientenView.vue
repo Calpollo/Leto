@@ -2,49 +2,28 @@
   <div id="PatientenView">
     <h2>Patientenübersicht</h2>
 
-    <SpinnerLogo v-if="!patients || !kunden || !heilmittel" />
+    <SpinnerLogo v-if="!patients || !heilmittel" />
 
     <div v-else>
       <b-row class="my-2">
         <b-col>
-          <b-form-group label="ID:" label-for="id-search">
-            <b-form-input
-              id="id-search"
-              type="search"
-              list="idlist"
-              placeholder="ID"
-              @change="changeID"
-            ></b-form-input>
-
-            <datalist id="idlist">
-              <option
-                v-for="patient in patients"
-                :key="patient.id"
-                :value="patient.id"
-              >
-                {{ patient.id }}
-              </option>
-            </datalist>
-          </b-form-group>
-        </b-col>
-
-        <b-col>
-          <b-form-group label="Kunde:" label-for="kunde-search">
+          <b-form-group label="Patient:" label-for="kunde-search">
             <b-form-input
               id="kunde-search"
               type="search"
               list="kundenlist"
               placeholder="Nachname, Vorname"
+              :value="patientNachnameVorname"
               @change="changedKunde"
             ></b-form-input>
 
             <datalist id="kundenlist">
               <option
-                v-for="kunde in kunden"
-                :key="kunde.id"
-                :value="kunde.lastname + ', ' + kunde.firstname"
+                v-for="patient in patients"
+                :key="patient.id"
+                :value="patient.lastname + ', ' + patient.firstname"
               >
-                {{ kunde.lastname }}, {{ kunde.firstname }}
+                {{ patient.lastname }}, {{ patient.firstname }}
               </option>
             </datalist>
           </b-form-group>
@@ -57,6 +36,7 @@
               type="search"
               list="heilmittellist"
               placeholder="Abkürzung"
+              :value="heilmittelAbk"
               @change="changedHeilmittel"
             ></b-form-input>
 
@@ -77,20 +57,36 @@
 
       <b-card v-for="patient in filteredPatients" :key="patient.id">
         <b-card-header v-b-toggle="'collapse-' + patient.id">
-          {{ patient.firstname }} {{ patient.lastname }}
-          <span class="ml-2" v-b-tooltip.hover :title="patient.id">
-            <b-icon-info-circle />
-          </span>
-          <b-button-group>
-            <b-button @click="edit(patient)">
-              <b-icon-pencil-fill />
-            </b-button>
-            <b-button @click="remove(patient)">
-              <b-icon-trash-fill />
-            </b-button>
-          </b-button-group>
+          <b-row>
+            <b-col>
+              {{ patient.firstname }} {{ patient.lastname }}
+              <span class="ml-2" v-b-tooltip.hover :title="patient.id">
+                <b-icon-info-circle />
+              </span>
+              <b-dropdown class="ml-2" variant="transparent" right no-caret>
+                <template #button-content>
+                  <b-icon-three-dots />
+                </template>
+                <b-dropdown-item @click="edit(patient)">
+                  <b-icon-pen />
+                  bearbeiten
+                </b-dropdown-item>
+                <b-dropdown-item @click="remove(patient)">
+                  <b-icon-trash />
+                  löschen
+                </b-dropdown-item>
+              </b-dropdown>
+            </b-col>
+            <b-col :style="{ textAlign: 'right' }">
+              <b-icon-caret-down />
+            </b-col>
+          </b-row>
         </b-card-header>
-        <b-collapse :id="'collapse-' + patient.id" role="tabpanel">
+        <b-collapse
+          :id="'collapse-' + patient.id"
+          role="tabpanel"
+          :visible="filteredPatients.length <= 4"
+        >
           <b-card-body>
             <b-row>
               <b-col>
@@ -147,6 +143,23 @@
                 </p>
               </b-col>
             </b-row>
+
+            <b-list-group>
+              <b-list-group-item
+                v-for="rezept in patient.Rezepts"
+                :key="rezept.id"
+              >
+                <router-link
+                  :to="{
+                    name: 'Verwaltung.Rezepte',
+                    query: { rezept: rezept.id },
+                  }"
+                >
+                  {{ rezept.Heilmittels.map((h) => h.abk).join(", ") }} :
+                  {{ toLocale(rezept.ausstellungsdatum) }}
+                </router-link>
+              </b-list-group-item>
+            </b-list-group>
           </b-card-body>
         </b-collapse>
       </b-card>
@@ -194,31 +207,35 @@ import KundenService from "@/services/dbServices/KundenService";
 import HeilmittelService from "@/services/dbServices/HeilmittelService";
 import PatientEditFormular from "@/components/formsAndModals/PatientEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
+import { toLocale } from "@/utils/dates";
 
 export default {
   name: "PatientenView",
   data() {
     return {
       patients: null,
-      kunden: null,
       heilmittel: null,
       selectedKundeId: null,
+      patientNachnameVorname: null,
       selectedHeilmittelId: null,
+      heilmittelAbk: null,
       selectedEditKunde: null,
       confirmableFunction: () => {},
     };
   },
   methods: {
-    changeID(id) {
-      this.selectedKundeId = id;
-    },
     changedKunde(lastFirstName) {
       const [lastname, firstname] = lastFirstName.split(", ");
-      const found = this.kunden.find(
-        (k) => k.lastname == lastname && k.firstname == firstname
+      const found = this.patients.find(
+        (p) => p.lastname == lastname && p.firstname == firstname
       );
-      if (!found) this.selectedKundeId = null;
-      else this.selectedKundeId = found.id;
+      if (!found) {
+        this.selectedKundeId = null;
+        delete this.$route.query.kunde;
+      } else {
+        this.selectedKundeId = found.id;
+        this.$route.query.kunde = found.id;
+      }
     },
     changedHeilmittel(abk) {
       const found = this.heilmittel.find((k) => k.abk == abk);
@@ -226,9 +243,9 @@ export default {
       else this.selectedHeilmittelId = found.id;
     },
     loadKunden() {
-      KundenService.getAll({
+      return KundenService.getAll({
         include: [
-          { association: "Rezepts", include: "Termins" },
+          { association: "Rezepts", include: ["Termins", "Heilmittels"] },
           "Krankenkasse",
         ],
       }).then((patientList) => {
@@ -237,7 +254,7 @@ export default {
       });
     },
     loadHeilmittel() {
-      HeilmittelService.getAll().then(
+      return HeilmittelService.getAll().then(
         (heilmittelList) => (this.heilmittel = heilmittelList)
       );
     },
@@ -277,11 +294,30 @@ export default {
       };
       this.$refs.deletionConfirmation.show();
     },
+    toLocale,
   },
   components: { SpinnerLogo, PatientEditFormular, DeletionConfirmation },
   mounted() {
-    this.loadKunden();
-    this.loadHeilmittel();
+    this.selectedHeilmittelId = this.$route.query?.heilmittel;
+    this.selectedKundeId = this.$route.query?.kunde;
+
+    Promise.all([this.loadKunden(), this.loadHeilmittel()]).then(() => {
+      if (this.selectedKundeId) {
+        const loadedPatient = this.patients.find(
+          (p) => p.id == this.selectedKundeId
+        );
+        this.patientNachnameVorname =
+          loadedPatient.lastname + ", " + loadedPatient.firstname;
+      }
+
+      if (this.selectedHeilmittelId) {
+        const loadedHeilmittel = this.heilmittel.find(
+          (h) => h.id == this.selectedHeilmittelId
+        );
+        console.log(loadedHeilmittel);
+        this.heilmittelAbk = loadedHeilmittel.abk;
+      }
+    });
   },
   computed: {
     filteredPatients() {

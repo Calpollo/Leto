@@ -13,6 +13,7 @@
               type="search"
               list="idlist"
               placeholder="ID"
+              :value="selectedRezeptId"
               @change="changeId"
             ></b-form-input>
 
@@ -75,16 +76,52 @@
         </b-col>
       </b-row>
 
+      <b-row v-if="filteredRezepte.length == 0 && rezepte.length > 0">
+        <b-col :style="{ textAlign: 'center' }">
+          Es passen keine Ergebnisse zu deiner Suche. Willst du alle Filter
+          zurücksetzen?
+          <br />
+          <b-button variant="primary" @click="resetFilter"
+            >Zurücksetzen</b-button
+          >
+        </b-col>
+      </b-row>
+
+      <b-row v-if="filteredRezepte.length == 0 && rezepte.length == 0">
+        <b-col :style="{ textAlign: 'center' }">
+          Es gibt noch keine Rezepte. Fang an, Rezepte aufzunehmen und sie
+          werden hier aufgelistet.
+        </b-col>
+      </b-row>
+
       <b-card v-for="rezept in filteredRezepte" :key="rezept.id">
         <b-card-header v-b-toggle="'collapse-' + rezept.id">
-          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }} :
-          {{ rezept.Kunde.firstname }}
-          {{ rezept.Kunde.lastname }}
-          <span class="ml-2" v-b-tooltip.hover :title="rezept.id">
-            <b-icon-info-circle />
-          </span>
+          <b-row>
+            <b-col>
+              {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }} :
+              <router-link
+                :to="{
+                  name: 'Verwaltung.Patienten',
+                  query: { kunde: rezept.KundeId },
+                }"
+              >
+                {{ rezept.Kunde.firstname }}
+                {{ rezept.Kunde.lastname }}
+              </router-link>
+              <span class="ml-2" v-b-tooltip.hover :title="rezept.id">
+                <b-icon-info-circle />
+              </span>
+            </b-col>
+            <b-col :style="{ textAlign: 'right' }">
+              <b-icon-caret-down />
+            </b-col>
+          </b-row>
         </b-card-header>
-        <b-collapse :id="'collapse-' + rezept.id" role="tabpanel">
+        <b-collapse
+          :id="'collapse-' + rezept.id"
+          role="tabpanel"
+          :visible="filteredRezepte.length <= 4"
+        >
           <b-card-body>
             <b-row>
               <b-col>
@@ -193,6 +230,10 @@ export default {
     }).then((rezeptList) => {
       this.rezepte = rezeptList;
     });
+
+    this.selectedRezeptId = this.$route.query?.rezept;
+    this.selectedKundeId = this.$route.query?.kunde;
+    this.selectedHeilmittelId = this.$route.query?.heilmittel;
   },
   methods: {
     getDateRange(rezeptId) {
@@ -211,6 +252,8 @@ export default {
     },
     changeId(id) {
       this.selectedRezeptId = id;
+      if (id) this.$route.query.rezept = id;
+      else delete this.$route.query.rezept;
     },
     changedKunde(lastFirstName) {
       const [lastname, firstname] = lastFirstName.split(", ");
@@ -230,6 +273,11 @@ export default {
     },
     generateTermine(id) {
       this.$refs["terminuebersicht-" + id][0].generatePdf();
+    },
+    resetFilter() {
+      this.selectedHeilmittelId = null;
+      this.selectedKundeId = null;
+      this.selectedRezeptId = null;
     },
   },
   computed: {

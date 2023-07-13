@@ -2,13 +2,13 @@ import store from "@/store";
 import { ax } from "@/services/RequestService";
 
 const defaultConfig = {
-  calendarDefault: 3,
+  calendarDefault: 7,
   paymentDeadlineDays: 30,
 };
 
 class ConfigService {
   constructor() {
-    this.configOverrides = { online: Boolean(window.ipc) };
+    this.configOverrides = { online: true };
   }
   config() {
     const me = store.state.me;

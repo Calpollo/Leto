@@ -29,11 +29,7 @@
             >
           </nav>
         </div>
-        <b-button
-          class="mx-3 mb-2"
-          variant="outline-success"
-          @click="saveConfig"
-        >
+        <b-button class="mx-3 mb-2" variant="success" @click="saveConfig">
           Speichern
         </b-button>
       </div>
