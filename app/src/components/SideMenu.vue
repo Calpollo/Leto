@@ -66,10 +66,8 @@ export default {
   top: 0;
   bottom: 0;
   // TODO: make smaller and collapsable
-  width: 20%;
-  min-width: max-content;
+  width: max-content;
   height: 100vh;
-  // padding: 20px;
 
   box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.25);
   background: var(--background);
