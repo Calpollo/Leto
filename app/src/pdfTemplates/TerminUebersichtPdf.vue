@@ -14,7 +14,11 @@
       ref="html2Pdf"
       :html-to-pdf-options="{
         margin: [15, 10],
-        filename: 'Terminübersicht-Kunde-' + Rezept?.id,
+        filename:
+          'Terminübersicht-Patient-' +
+          Rezept?.Kunde?.lastname +
+          '-' +
+          Rezept?.id,
       }"
     >
       <section slot="pdf-content">

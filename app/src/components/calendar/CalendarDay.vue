@@ -9,7 +9,15 @@
         class="datum"
         :style="{ gridColumn: '1/' + (maxConcurrentEvents + 1) }"
       >
-        {{ dateToLocale(this.date) }}
+        {{
+          toLocale(this.date, {
+            options: {
+              weekday: "short",
+              day: "2-digit",
+              month: "2-digit",
+            },
+          })
+        }}
       </p>
 
       <CalendarDate
@@ -19,10 +27,6 @@
         :style="getDateStyle(event)"
         @triggerUpdate="triggerUpdate"
       />
-    </div>
-    <div class="calendarday" v-else-if="openingHours?.weekend">
-      <p class="datum">{{ dateToLocale(this.date) }}</p>
-      <p class="datum">Wochende</p>
     </div>
     <SpinnerLogo v-else />
   </div>
@@ -93,9 +97,7 @@ export default {
   },
   components: { CalendarDate, SpinnerLogo },
   methods: {
-    dateToLocale(date, locale) {
-      return toLocale(date, locale);
-    },
+    toLocale,
     getDayStyle() {
       const dayLengthInHours = fullDayHours(this.openingHours);
       const result = {

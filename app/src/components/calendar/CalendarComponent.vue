@@ -41,9 +41,21 @@ export default {
       function dayDiff(d1, d2) {
         return new Date(d1).getDate() - new Date(d2).getDate();
       }
-      return this.events.filter(
-        (e) => dayDiff(e.start, this.startDay) == daysAfterStart
-      );
+      return this.events
+        .map((e) => {
+          const rezeptEvents = this.events
+            .filter((e2) => e2.RezeptId == e.RezeptId)
+            .sort((e2a, e2b) => e2a.start - e2b.start);
+          const eventIndex = rezeptEvents.indexOf(e);
+          e.isFirstEvent = eventIndex == 0;
+          e.isLastEvent = eventIndex == rezeptEvents.length - 1;
+          const terminNumberGoal = rezeptEvents[0].Rezept.Heilmittels.map(
+            (hm) => hm.terminNumber
+          ).reduce((a, b) => a + b, 0);
+          e.rezeptIsMissingTermin = terminNumberGoal != rezeptEvents.length;
+          return e;
+        })
+        .filter((e) => dayDiff(e.start, this.startDay) == daysAfterStart);
     },
     sortByStartTime(a, b) {
       return a.start - b.start;

@@ -1,38 +1,89 @@
 <template>
-  <div class="calendardate" :style="getDateStyles()">
-    <p class="timestring">
+  <div
+    class="calendardate"
+    :style="getDateStyles()"
+    :id="`tooltip-target-${this.event.id}`"
+  >
+    <p>
+      <b-icon-play-circle-fill v-if="event.isFirstEvent" />
+      <b-icon-exclamation-triangle-fill v-if="event.isLastEvent" />
+      <b-icon-exclamation-octagon-fill
+        variant="danger"
+        v-if="event.rezeptIsMissingTermin"
+      />
       {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
       -
       {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
     </p>
 
-    <p class="datename" v-show="this.kunde">
-      <b-icon-info-circle
-        class="mx-2"
-        :id="`tooltip-target-${this.event.id}`"
-      />
-      {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
-      {{ this.kunde?.firstname }}
-      {{ this.kunde?.lastname }}
+    <p class="datename" v-show="kunde">
+      {{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
+      {{ kunde?.firstname }}
+      {{ kunde?.lastname }}
     </p>
 
     <b-tooltip
-      :target="`tooltip-target-${this.event.id}`"
+      :target="`tooltip-target-${event.id}`"
       v-b-tooltip.focus
       placement="bottom"
     >
+      <b-alert variant="warning" :show="event.isFirstEvent">
+        <b-icon-play-circle-fill />
+        Erster Termin des Rezepts
+      </b-alert>
+      <b-alert variant="warning" :show="event.isLastEvent">
+        <b-icon-exclamation-triangle-fill />
+        Letzter Termin des Rezepts
+      </b-alert>
+      <b-alert variant="danger" :show="event.rezeptIsMissingTermin">
+        <b-icon-exclamation-octagon-fill />
+        Für dieses Rezept fehlt ein Termin
+      </b-alert>
       <p>
-        {{ this.event.Therapeut.name }} ({{ this.event.Therapeut.geschlecht }})
+        {{
+          toLocale(this.event.start, {
+            options: {
+              weekday: "short",
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            },
+          })
+        }}
       </p>
       <p>
-        {{ this.kunde?.firstname }} {{ this.kunde?.lastname }},
-        {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}
+        {{ event.Therapeut.name }}
       </p>
-      <p>{{ this.event.Praxis.name }}</p>
+      <p>
+        <router-link
+          :to="{ name: 'Verwaltung.Patienten', query: { kunde: kunde?.id } }"
+        >
+          {{ kunde?.firstname }} {{ kunde?.lastname }},
+        </router-link>
+        <router-link
+          :to="{
+            name: 'Verwaltung.Rezepte',
+            query: { rezept: event?.RezeptId },
+          }"
+        >
+          {{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}
+        </router-link>
+      </p>
 
-      <b-button class="mx-2" @click="moveOrDelete" pill variant="outline-light">
-        <b-icon-trash-fill />
-      </b-button>
+      <b-button-group vertical>
+        <b-button @click="printTerminPdf" variant="outline-light">
+          <b-icon-file-earmark-pdf />
+          Terminübersicht
+        </b-button>
+        <b-button @click="printRechnungPdf" variant="outline-light">
+          <b-icon-journals />
+          Rechnung
+        </b-button>
+        <b-button @click="moveOrDelete" variant="outline-danger">
+          <b-icon-trash-fill />
+          löschen / verschieben
+        </b-button>
+      </b-button-group>
     </b-tooltip>
 
     <TerminMove
@@ -76,6 +127,17 @@
         Therapeut: {{ this.event.Therapeut.name }}
       </p>
     </DeletionConfirmation>
+
+    <TerminUebersichtPdf
+      v-if="this.event.RezeptId"
+      :ref="'terminuebersicht-' + event?.id"
+      :RezeptId="this.event.RezeptId.toString()"
+    />
+    <RechnungKundePdf
+      v-if="this.event?.RezeptId"
+      :ref="'rechnung-' + event?.id"
+      :RezeptId="this.event.RezeptId.toString()"
+    />
   </div>
 </template>
 
@@ -84,7 +146,11 @@ import KundenService from "@/services/dbServices/KundenService";
 import TerminService from "@/services/dbServices/TerminService";
 import DeletionConfirmation from "../formsAndModals/DeletionConfirmation.vue";
 import TerminMoveOrDelete from "../formsAndModals/TerminMoveOrDelete.vue";
+import TerminUebersichtPdf from "../../pdfTemplates/TerminUebersichtPdf.vue";
+import RechnungKundePdf from "../../pdfTemplates/RechnungKundePdf.vue";
 import TerminMove from "../formsAndModals/TerminMove.vue";
+import { toLocale } from "@/utils/dates";
+
 export default {
   name: "CalendarDate",
   props: {
@@ -106,6 +172,7 @@ export default {
     };
   },
   methods: {
+    toLocale,
     pad(number) {
       return String(number).padStart(2, "0");
     },
@@ -137,13 +204,25 @@ export default {
       };
       this.$refs["deletionConfirmation-" + this.event.id].show();
     },
+    printTerminPdf() {
+      this.$refs["terminuebersicht-" + this.event.id].generatePdf();
+    },
+    printRechnungPdf() {
+      this.$refs["rechnung-" + this.event.id].generatePdf();
+    },
   },
   mounted() {
     KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
       return (this.kunde = k);
     });
   },
-  components: { DeletionConfirmation, TerminMoveOrDelete, TerminMove },
+  components: {
+    DeletionConfirmation,
+    TerminMoveOrDelete,
+    TerminMove,
+    RechnungKundePdf,
+    TerminUebersichtPdf,
+  },
 };
 </script>
 
