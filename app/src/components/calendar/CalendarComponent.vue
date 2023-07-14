@@ -3,7 +3,7 @@
     <b-row>
       <b-col>
         <b-button pill variant="light" @click="decreaseDayOffset">
-          <b-icon-caret-left-fill />
+          <b-icon-chevron-left />
         </b-button>
       </b-col>
       <b-col :style="{ textAlign: 'center' }">
@@ -32,19 +32,42 @@
       </b-col>
       <b-col :style="{ textAlign: 'right' }">
         <b-button pill variant="light" @click="increaseDayOffset">
-          <b-icon-caret-right-fill />
+          <b-icon-chevron-right />
         </b-button>
       </b-col>
     </b-row>
-    <b-row class="calendar" v-if="events && !loading">
-      <CalendarDay
-        v-for="day in dayOffsetArray"
-        :key="day"
-        :events="relevantEvents(day)?.sort(sortByStartTime)"
-        :date="new Date().setDate(startDay.getDate() + day)"
-        :style="{ width: (1 / length) * 100 + '%' }"
-        @triggerUpdate="triggerUpdate"
-      />
+    <b-row class="calendar" v-if="events && !loading" no-gutter>
+      <b-col
+        cols="auto"
+        class="pl-0 pr-1"
+        :style="{
+          display: 'grid',
+          gridTemplateRows: `repeat(${timeLegend.length * 2}, ${160 / 4}px)`,
+        }"
+      >
+        <small
+          v-for="time in timeLegend"
+          :key="time.valueOf()"
+          :style="{
+            ...getTimeLegendStyle(time),
+            position: 'relative',
+            top: '-10px',
+            width: 'max-content',
+            height: 'max-content',
+            backgroundColor: 'var(--background)',
+            zIndex: 0,
+          }"
+        >
+          {{ toLocaleTime(time) }}
+        </small>
+      </b-col>
+      <b-col v-for="day in dayOffsetArray" :key="day" class="p-0">
+        <CalendarDay
+          :events="relevantEvents(day)?.sort(sortByStartTime)"
+          :date="new Date(startDay.valueOf() + day * msPerDay).valueOf()"
+          @triggerUpdate="triggerUpdate"
+        />
+      </b-col>
     </b-row>
     <b-row v-else align-h="around">
       <SpinnerLogo />
@@ -57,6 +80,9 @@ import SpinnerLogo from "../SpinnerLogo.vue";
 import CalendarDay from "./CalendarDay.vue";
 import PraxisService from "@/services/dbServices/PraxisService";
 import ConfigService from "@/services/ConfigService";
+import { toLocaleTime } from "@/utils/dates";
+
+const msPerDay = 24 * 60 * 60 * 1000;
 
 export default {
   name: "CalendarComponent",
@@ -66,6 +92,8 @@ export default {
       length: ConfigService.getCalendarDefault(),
       dayOffset: 0,
       loading: false,
+      praxis: null,
+      msPerDay,
     };
   },
   props: {
@@ -76,10 +104,8 @@ export default {
     },
   },
   methods: {
+    toLocaleTime,
     relevantEvents(daysAfterStart) {
-      function dayDiff(d1, d2) {
-        return new Date(d1).getDate() - new Date(d2).getDate();
-      }
       return this.events
         .map((e) => {
           const rezeptEvents = this.events
@@ -94,7 +120,10 @@ export default {
           e.rezeptIsMissingTermin = terminNumberGoal != rezeptEvents.length;
           return e;
         })
-        .filter((e) => dayDiff(e.start, this.startDay) == daysAfterStart);
+        .filter(
+          (e) =>
+            Math.floor((e.start - this.startDay) / msPerDay) == daysAfterStart
+        );
     },
     sortByStartTime(a, b) {
       return a.start - b.start;
@@ -106,40 +135,25 @@ export default {
       let runningIndex = [1, 3].includes(numberOfDays) ? 0 : -now.getDay();
 
       let res = [];
-      if (!this.events) return res;
+      if (!this.events || !this.praxis) return res;
 
-      // TODO: optimize by loading praxis once
-      PraxisService.getOne(ConfigService.getPraxis(), {
-        include: [
-          "montagsZeit",
-          "dienstagsZeit",
-          "mittwochsZeit",
-          "donnerstagsZeit",
-          "freitagsZeit",
-        ],
-      }).then((praxis) => {
-        if (praxis && !Array.isArray(praxis)) {
-          while (res.length < numberOfDays) {
-            const virtualDate = new Date(
-              new Date().setDate(now.getDate() + runningIndex)
-            );
-            const virtualWeekdayIndex = virtualDate.getDay();
-            const week = [
-              null, // Sunday
-              praxis?.montagsZeit, // Monday
-              praxis?.dienstagsZeit, // Tuesday
-              praxis?.mittwochsZeit, // Wednesday
-              praxis?.donnerstagsZeit, // Thursday
-              praxis?.freitagsZeit, // Friday
-              null, // Saturday
-            ];
-            if (week[virtualWeekdayIndex]) res.push(runningIndex);
-            runningIndex++;
-          }
-        }
-        this.dayOffsetArray = res;
-        this.loading = false;
-      });
+      while (res.length < numberOfDays) {
+        const virtualDate = new Date(now.valueOf() + runningIndex * msPerDay);
+        const virtualWeekdayIndex = virtualDate.getDay();
+        const week = [
+          null, // Sunday
+          this.praxis?.montagsZeit, // Monday
+          this.praxis?.dienstagsZeit, // Tuesday
+          this.praxis?.mittwochsZeit, // Wednesday
+          this.praxis?.donnerstagsZeit, // Thursday
+          this.praxis?.freitagsZeit, // Friday
+          null, // Saturday
+        ];
+        if (week[virtualWeekdayIndex]) res.push(runningIndex);
+        runningIndex++;
+      }
+      this.dayOffsetArray = res;
+      this.loading = false;
     },
     triggerUpdate() {
       this.$emit("triggerUpdate");
@@ -148,7 +162,7 @@ export default {
       this.length = n;
     },
     decreaseDayOffset() {
-      this.dayOffset -= this.length;
+      this.dayOffset -= this.length == 5 ? 7 : this.length;
       const weekDayIndex = new Date(
         new Date().setDate(new Date().getDate() + this.dayOffset)
       ).getDay();
@@ -157,7 +171,7 @@ export default {
       this.calcDayOffsetArray();
     },
     increaseDayOffset() {
-      this.dayOffset += this.length;
+      this.dayOffset += this.length == 5 ? 7 : this.length;
       const weekDayIndex = new Date(
         new Date().setDate(new Date().getDate() + this.dayOffset)
       ).getDay();
@@ -171,17 +185,54 @@ export default {
         this.calcDayOffsetArray();
       }
     },
+    getTimeLegendStyle(time) {
+      const row = this.timeLegend.indexOf(time) * 2 + 2;
+      return {
+        gridRow: row + "/" + (row + 1),
+        gridColumn: "1/2",
+      };
+    },
   },
   computed: {
     startDay() {
       return new Date(
-        new Date().setDate(new Date().getDate() + this.dayOffset)
+        new Date().setHours(0, 0, 0, 0).valueOf() + this.dayOffset * msPerDay
       );
+    },
+    timeLegend() {
+      const msPerHalfHour = 30 * 60 * 1000;
+      let result = [];
+
+      if (!this.praxis) return [];
+
+      const start = new Date(this.praxis.montagsZeit.start);
+      const end = new Date(this.praxis.montagsZeit.end);
+      const legendLength = (end - start) / msPerHalfHour + 1;
+
+      let currentTime = start;
+
+      // eslint-disable-next-line no-unused-vars
+      for (let i of Array(Math.round(legendLength))) {
+        result.push(currentTime);
+        currentTime = new Date(currentTime.valueOf() + msPerHalfHour);
+      }
+      return result;
     },
   },
   components: { CalendarDay, SpinnerLogo },
   mounted() {
-    this.calcDayOffsetArray();
+    PraxisService.getOne(ConfigService.getPraxis(), {
+      include: [
+        "montagsZeit",
+        "dienstagsZeit",
+        "mittwochsZeit",
+        "donnerstagsZeit",
+        "freitagsZeit",
+      ],
+    }).then((praxis) => {
+      if (!Array.isArray(praxis)) this.praxis = praxis;
+      this.calcDayOffsetArray();
+    });
   },
   watch: {
     length() {
