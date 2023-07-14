@@ -78,7 +78,7 @@
               </b-dropdown>
             </b-col>
             <b-col :style="{ textAlign: 'right' }">
-              <b-icon-caret-down />
+              <b-icon-chevron-bar-expand />
             </b-col>
           </b-row>
         </b-card-header>

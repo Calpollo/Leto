@@ -28,7 +28,7 @@
             Verwaltung
           </router-link>
           <router-link :to="{ name: 'Einstellungen' }">
-            <b-icon-gear-fill class="mr-2" />
+            <b-icon-tools class="mr-2" />
             Einstellungen
           </router-link>
         </nav>
