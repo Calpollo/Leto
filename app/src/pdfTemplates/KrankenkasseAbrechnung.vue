@@ -14,7 +14,7 @@
       ref="html2Pdf"
       :html-to-pdf-options="{
         margin: [15, 10],
-        filename: 'Abrechnung',
+        filename,
       }"
     >
       <section slot="pdf-content">
@@ -87,12 +87,8 @@ export default {
     generatePdf() {
       return this.$refs.html2Pdf.generatePdf();
     },
-    timeToLocale(date) {
-      return toLocaleTime(date);
-    },
-    dateToLocale(date) {
-      return toLocale(date);
-    },
+    toLocaleTime,
+    toLocale,
     emitClose() {
       setTimeout(() => this.$emit("close"), 5000);
     },
@@ -101,6 +97,9 @@ export default {
     RezeptList: {
       type: Array,
       default: () => [],
+    },
+    krankenkasse: {
+      type: Object,
     },
   },
   mounted() {
@@ -118,12 +117,17 @@ export default {
                 r.Kunde.versichertennummer ||
                 `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
               Heilmittel: `${hm.abk}: ${hm.name}`,
-              Datum: this.dateToLocale(r.ausstellungsdatum),
+              Datum: this.toLocale(r.ausstellungsdatum),
               Preis: hm.krankenkassenbeteiligung + " €",
             };
           });
         })
         .flat();
+    },
+    filename() {
+      return `Abrechnung-${this.krankenkasse?.name}-${
+        this.krankenkasse?.kostenträgerkennung
+      }-${toLocale(new Date())}`;
     },
   },
 };

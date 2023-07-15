@@ -56,12 +56,35 @@
       :RezeptList="abrechnungsRezepte"
       ref="krankenkasseAbrechnung"
       @close="cancel"
+      :krankenkasse="selectedKrankenkasse"
     />
 
     <template #modal-footer="{}">
-      <b-button size="sm" variant="success" @click="ok">Generieren</b-button>
+      <!-- <b-button size="sm" variant="success" @click="ok">Generieren</b-button> -->
+      <span v-if="relevanteKrankenkassen.length > 0">
+        Abrechnung generieren:
+      </span>
+      <span v-else>Wähle ein Rezept, um eine Abrechnung zu generieren</span>
+      <b-button-group size="sm">
+        <b-button
+          variant="outline-success"
+          @click="generate(krankenkasse)"
+          v-for="krankenkasse in relevanteKrankenkassen"
+          :key="krankenkasse.kostenträgerkennung"
+        >
+          {{ krankenkasse.name }}
+          <span
+            v-if="
+              relevanteKrankenkassen.filter((k) => k.name == krankenkasse.name)
+                .length > 1
+            "
+          >
+            ({{ krankenkasse.kostenträgerkennung }})
+          </span>
+        </b-button>
+      </b-button-group>
       <b-button size="sm" variant="outline-danger" @click="cancel">
-        Abbrechen
+        Beenden
       </b-button>
     </template>
   </b-modal>
@@ -84,10 +107,19 @@ export default {
         .split("T")[0],
       filterEndDate: new Date().toISOString().split("T")[0],
       allowKostenfrei: true,
+      selectedKrankenkasse: null,
     };
   },
   mounted() {
-    RezeptService.getAll({ include: ["Heilmittels", "Kunde"] }).then(
+    RezeptService.getAll({
+      include: [
+        "Heilmittels",
+        {
+          association: "Kunde",
+          include: "Krankenkasse",
+        },
+      ],
+    }).then(
       (rezeptList) =>
         (this.rezepte = rezeptList.map((r) => {
           return { ...r, selected: true };
@@ -97,6 +129,13 @@ export default {
   methods: {
     show() {
       this.$bvModal.show("PdfGenerationKrankenkasse");
+    },
+    generate(krankenkasse) {
+      this.selectedKrankenkasse = krankenkasse;
+      setTimeout(() => {
+        this.$refs.krankenkasseAbrechnung.generatePdf();
+        // this.selectedKrankenkasse = null;
+      }, 200);
     },
     ok() {
       this.$refs.krankenkasseAbrechnung.generatePdf();
@@ -138,6 +177,17 @@ export default {
     },
     abrechnungsRezepte() {
       return this.filteredRezepte.filter((r) => r.selected);
+    },
+    relevanteKrankenkassen() {
+      const krankenkassen = this.abrechnungsRezepte.map(
+        (r) => r.Kunde.Krankenkasse
+      );
+      const kennungen = Array.from(
+        new Set(krankenkassen.map((k) => k.kostenträgerkennung))
+      );
+      return kennungen.map((ke) =>
+        krankenkassen.find((kr) => ke == kr.kostenträgerkennung)
+      );
     },
   },
 };
