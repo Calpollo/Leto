@@ -1,10 +1,15 @@
 <template>
-  <b-modal id="terminAbsage" scrollable title="Patient nicht erschienen">
+  <b-modal
+    :id="id || 'terminAbsage'"
+    scrollable
+    title="Patient nicht erschienen"
+  >
     <b-form-group label="Patient:" label-for="patienten-auswahl">
       <b-input
         id="patienten-auswahl"
         type="search"
         list="patientenlist"
+        :value="patient ? patient.lastname + ', ' + patient.firstname : null"
         @change="changePatient"
       />
       <datalist id="patientenlist">
@@ -23,6 +28,11 @@
         id="termin-auswahl"
         type="search"
         list="terminlist"
+        :value="
+          termin
+            ? toLocale(termin.start) + ' - ' + toLocaleTime(termin.start)
+            : null
+        "
         @change="changeTermin"
       />
       <datalist id="terminlist">
@@ -44,6 +54,14 @@
         :disabled="!termin"
       >
         Verschieben
+      </b-button>
+      <b-button
+        size="sm"
+        variant="outline-primary"
+        @click="ausfall"
+        :disabled="!termin"
+      >
+        Ausfalltermin
       </b-button>
       <b-button
         size="sm"
@@ -95,6 +113,14 @@ export default {
       selectedTerminId: null,
     };
   },
+  props: {
+    id: {
+      type: String,
+    },
+    event: {
+      type: Object,
+    },
+  },
   methods: {
     toLocale,
     toLocaleTime,
@@ -107,18 +133,6 @@ export default {
           (t) => t.start > new Date().setDate(new Date().getDate() - 7)
         );
       });
-      // RezeptService.getByLastnameAndFirstname(p.lastname, p.firstname)
-      //   .then((rezeptList) => {
-      //     if (Array.isArray(rezeptList)) {
-      //       return Promise.all(
-      //         rezeptList.map((r) => TerminService.getByRezept(r.id))
-      //       );
-      //     } else return TerminService.getByRezept(rezeptList.id);
-      //   })
-      //   .then((terminList) => {
-      //     if (Array.isArray(terminList)) this.termine = terminList.flat();
-      //     else this.termine = terminList;
-      //   });
     },
     changePatient(lastnamefirstname) {
       const [lastname, firstname] = lastnamefirstname.split(", ");
@@ -160,12 +174,24 @@ export default {
         this.cancel();
       });
     },
+    ausfall() {
+      TerminService.update({ ...this.termin, erschienen: false }).then(() => {
+        this.$emit("triggerUpdate");
+        this.cancel();
+      });
+    },
     cancel() {
-      this.$bvModal.hide("terminAbsage");
+      this.$bvModal.hide(this.id || "terminAbsage");
     },
   },
   mounted() {
-    KundenService.getAll().then((kundenList) => (this.patienten = kundenList));
+    KundenService.getAll().then((kundenList) => {
+      this.patienten = kundenList;
+      if (this.event) {
+        this.selectedTerminId = this.event?.id;
+        this.selectedPatientId = this.event?.Rezept?.KundeId;
+      }
+    });
   },
   watch: {
     selectedPatientId() {
@@ -175,6 +201,9 @@ export default {
   computed: {
     termin() {
       return this.termine.find((t) => t.id == this.selectedTerminId);
+    },
+    patient() {
+      return this.patienten.find((p) => p.id == this.selectedPatientId);
     },
   },
 };

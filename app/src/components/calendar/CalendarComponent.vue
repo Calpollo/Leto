@@ -111,13 +111,20 @@ export default {
           const rezeptEvents = this.events
             .filter((e2) => e2.RezeptId == e.RezeptId)
             .sort((e2a, e2b) => e2a.start - e2b.start);
+
           const eventIndex = rezeptEvents.indexOf(e);
           e.isFirstEvent = eventIndex == 0;
           e.isLastEvent = eventIndex == rezeptEvents.length - 1;
+
           const terminNumberGoal = rezeptEvents[0].Rezept.Heilmittels.map(
             (hm) => hm.terminNumber
           ).reduce((a, b) => a + b, 0);
-          e.rezeptIsMissingTermin = terminNumberGoal != rezeptEvents.length;
+
+          e.rezeptIsMissingTermin =
+            terminNumberGoal != rezeptEvents.filter((e) => e.erschienen).length;
+          e.numberOfAusfallTermine = rezeptEvents.filter(
+            (e) => !e.erschienen
+          ).length;
           return e;
         })
         .filter(
@@ -164,7 +171,7 @@ export default {
     decreaseDayOffset() {
       this.dayOffset -= this.length == 5 ? 7 : this.length;
       const weekDayIndex = new Date(
-        new Date().setDate(new Date().getDate() + this.dayOffset)
+        new Date().valueOf() + this.dayOffset * msPerDay
       ).getDay();
       if (weekDayIndex == 0) this.dayOffset -= 2;
       // if (weekDayIndex == 6) this.dayOffset -= 1;
@@ -173,15 +180,19 @@ export default {
     increaseDayOffset() {
       this.dayOffset += this.length == 5 ? 7 : this.length;
       const weekDayIndex = new Date(
-        new Date().setDate(new Date().getDate() + this.dayOffset)
+        new Date().valueOf() + this.dayOffset * msPerDay
       ).getDay();
       if (weekDayIndex == 6) this.dayOffset += 2;
       // if (weekDayIndex == 0) this.dayOffset += 1;
       this.calcDayOffsetArray();
     },
     resetDayOffset() {
-      if (this.dayOffset != 0) {
-        this.dayOffset = 0;
+      const weekday = new Date().getDay();
+      let zero = 1;
+      if (weekday == 6) zero = 2;
+      if (weekday == 0) zero = 1;
+      if (this.dayOffset != zero) {
+        this.dayOffset = zero;
         this.calcDayOffsetArray();
       }
     },
@@ -231,6 +242,7 @@ export default {
       ],
     }).then((praxis) => {
       if (!Array.isArray(praxis)) this.praxis = praxis;
+      this.resetDayOffset();
       this.calcDayOffsetArray();
     });
   },

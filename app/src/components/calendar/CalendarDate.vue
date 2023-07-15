@@ -7,6 +7,7 @@
     <p>
       <b-icon-play-circle-fill v-if="event.isFirstEvent" />
       <b-icon-exclamation-triangle-fill v-if="event.isLastEvent" />
+      <b-icon-person-dash-fill v-if="!event.erschienen" />
       <b-icon-exclamation-octagon-fill
         variant="danger"
         v-if="event.rezeptIsMissingTermin"
@@ -38,6 +39,18 @@
       <b-alert variant="danger" :show="event.rezeptIsMissingTermin">
         <b-icon-exclamation-octagon-fill />
         Für dieses Rezept fehlt ein Termin
+        <p v-if="event.numberOfAusfallTermine > 0">
+          ({{ event.numberOfAusfallTermine }}
+          {{
+            event.numberOfAusfallTermine > 1
+              ? "Ausfalltermine"
+              : "Ausfalltermin"
+          }})
+        </p>
+      </b-alert>
+      <b-alert variant="danger" :show="!event.erschienen">
+        <b-icon-person-dash-fill />
+        Ausfalltermin: Patient ist nicht erschienen
       </b-alert>
       <p>
         {{
@@ -79,6 +92,14 @@
           <b-icon-journals />
           Rechnung
         </b-button>
+        <b-button
+          @click="openTerminAbsage"
+          variant="outline-light"
+          v-if="event.erschienen"
+        >
+          <b-icon-person-dash-fill />
+          Patient nicht erschienen
+        </b-button>
         <b-button @click="moveOrDelete" variant="outline-danger">
           <b-icon-trash-fill />
           löschen / verschieben
@@ -107,6 +128,13 @@
         Therapeut: {{ this.event.Therapeut.name }}
       </p>
     </TerminMoveOrDelete>
+
+    <TerminAbsage
+      :id="'terminAbsage-' + event.id"
+      :event="event"
+      @triggerUpdate="$emit('triggerUpdate')"
+    />
+
     <DeletionConfirmation
       :ref="'deletionConfirmation-' + event.id"
       @confirm="confirmableFunction"
@@ -149,6 +177,7 @@ import TerminMoveOrDelete from "../formsAndModals/TerminMoveOrDelete.vue";
 import TerminUebersichtPdf from "../../pdfTemplates/TerminUebersichtPdf.vue";
 import RechnungKundePdf from "../../pdfTemplates/RechnungKundePdf.vue";
 import TerminMove from "../formsAndModals/TerminMove.vue";
+import TerminAbsage from "../formsAndModals/TerminAbsage.vue";
 import { toLocale } from "@/utils/dates";
 
 export default {
@@ -179,6 +208,7 @@ export default {
     getDateStyles() {
       return {
         backgroundColor: this.event.Therapeut.color,
+        filter: "opacity(" + (this.event.erschienen ? 1 : 0.3) + ")",
       };
     },
     moveOrDelete() {
@@ -210,6 +240,9 @@ export default {
     printRechnungPdf() {
       this.$refs["rechnung-" + this.event.id].generatePdf();
     },
+    openTerminAbsage() {
+      this.$bvModal.show("terminAbsage-" + this.event.id);
+    },
   },
   mounted() {
     KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
@@ -220,6 +253,7 @@ export default {
     DeletionConfirmation,
     TerminMoveOrDelete,
     TerminMove,
+    TerminAbsage,
     RechnungKundePdf,
     TerminUebersichtPdf,
   },

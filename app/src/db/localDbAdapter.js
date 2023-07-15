@@ -527,6 +527,11 @@ class LocalDbAdapter {
         defaultValue: 15,
         allowNull: false,
       },
+      erschienen: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
     });
 
     this.ICD10Code = this.sequelize.define("icd10code", {
