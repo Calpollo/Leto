@@ -49,10 +49,17 @@ function rezeptAustellerStatistics() {
 }
 
 function rezeptHeilmittelStatistics() {
-  return RezeptService.getAll({ include: "Heilmittels" }).then((rezeptList) => {
+  return RezeptService.getAll({
+    include: {
+      association: "RezeptHeilmittels",
+      include: "Heilmittel",
+    },
+  }).then((rezeptList) => {
     const heilmittelMap = [];
     rezeptList.forEach((r) => {
-      for (const hmAbk of r.Heilmittels.map((h) => h.abk)) {
+      for (const hmAbk of r.RezeptHeilmittels.map(
+        (hmR) => hmR.Heilmittel.abk
+      )) {
         const found = heilmittelMap.find((a) => a.heilmittel == hmAbk);
         if (found) found.count++;
         else heilmittelMap.push({ heilmittel: hmAbk, count: 1 });

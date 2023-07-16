@@ -22,7 +22,7 @@ class LocalDbAdapter {
       this.sequelize.query(
         "UPDATE sqlite_sequence SET SEQ=1000 WHERE NAME='Rezepts'"
       );
-      // this.seed();
+      this.seed();
     });
   }
 
@@ -198,8 +198,23 @@ class LocalDbAdapter {
                 ArztLanr,
               }).then((rezept) => {
                 const rezeptHeilmittelSearch = this.Heilmittel.findAll().then(
-                  (heilmittelList) =>
-                    heilmittelList.filter((hm) => r.Heilmittel.includes(hm.abk))
+                  (heilmittelList) => {
+                    heilmittelList = heilmittelList.filter((hm) =>
+                      r.Heilmittel.includes(hm.abk)
+                    );
+                    Promise.all(
+                      heilmittelList.map((hm) =>
+                        this.RezeptHeilmittel.create({
+                          terminNumber: r.terminNumber,
+                          HeilmittelId: hm.id,
+                        }).then((hmR) => {
+                          rezept.setRezeptHeilmittels(hmR);
+                          hmR.setHeilmittel(hm);
+                        })
+                      )
+                    );
+                    return heilmittelList;
+                  }
                 );
 
                 const icd10codeSearch = this.ICD10Code.findAll({
@@ -243,13 +258,15 @@ class LocalDbAdapter {
                     return Promise.all([
                       rezept.setIcd10code(icd10code),
                       rezept.setKunde(kunde),
-                      rezept.setHeilmittels(heilmittel),
-                      ...termine.map((t) => {
-                        return Promise.all([
-                          t.setPraxis(praxis),
-                          t.setTherapeut(therapeut),
-                          t.setRezept(rezept),
-                        ]);
+                      ...heilmittel.map((hm) => {
+                        return termine.map((t) => {
+                          return Promise.all([
+                            t.setPraxis(praxis),
+                            t.setTherapeut(therapeut),
+                            t.setRezept(rezept),
+                            t.setHeilmittels(hm),
+                          ]);
+                        });
                       }),
                     ]);
                   }
@@ -354,11 +371,6 @@ class LocalDbAdapter {
       name: {
         type: DataTypes.STRING,
         allowNull: true,
-      },
-      terminNumber: {
-        type: INTEGER,
-        defaultValue: 0,
-        allowNull: false,
       },
       terminMinutes: {
         type: INTEGER,
@@ -475,6 +487,19 @@ class LocalDbAdapter {
       },
       indikation: {
         type: DataTypes.STRING,
+      },
+    });
+
+    this.RezeptHeilmittel = this.sequelize.define("RezeptHeilmittel", {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      terminNumber: {
+        type: INTEGER,
+        defaultValue: 0,
+        allowNull: false,
       },
     });
 
@@ -647,12 +672,18 @@ class LocalDbAdapter {
     await this.Therapeut.hasOne(this.Vertrag, { onDelete: "CASCADE" });
     await this.Vertrag.belongsTo(this.Therapeut, { onDelete: "CASCADE" });
 
-    // Rezeptinhalt: Rezept - Heilmittel
-    await this.Heilmittel.belongsToMany(this.Rezept, {
-      through: "RezeptHeilmittel",
+    // RezeptHeilmittel
+    await this.Rezept.hasMany(this.RezeptHeilmittel);
+    await this.RezeptHeilmittel.belongsTo(this.Rezept);
+    await this.Heilmittel.hasMany(this.RezeptHeilmittel);
+    await this.RezeptHeilmittel.belongsTo(this.Heilmittel);
+
+    // Termininhalt: Termin - Heilmittel
+    await this.Heilmittel.belongsToMany(this.Termin, {
+      through: "TerminHeilmittel",
     });
-    await this.Rezept.belongsToMany(this.Heilmittel, {
-      through: "RezeptHeilmittel",
+    await this.Termin.belongsToMany(this.Heilmittel, {
+      through: "TerminHeilmittel",
     });
 
     // Patientenversicherung: Krankenkasse - Kunde

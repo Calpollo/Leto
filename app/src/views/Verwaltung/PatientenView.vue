@@ -155,7 +155,12 @@
                     query: { rezept: rezept.id },
                   }"
                 >
-                  {{ rezept.Heilmittels.map((h) => h.abk).join(", ") }} :
+                  {{
+                    rezept.RezeptHeilmittels.map(
+                      (hmR) => hmR.Heilmittel.abk
+                    ).join(", ")
+                  }}
+                  :
                   {{ toLocale(rezept.ausstellungsdatum) }}
                 </router-link>
               </b-list-group-item>
@@ -245,7 +250,16 @@ export default {
     loadKunden() {
       return KundenService.getAll({
         include: [
-          { association: "Rezepts", include: ["Termins", "Heilmittels"] },
+          {
+            association: "Rezepts",
+            include: [
+              "Termins",
+              {
+                association: "RezeptHeilmittels",
+                include: "Heilmittel",
+              },
+            ],
+          },
           "Krankenkasse",
         ],
       }).then((patientList) => {

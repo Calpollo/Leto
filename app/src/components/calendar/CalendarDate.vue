@@ -18,7 +18,11 @@
     </p>
 
     <p class="datename" v-show="kunde">
-      {{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
+      {{
+        event.Rezept.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+          ", "
+        )
+      }}:
       {{ kunde?.firstname }}
       {{ kunde?.lastname }}
     </p>
@@ -79,7 +83,11 @@
             query: { rezept: event?.RezeptId },
           }"
         >
-          Rezept ({{ event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }})
+          Rezept ({{
+            event.Rezept.RezeptHeilmittels.map(
+              (hmR) => hmR.Heilmittel.abk
+            ).join(", ")
+          }})
         </router-link>
       </p>
 
@@ -150,7 +158,7 @@
           {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}</b
         ><br />
         Heilmittel:
-        {{ this.event.Rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}<br />
+        {{ this.event.Heilmittels.map((hm) => hm.abk).join(", ") }}<br />
         Kunde: {{ this.kunde?.firstname }} {{ this.kunde?.lastname }}<br />
         Therapeut: {{ this.event.Therapeut.name }}
       </p>

@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     replacementHeilmittel() {
-      return this.event?.Rezept?.Heilmittels.map((hm) => {
+      return this.event?.Rezept?.RezeptHeilmittels.map((hm) => {
         return { ...hm, terminNumber: 1 };
       });
     },

@@ -68,7 +68,11 @@
         Rechnung zu Rezept:
         {{ rechnung.Kunde.firstname }} {{ rechnung.Kunde.lastname }} (vom
         {{ toLocale(rechnung.ausstellungsdatum) }},
-        {{ rechnung.Heilmittels.map((hm) => hm.abk).join(", ") }})
+        {{
+          rechnung.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+            ", "
+          )
+        }})
       </b-form-checkbox>
     </div>
 
@@ -89,7 +93,11 @@
         Terminübersicht zu Rezept:
         {{ rechnung.Kunde.firstname }} {{ rechnung.Kunde.lastname }} (vom
         {{ toLocale(rechnung.ausstellungsdatum) }},
-        {{ rechnung.Heilmittels.map((hm) => hm.abk).join(", ") }})
+        {{
+          rechnung.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+            ", "
+          )
+        }})
       </b-form-checkbox>
     </div>
 
@@ -171,7 +179,15 @@ export default {
     },
   },
   mounted() {
-    RezeptService.getAll({ include: ["Heilmittels", "Kunde"] }).then(
+    RezeptService.getAll({
+      include: [
+        "Kunde",
+        {
+          association: "RezeptHeilmittels",
+          include: "Heilmittel",
+        },
+      ],
+    }).then(
       (rezeptList) =>
         (this.rechnungen = rezeptList.map((r) => {
           return { ...r, selectedRechnung: true, selectedTermine: true };

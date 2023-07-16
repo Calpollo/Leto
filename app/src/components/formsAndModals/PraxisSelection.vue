@@ -31,6 +31,10 @@ export default {
   mounted() {
     PraxisService.getAll().then((praxisList) => {
       this.options = praxisList;
+      if (Array.isArray(praxisList) && praxisList.length > 0) {
+        this.selectedId = praxisList[0].id;
+        this.$emit("input", this.selectedId);
+      }
     });
   },
   methods: {

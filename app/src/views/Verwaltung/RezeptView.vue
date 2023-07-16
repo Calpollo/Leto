@@ -98,7 +98,12 @@
         <b-card-header v-b-toggle="'collapse-' + rezept.id">
           <b-row>
             <b-col>
-              {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }} :
+              {{
+                rezept.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+                  ", "
+                )
+              }}
+              :
               <router-link
                 :to="{
                   name: 'Verwaltung.Patienten',
@@ -226,7 +231,15 @@ export default {
   components: { SpinnerLogo, RechnungKundePdf, TerminUebersichtPdf },
   mounted() {
     RezeptService.getAll({
-      include: ["Kunde", "Termins", "Heilmittels", "icd10code"],
+      include: [
+        "Kunde",
+        "Termins",
+        "icd10code",
+        {
+          association: "RezeptHeilmittels",
+          include: "Heilmittel",
+        },
+      ],
     }).then((rezeptList) => {
       this.rezepte = rezeptList;
     });
@@ -307,16 +320,16 @@ export default {
       return temp;
     },
     heilmittel() {
-      let temp = [];
+      let heilmittel = [];
       [...this.rezepte]
-        .map((r) => r.Heilmittels)
-        .forEach((hm) => {
-          hm.forEach((_hm) => {
-            const found = temp.find((t) => t.id == _hm.id);
-            if (!found) temp.push(_hm);
+        .map((r) => r.RezeptHeilmittels)
+        .forEach((hmRs) => {
+          hmRs.forEach((hmR) => {
+            const found = heilmittel.find((t) => t.id == hmR.Heilmittel.id);
+            if (!found) heilmittel.push(hmR.Heilmittel);
           });
         });
-      return temp;
+      return heilmittel;
     },
   },
 };

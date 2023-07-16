@@ -85,6 +85,7 @@ import PdfGenerationKrankenkasse from "@/components/formsAndModals/PdfGeneration
 import { generateStatistics } from "@/utils/statistics";
 
 export default {
+  name: "VerwaltungView",
   components: { PdfGenerationAuswahl, PdfGenerationKrankenkasse },
   data() {
     return {

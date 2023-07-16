@@ -100,7 +100,13 @@ export default {
     changedKunde() {
       const [lastname, firstname] = this.selectedKunde.split(", ");
       RezeptService.getByLastnameAndFirstname(lastname, firstname, {
-        include: ["Heilmittels", "Kunde"],
+        include: [
+          "Kunde",
+          {
+            association: "RezeptHeilmittels",
+            include: "Heilmittel",
+          },
+        ],
       }).then((rezeptList) => {
         console.table(rezeptList);
         this.rezepte = rezeptList;

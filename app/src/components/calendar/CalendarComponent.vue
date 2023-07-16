@@ -116,7 +116,7 @@ export default {
           e.isFirstEvent = eventIndex == 0;
           e.isLastEvent = eventIndex == rezeptEvents.length - 1;
 
-          const terminNumberGoal = rezeptEvents[0].Rezept.Heilmittels.map(
+          const terminNumberGoal = rezeptEvents[0].Rezept.RezeptHeilmittels.map(
             (hm) => hm.terminNumber
           ).reduce((a, b) => a + b, 0);
 

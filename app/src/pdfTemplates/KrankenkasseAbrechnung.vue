@@ -111,14 +111,14 @@ export default {
     kostenaufstellung() {
       return [...this.RezeptList]
         .map((r) => {
-          return r.Heilmittels.map((hm) => {
+          return r.RezeptHeilmittels.map((hmR) => {
             return {
               Patient:
                 r.Kunde.versichertennummer ||
                 `${r.Kunde.lastname}, ${r.Kunde.firstname}`,
-              Heilmittel: `${hm.abk}: ${hm.name}`,
+              Heilmittel: `${hmR.Heilmittel.abk}: ${hmR.Heilmittel.name}`,
               Datum: this.toLocale(r.ausstellungsdatum),
-              Preis: hm.krankenkassenbeteiligung + " €",
+              Preis: hmR.Heilmittel.krankenkassenbeteiligung + " €",
             };
           });
         })

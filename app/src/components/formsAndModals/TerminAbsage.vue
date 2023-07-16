@@ -127,7 +127,15 @@ export default {
     updateTermine() {
       const p = this.patienten.find((p) => p.id == this.selectedPatientId);
       TerminService.getByKunde(p.id, {
-        include: [{ association: "Rezept", include: "Heilmittels" }],
+        include: [
+          {
+            association: "Rezept",
+            include: {
+              association: "RezeptHeilmittels",
+              include: "Heilmittel",
+            },
+          },
+        ],
       }).then((terminList) => {
         this.termine = terminList.filter(
           (t) => t.start > new Date().setDate(new Date().getDate() - 7)

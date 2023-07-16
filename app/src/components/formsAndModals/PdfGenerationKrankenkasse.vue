@@ -45,7 +45,11 @@
         >
           Rezept: {{ rezept.Kunde.firstname }} {{ rezept.Kunde.lastname }} (vom
           {{ toLocale(rezept?.ausstellungsdatum) }},
-          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }})
+          {{
+            rezept.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+              ", "
+            )
+          }})
         </b-form-checkbox>
       </b-col>
     </b-row>
@@ -113,7 +117,10 @@ export default {
   mounted() {
     RezeptService.getAll({
       include: [
-        "Heilmittels",
+        {
+          association: "RezeptHeilmittels",
+          include: "Heilmittel",
+        },
         {
           association: "Kunde",
           include: "Krankenkasse",

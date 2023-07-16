@@ -127,7 +127,13 @@ export default {
     },
     updateRezept(id) {
       RezeptService.getOne(id, {
-        include: ["Kunde", "Heilmittels"],
+        include: [
+          "Kunde",
+          {
+            association: "RezeptHeilmittels",
+            include: "Heilmittel",
+          },
+        ],
       }).then((r) => {
         this.Rezept = r;
       });
@@ -175,10 +181,10 @@ export default {
     totalPrice() {
       let priceSum = 0;
       if (this.RezeptId)
-        this.Rezept?.Heilmittels.forEach(
-          (hm) =>
+        this.Rezept?.RezeptHeilmittels.forEach(
+          (hmR) =>
             (priceSum += this.priceOfHeilmittel(
-              hm,
+              hmR.Heilmittel,
               this.Rezept?.Kunde?.versichertenstatus
             ))
         );
@@ -186,14 +192,16 @@ export default {
     },
     kostenaufstellungen() {
       if (!this.RezeptId) return [];
-      return this.Rezept?.Heilmittels.map((hm) => {
+      return this.Rezept?.RezeptHeilmittels.map((hmR) => {
         return {
-          Heilmittel: `${hm.abk}: ${hm.name}`,
-          Termine: hm.terminNumber,
-          Dauer: hm.terminMinutes,
+          Heilmittel: `${hmR.Heilmittel.abk}: ${hmR.Heilmittel.name}`,
+          Termine: hmR.Heilmittel.terminNumber,
+          Dauer: hmR.Heilmittel.terminMinutes,
           Preis:
-            this.priceOfHeilmittel(hm, this.Rezept.Kunde.versichertenstatus) +
-            " €",
+            this.priceOfHeilmittel(
+              hmR.Heilmittel,
+              this.Rezept.Kunde.versichertenstatus
+            ) + " €",
         };
       });
     },

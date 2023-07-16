@@ -198,8 +198,15 @@ export default {
       TerminService.getAll({
         include: [
           "Therapeut",
-          { association: "Rezept", include: "Heilmittels" },
           "Praxis",
+          "Heilmittels",
+          {
+            association: "Rezept",
+            include: {
+              association: "RezeptHeilmittels",
+              include: "Heilmittel",
+            },
+          },
         ],
       }).then((termine) => {
         this.events = termine;

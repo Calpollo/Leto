@@ -211,7 +211,10 @@ export default {
   methods: {
     generateVorschläge() {
       const therapeutenQuery = TherapeutService.getAll({
-        include: "Heilmittels",
+        include: {
+          association: "RezeptHeilmittels",
+          include: "Heilmittel",
+        },
       });
       const terminQuery = TerminService.getAll().then((terminList) =>
         terminList.filter((t) => new Date(t.start) >= new Date())
