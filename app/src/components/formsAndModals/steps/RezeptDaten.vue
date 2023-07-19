@@ -5,32 +5,70 @@
       label="Heilmittel:"
       label-for="heilmittel"
     >
-      <b-list-group v-if="rezept.Heilmittels.length > 0">
-        <b-list-group-item
-          class="d-flex justify-content-between align-items-center"
-          v-for="hm in rezept.Heilmittels"
-          :key="hm.id"
-        >
-          {{ hm.abk }}
-          <b-button variant="outline-danger" @click="removeHeilmittel(hm.id)">
-            <b-icon-trash />
-          </b-button>
-        </b-list-group-item>
-      </b-list-group>
+      <b-table
+        v-if="rezept.RezeptHeilmittels.length > 0"
+        :items="
+          rezept.RezeptHeilmittels.map((rhm) => {
+            return {
+              Heilmittel: rhm.Heilmittel.abk,
+              terminanzahl: rhm.terminNumber,
+              deleteAction: rhm.HeilmittelId,
+            };
+          })
+        "
+      >
+        <template #head(deleteAction)="">&nbsp;</template>
+        <template #cell(deleteAction)="data">
+          <b-row align-h="end">
+            <b-col cols="auto">
+              <b-button
+                variant="outline-danger"
+                @click="removeHeilmittel(data.value)"
+              >
+                <b-icon-trash />
+              </b-button>
+            </b-col>
+          </b-row>
+        </template>
+      </b-table>
 
       <div v-else>
         <b-icon-exclamation-octagon variant="danger" />
         Mindestens 1 Heilmittel hinzufügen
       </div>
 
-      <b-dropdown id="heilmitteltyp" text="Hinzufügen">
-        <b-dropdown-item
-          v-for="typ in nonSelectedHeilmittel"
-          :key="typ.id"
-          @click="addHeilmittel(typ.id)"
-          >{{ typ.abk }}</b-dropdown-item
-        >
-      </b-dropdown>
+      <b-form @submit="addHeilmittel">
+        <b-row>
+          <b-col>
+            <b-input-group prepend="Heilmittel">
+              <b-input v-model="creationHeilmittel" list="heilmittellist" />
+              <datalist id="heilmittellist">
+                <option
+                  v-for="hm in nonSelectedHeilmittel"
+                  :key="hm.id"
+                  :value="hm.abk"
+                ></option>
+              </datalist>
+            </b-input-group>
+          </b-col>
+          <b-col>
+            <b-input-group prepend="Termine">
+              <b-input type="number" v-model="creationTerminNumber" />
+            </b-input-group>
+          </b-col>
+          <b-col cols="auto">
+            <b-button
+              type="submit"
+              :disabled="!creationHeilmittel || !creationTerminNumber"
+            >
+              <b-icon-plus />
+              Hinzufügen
+            </b-button>
+          </b-col>
+        </b-row>
+      </b-form>
+
+      <hr />
     </b-form-group>
 
     <b-form-group
@@ -46,7 +84,16 @@
     </b-form-group>
 
     <b-form-group id="icd10-group" label="ICD 10 Code:" label-for="icd10">
-      <b-form-input id="icd10" @change="setICD10Code" list="icd10list" />
+      <b-form-input
+        id="icd10"
+        @change="setICD10Code"
+        :value="
+          rezept.icd10code
+            ? rezept.icd10code.primärschlüssel + ', ' + rezept.icd10code.text
+            : null
+        "
+        list="icd10list"
+      />
       <datalist id="icd10list">
         <option
           v-for="icd in icd10codes"
@@ -86,7 +133,7 @@
         placeholder="LANR"
       />
       <datalist id="arztList" v-if="!createNewArzt">
-        <option v-for="arzt in artzs" :key="arzt.arztlanr" :value="arzt.lanr">
+        <option v-for="arzt in arzts" :key="arzt.arztlanr" :value="arzt.lanr">
           {{ arzt.name }}
         </option>
       </datalist>
@@ -132,7 +179,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          Heilmittel: {},
+          RezeptHeilmittels: [],
           ausstellungsdatum: new Date(),
         };
       },
@@ -145,9 +192,11 @@ export default {
   data() {
     return {
       rezept: this.value,
+      creationHeilmittel: null,
+      creationTerminNumber: 6,
       heilmittel: [],
       icd10codes: [],
-      artzs: [],
+      arzts: [],
       createNewArzt: false,
       newArztName: null,
     };
@@ -156,18 +205,32 @@ export default {
     save() {
       this.$emit("save", this.rezept);
     },
-    addHeilmittel(HeilmittelId) {
-      const hm = this.heilmittel.find((hm) => hm.id == HeilmittelId);
+    addHeilmittel(event) {
+      event.preventDefault();
+      const hm = this.heilmittel.find(
+        (hm) => hm.abk == this.creationHeilmittel
+      );
+      const RezeptHeilmittels = this.rezept.RezeptHeilmittels;
+      RezeptHeilmittels.push({
+        HeilmittelId: hm.id,
+        Heilmittel: hm,
+        terminNumber: this.creationTerminNumber,
+      });
       this.rezept = {
         ...this.rezept,
-        Heilmittels: [...this.rezept.Heilmittels, hm],
+        RezeptHeilmittels,
       };
       this.$emit("input", this.rezept);
+
+      this.creationHeilmittel = null;
     },
     removeHeilmittel(HeilmittelId) {
-      const hm = this.rezept.Heilmittels.find((hm) => hm.id == HeilmittelId);
-      const idx = this.rezept.Heilmittels.indexOf(hm);
-      this.rezept.Heilmittels.splice(idx, 1);
+      const hm = this.rezept.RezeptHeilmittels.find(
+        (hm) => hm.HeilmittelId == HeilmittelId
+      );
+      const idx = this.rezept.RezeptHeilmittels.indexOf(hm);
+
+      this.rezept.RezeptHeilmittels.splice(idx, 1);
       this.$emit("input", this.rezept);
     },
     setICD10Code(icd10) {
@@ -177,13 +240,13 @@ export default {
         (i) => i.primärschlüssel == primärschlüssel && i.text == text
       );
       if (icd)
-        this.rezept = { ...this.rezept, ICD10code: icd, icd10codeId: icd.id };
-      else this.rezept = { ...this.rezept, ICD10code: null, icd10codeId: null };
+        this.rezept = { ...this.rezept, icd10code: icd, icd10codeId: icd.id };
+      else this.rezept = { ...this.rezept, icd10code: null, icd10codeId: null };
       this.$emit("input", this.rezept);
     },
     createArzt() {
       ArztService.create(this.rezept.ArztLanr, this.newArztName).then(() => {
-        ArztService.getAll().then((arztList) => (this.artzs = arztList));
+        ArztService.getAll().then((arztList) => (this.arzts = arztList));
         this.createNewArzt = false;
         this.newArztName = null;
       });
@@ -199,7 +262,10 @@ export default {
     },
     nonSelectedHeilmittel() {
       return this.heilmittel.filter(
-        (hm) => !this.rezept.Heilmittels.map((rhm) => rhm.id).includes(hm.id)
+        (hm) =>
+          !this.rezept.RezeptHeilmittels.map(
+            (rhm) => rhm.HeilmittelId
+          ).includes(hm.id)
       );
     },
   },
@@ -213,7 +279,7 @@ export default {
       this.icd10codes = icd10list;
     });
 
-    ArztService.getAll().then((arztList) => (this.artzs = arztList));
+    ArztService.getAll().then((arztList) => (this.arzts = arztList));
 
     if (!this.rezept?.ausstellungsdatum)
       this.rezept.ausstellungsdatum = new Date().toISOString().split("T")[0];

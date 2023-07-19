@@ -37,12 +37,16 @@
           v-for="rezept in rezepte"
           :key="rezept.id"
           :value="
-            rezept.Heilmittels?.map((hm) => hm.abk).join(', ') +
+            rezept.RezeptHeilmittels?.map((hm) => hm.Heilmittel.abk).join(
+              ', '
+            ) +
             ': ' +
             dateToLocale(rezept.ausstellungsdatum)
           "
         >
-          {{ rezept.Heilmittels.map((hm) => hm.abk).join(", ") }}:
+          {{
+            rezept.RezeptHeilmittels.map((hm) => hm.Heilmittel.abk).join(", ")
+          }}:
           {{ dateToLocale(rezept.ausstellungsdatum) }}
         </option>
       </datalist>
@@ -102,13 +106,13 @@ export default {
       RezeptService.getByLastnameAndFirstname(lastname, firstname, {
         include: [
           "Kunde",
+          "icd10code",
           {
             association: "RezeptHeilmittels",
             include: "Heilmittel",
           },
         ],
       }).then((rezeptList) => {
-        console.table(rezeptList);
         this.rezepte = rezeptList;
         this.selectedRezept = null;
         this.rezept = {};
@@ -128,16 +132,14 @@ export default {
       }
       const [HeilmittelAbks, rest] = this.selectedRezept.split(": ");
       const [ausstellungsdatum, aussteller] = rest.split(", ");
-      console.log({ HeilmittelAbks, rest });
       const found = this.rezepte.find(
         (r) =>
-          r.Heilmittels.some((hm) =>
-            HeilmittelAbks.split(", ").includes(hm.abk)
+          r.RezeptHeilmittels.some((hm) =>
+            HeilmittelAbks.split(", ").includes(hm.Heilmittel.abk)
           ) &&
           this.dateToLocale(r.ausstellungsdatum) == ausstellungsdatum &&
           r.aussteller == aussteller
       );
-      console.log(found);
       if (found) {
         // eslint-disable-next-line
         const { id, createdAt, updatedAt, ...rest } = found;

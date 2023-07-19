@@ -25,19 +25,6 @@
     </b-form-group>
 
     <b-form-group
-      id="heilmittelnumber-group"
-      label="Terminzahl:"
-      label-for="heilmittel-number"
-    >
-      <b-input
-        id="heilmittel-number"
-        type="number"
-        min="0"
-        v-model="heilmittelConf.terminNumber"
-      ></b-input>
-    </b-form-group>
-
-    <b-form-group
       id="heilmitteldauer-group"
       label="Termindauer (Min.):"
       label-for="heilmittel-dauer"
@@ -87,19 +74,6 @@
         type="number"
         min="0"
         v-model="heilmittelConf.selbstzahlerPreis"
-      ></b-input>
-    </b-form-group>
-
-    <b-form-group
-      id="heilmittelprivatversichert-group"
-      label="Kosten für Privatversicherte (€):"
-      label-for="heilmittel-privatversichert"
-    >
-      <b-input
-        id="heilmittel-privatversichert"
-        type="number"
-        min="0"
-        v-model="heilmittelConf.privatVersichertenPreis"
       ></b-input>
     </b-form-group>
   </b-form>

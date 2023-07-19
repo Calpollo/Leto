@@ -1,20 +1,20 @@
 [
   {
     "abk": "KG",
-    "name": "Krankengymnasitk",
+    "name": "Krankengymnastik",
     "terminMinutes": 20,
     "krankenkassenbeteiligung": 26.12,
     "kundenbeteiligung": 2.61
   },
   {
     "abk": "KG-Gruppe",
-    "name": "Krankengymnasitk Gruppe",
+    "name": "Krankengymnastik Gruppe",
     "krankenkassenbeteiligung": 11.69,
     "kundenbeteiligung": 1.17
   },
   {
     "abk": "KGG",
-    "name": "Krankengymnasitk-Gerät",
+    "name": "Krankengymnastik-Gerät",
     "krankenkassenbeteiligung": 49.18,
     "kundenbeteiligung": 4.92
   },
@@ -86,31 +86,31 @@
   },
   {
     "abk": "KG-BWB",
-    "name": "Krankengymnasitk im Bewegungsbad",
+    "name": "Krankengymnastik im Bewegungsbad",
     "krankenkassenbeteiligung": 29.86,
     "kundenbeteiligung": 2.99
   },
   {
     "abk": "KG-BWB-Gruppe-klein",
-    "name": "Krankengymnasitk im Bewegungsbad Gruppe 2-3 Patienten",
+    "name": "Krankengymnastik im Bewegungsbad Gruppe 2-3 Patienten",
     "krankenkassenbeteiligung": 21.29,
     "kundenbeteiligung": 2.13
   },
   {
     "abk": "KG-BWB-Gruppe-groß",
-    "name": "Krankengymnasitk im Bewegungsbad Gruppe 4-5 Patienten",
+    "name": "Krankengymnastik im Bewegungsbad Gruppe 4-5 Patienten",
     "krankenkassenbeteiligung": 14.07,
     "kundenbeteiligung": 1.41
   },
   {
     "abk": "KG-ZNS",
-    "name": "Krankengymnasitk ZNS",
+    "name": "Krankengymnastik ZNS",
     "krankenkassenbeteiligung": 41.48,
     "kundenbeteiligung": 4.15
   },
   {
     "abk": "KG-ZNS-Kinder",
-    "name": "Krankengymnasitk ZNS Kinder",
+    "name": "Krankengymnastik ZNS Kinder",
     "krankenkassenbeteiligung": 51.85,
     "kundenbeteiligung": 0
   },
@@ -122,7 +122,7 @@
   },
   {
     "abk": "KG-Muko",
-    "name": "Krankengymnasitk-Muko",
+    "name": "Krankengymnastik-Muko",
     "krankenkassenbeteiligung": 80.24,
     "kundenbeteiligung": 8.02
   },

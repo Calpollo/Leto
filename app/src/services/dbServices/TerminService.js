@@ -65,7 +65,6 @@ class TerminService {
   // - RezeptId
   // - TherapeutId
   bulkCreate(dataList) {
-    console.log("Creating Termine in bulk:", dataList);
     return DatabaseService.createTermine({
       where: dataList,
       bulkCreate: true,
@@ -73,10 +72,17 @@ class TerminService {
   }
 
   update(termin) {
-    console.log(termin);
     return DatabaseService.updateTermin({
       id: termin.id,
       instance: termin,
+    }).then(async (t) => {
+      if (termin.Heilmittels) {
+        await DatabaseService.setTerminHeilmittels({
+          terminId: termin.id,
+          hms: termin.Heilmittels,
+        });
+      }
+      return t;
     });
   }
 }

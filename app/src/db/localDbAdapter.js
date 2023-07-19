@@ -487,8 +487,8 @@ class LocalDbAdapter {
 
     this.RezeptHeilmittel = this.sequelize.define("RezeptHeilmittel", {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       terminNumber: {
@@ -674,10 +674,10 @@ class LocalDbAdapter {
     await this.RezeptHeilmittel.belongsTo(this.Heilmittel);
 
     // Termininhalt: Termin - Heilmittel
-    await this.Heilmittel.belongsToMany(this.Termin, {
+    await this.Termin.belongsToMany(this.Heilmittel, {
       through: "TerminHeilmittel",
     });
-    await this.Termin.belongsToMany(this.Heilmittel, {
+    await this.Heilmittel.belongsToMany(this.Termin, {
       through: "TerminHeilmittel",
     });
 
@@ -738,11 +738,11 @@ class LocalDbAdapter {
     return table.findAll({ include });
   }
 
-  create(table, { where, bulkCreate = false }) {
+  create(table, { where, bulkCreate = false, include = [] }) {
     if (bulkCreate) {
       return table.bulkCreate(where);
     }
-    return table.create(where);
+    return table.create(where, include);
   }
 
   update(table, { id, instance }) {
@@ -768,15 +768,18 @@ class LocalDbAdapter {
     });
   }
 
-  setRezeptHeilmittels({ rezeptId, hms }) {
-    return this.Rezept.findByPk(rezeptId).then((r) => {
+  setTerminHeilmittels({ terminId, hms }) {
+    console.log({ terminId, hms });
+    return this.Termin.findByPk(terminId).then((t) => {
+      console.log({ TerminId: t.id });
       return Promise.all(
         hms.map((hm) => {
-          if (hm.id) return this.Heilmittel.findByPk(hm.id);
+          console.log({ hm });
           return this.Heilmittel.findByPk(hm);
         })
       ).then((hmList) => {
-        return r.setHeilmittels(hmList).then(() => r);
+        console.log(hmList);
+        return t.setHeilmittels(hmList);
       });
     });
   }

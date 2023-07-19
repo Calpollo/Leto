@@ -65,7 +65,6 @@ export default {
   position: sticky;
   top: 0;
   bottom: 0;
-  // TODO: make smaller and collapsable
   width: max-content;
   height: 100vh;
 

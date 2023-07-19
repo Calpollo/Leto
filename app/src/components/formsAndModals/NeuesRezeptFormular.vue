@@ -104,7 +104,11 @@ export default {
     return {
       currentStep: 1,
       kunde: {},
-      rezept: { hausbesuch: false, therapieBericht: false, Heilmittels: [] },
+      rezept: {
+        hausbesuch: false,
+        therapieBericht: false,
+        RezeptHeilmittels: [],
+      },
       terminvorschlaege: [],
     };
   },
@@ -149,7 +153,7 @@ export default {
           return Object.keys(this.kunde).length > 0;
         case 2: {
           const {
-            Heilmittels,
+            RezeptHeilmittels,
             ausstellungsdatum,
             ArztLanr,
             ICD10code,
@@ -158,7 +162,7 @@ export default {
             therapieBericht,
           } = this.rezept;
           return (
-            Heilmittels.length > 0 &&
+            RezeptHeilmittels.length > 0 &&
             ausstellungsdatum &&
             ArztLanr &&
             ICD10code &&
@@ -170,7 +174,7 @@ export default {
         case 3: {
           return (
             this.terminvorschlaege.length ==
-            this.rezept.Heilmittels.map((hm) => hm.terminNumber).reduce(
+            this.rezept.RezeptHeilmittels.map((hm) => hm.terminNumber).reduce(
               (a, b) => a + b,
               0
             )

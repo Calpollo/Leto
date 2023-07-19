@@ -90,6 +90,19 @@ class DatabaseService {
     }
   }
 
+  getRezeptHeilmittel(data) {
+    if (this.isOffline()) {
+      return window.ipc.getRezeptHeilmittel(data).then(JSON.parse);
+    } else {
+      const params = { include: data.include };
+      if (data.id)
+        return ax
+          .get("/rezeptheilmittel/" + data.id, { params })
+          .then((res) => res.data);
+      return ax.get("/rezeptheilmittel/", { params }).then((res) => res.data);
+    }
+  }
+
   getHeilmittel(data) {
     if (this.isOffline()) {
       return window.ipc.getHeilmittel(data).then(JSON.parse);
@@ -199,6 +212,14 @@ class DatabaseService {
       return window.ipc.createRezept(data).then(JSON.parse);
     } else {
       return ax.post("/rezept/", data).then((res) => res.data);
+    }
+  }
+
+  createRezeptHeilmittel(data) {
+    if (this.isOffline()) {
+      return window.ipc.createRezeptHeilmittel(data).then(JSON.parse);
+    } else {
+      return ax.post("/rezeptheilmittel/", data).then((res) => res.data);
     }
   }
 
@@ -336,12 +357,12 @@ class DatabaseService {
     }
   }
 
-  setRezeptHeilmittel(data) {
+  setTerminHeilmittels(data) {
     if (this.isOffline()) {
-      return window.ipc.setRezeptHeilmittel(data).then(JSON.parse);
+      return window.ipc.setTerminHeilmittels(data).then(JSON.parse);
     } else {
       return ax
-        .post("/rezept/heilmittel/" + data.rezeptId, { hms: data.hms })
+        .post("/termin/heilmittel/" + data.terminId, { hms: data.hms })
         .then((res) => res.data);
     }
   }

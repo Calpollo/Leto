@@ -27,7 +27,7 @@
         <v-stepper-content step="2">
           <termin-vorschlaege
             v-if="currentStep == 2"
-            :heilmittel="rezept.Heilmittels"
+            :rezeptHeilmittel="rezept.RezeptHeilmittels"
             :showSaveButton="false"
             v-model="terminvorschlaege"
           />
@@ -106,9 +106,10 @@ export default {
     done(terminVorschlagsList) {
       return createNewRezept(this.rezept, terminVorschlagsList).then(
         // eslint-disable-next-line no-unused-vars
-        ([termine, createdKunde, createdRezept]) => {
+        (createdRezept) => {
+          console.log({ createdRezept });
           this.rezept = { ...this.rezept, ...createdRezept };
-          this.$emit("done");
+          // this.$emit("done");
         }
       );
     },
@@ -132,12 +133,13 @@ export default {
     currentStepIsValid() {
       switch (this.currentStep) {
         case 1: {
-          const { Heilmittels, ausstellungsdatum, ArztLanr } = this.rezept;
-          return Heilmittels && ausstellungsdatum && ArztLanr;
+          const { RezeptHeilmittels, ausstellungsdatum, ArztLanr } =
+            this.rezept;
+          return RezeptHeilmittels && ausstellungsdatum && ArztLanr;
         }
         case 2: {
           let terminSum = 0;
-          this.rezept.Heilmittels.forEach((hm) => {
+          this.rezept.RezeptHeilmittels.forEach((hm) => {
             terminSum += hm.terminNumber;
           });
           return this.terminvorschlaege.length == terminSum;

@@ -1,5 +1,6 @@
 import ConfigService from "@/services/ConfigService";
 import KundenService from "@/services/dbServices/KundenService";
+import RezeptHeilmittelService from "@/services/dbServices/RezeptHeilmittelService";
 import RezeptService from "@/services/dbServices/RezeptService";
 import TerminService from "@/services/dbServices/TerminService";
 
@@ -90,8 +91,8 @@ export function dateRowEnd(event, openingHours) {
 }
 
 export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
-  console.log(termine, rezept);
-  console.log(kunde);
+  // console.log(termine, rezept);
+  // console.log(kunde);
 
   let createdKunde = null;
   if (!kunde || kunde.id) {
@@ -106,16 +107,17 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
       address
     );
   }
-  console.log(createdKunde);
+
   const {
     ausstellungsdatum,
-    Heilmittels,
+    RezeptHeilmittels,
     ArztLanr,
     hausbesuch,
     therapieBericht,
     icd10codeId,
     indikation,
   } = rezept;
+
   return RezeptService.create(
     ausstellungsdatum,
     createdKunde.id,
@@ -123,12 +125,21 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
     hausbesuch,
     therapieBericht,
     icd10codeId,
-    indikation,
-    Heilmittels.map((hm) => hm.id)
+    indikation
   ).then((createdRezept) => {
     const PraxisId = ConfigService.getPraxis();
-    console.table(termine);
-    return TerminService.bulkCreate(
+
+    const rezeptHeilmittelCreation = RezeptHeilmittelService.bulkCreate(
+      RezeptHeilmittels.map((rhm) => {
+        return {
+          terminNumber: rhm.terminNumber,
+          HeilmittelId: rhm.HeilmittelId,
+          RezeptId: createdRezept.id,
+        };
+      })
+    );
+
+    const termincreation = TerminService.bulkCreate(
       termine.map((termin) => {
         return {
           start: termin.date,
@@ -138,6 +149,16 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
           TherapeutId: termin.TherapeutId,
         };
       })
-    ).then((termine) => [termine, createdKunde, createdRezept]);
+    ).then((termine) => {
+      return Promise.all(
+        termine.map((t) => {
+          t.Heilmittels = RezeptHeilmittels.map((rhm) => rhm.HeilmittelId);
+          return TerminService.update(t);
+        })
+      ).then(() => termine);
+    });
+    return Promise.all([rezeptHeilmittelCreation, termincreation]).then(
+      () => createdRezept
+    );
   });
 }

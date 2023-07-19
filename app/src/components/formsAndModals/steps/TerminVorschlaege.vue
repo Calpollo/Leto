@@ -19,7 +19,8 @@
           v-if="
             !(
               vorsch.filter((v) => v.selected).length ==
-              vorsch[0]?.Heilmittel.terminNumber
+              rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
+                ?.terminNumber
             )
           "
           variant="danger"
@@ -27,7 +28,11 @@
         <b-icon-check-circle v-else variant="success" />
 
         {{ vorsch.filter((v) => v.selected).length }} von
-        {{ vorsch[0]?.Heilmittel.terminNumber }} ausgewählt
+        {{
+          rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
+            ?.terminNumber
+        }}
+        ausgewählt
       </b-card-header>
       <b-card-text>
         <b-row>
@@ -58,13 +63,15 @@
             :key="id"
             cols="3"
           >
+            <!-- FIXME: don't allow overlapping appointment -->
             <b-button
               :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
               class="m-2"
               :disabled="
                 !vorschlag.selected &&
                 vorsch.filter((v) => v.selected).length ==
-                  heilmittel.find((hm) => hm.name == key).terminNumber
+                  rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
+                    .terminNumber
               "
               @click="selectVorschlag(vorschlag)"
             >
@@ -140,7 +147,8 @@
                   :style="{ height: '70%' }"
                   :disabled="
                     vorsch.filter((v) => v.selected).length ==
-                    heilmittel.find((hm) => hm.name == key).terminNumber
+                    rezeptHeilmittel.find((hm) => hm.Heilmittel.name == key)
+                      .terminNumber
                   "
                   @click="addVorschlag(key)"
                 >
@@ -188,7 +196,7 @@ const milliSecondsPerDay = milliSecondsPerMinute * 60 * 24;
 export default {
   name: "TerminVorschlaege",
   props: {
-    heilmittel: Array,
+    rezeptHeilmittel: Array,
     showSaveButton: {
       type: Boolean,
       default: true,
@@ -211,10 +219,7 @@ export default {
   methods: {
     generateVorschläge() {
       const therapeutenQuery = TherapeutService.getAll({
-        include: {
-          association: "RezeptHeilmittels",
-          include: "Heilmittel",
-        },
+        include: "Heilmittels",
       });
       const terminQuery = TerminService.getAll().then((terminList) =>
         terminList.filter((t) => new Date(t.start) >= new Date())
@@ -229,7 +234,7 @@ export default {
         ([therapeutList, terminList, praxis]) => {
           let vorschlagDict = {};
 
-          for (let hm of this.heilmittel) {
+          for (let rhm of this.rezeptHeilmittel) {
             let hmVorschlagList = [];
             let searchStartDate = new Date(
               new Date().valueOf() -
@@ -237,17 +242,17 @@ export default {
                 5 * 1000 * 60
             );
             const therapeutListHmFiltered = therapeutList.filter((t) =>
-              t.Heilmittels.some((thm) => thm.id == hm.id)
+              t.Heilmittels.some((thm) => thm.id == rhm.Heilmittel.id)
             );
 
             if (therapeutListHmFiltered.length == 0) {
-              vorschlagDict[hm.name] = [];
+              vorschlagDict[rhm.Heilmittel.name] = [];
               continue;
             }
 
             while (
               hmVorschlagList.length <
-              hm.terminNumber * 2 * therapeutListHmFiltered.length
+              rhm.terminNumber * 2 * therapeutListHmFiltered.length
             ) {
               const dayOfTheWeek = new Date(searchStartDate).getDay();
               const week = [
@@ -270,7 +275,7 @@ export default {
                 searchStartDateIsWithinOpeningHours =
                   msSearchStartDay - msHoursStart > -milliSecondsPerMinute &&
                   msSearchStartDay +
-                    hm.terminMinutes * milliSecondsPerMinute -
+                    rhm.Heilmittel.terminMinutes * milliSecondsPerMinute -
                     msHoursEnd <=
                     0;
               }
@@ -283,29 +288,30 @@ export default {
                       (t) =>
                         t.TherapeutId == therapeut.id &&
                         Math.abs(new Date(t.start) - searchStartDate) <=
-                          hm.terminMinutes * 1000 * 60
+                          rhm.Heilmittel.terminMinutes * 1000 * 60
                     ).length == 0
                   ) {
                     foundSlots.push({
                       date: new Date(searchStartDate),
                       selected:
                         this.preSelect &&
-                        hmVorschlagList.length < hm.terminNumber,
+                        hmVorschlagList.length < rhm.terminNumber,
                       Therapeut: therapeut,
                       TherapeutId: therapeut.id,
-                      Heilmittel: hm,
-                      HeilmittelId: hm.id,
+                      Heilmittel: rhm.Heilmittel,
+                      HeilmittelId: rhm.Heilmittel.id,
                     });
                   }
                 }
               }
-              const minuteStep = foundSlots.length == 0 ? 5 : hm.terminMinutes;
+              const minuteStep =
+                foundSlots.length == 0 ? 5 : rhm.Heilmittel.terminMinutes;
               searchStartDate = new Date(
                 searchStartDate.getTime() + minuteStep * 1000 * 60
               );
               hmVorschlagList.push(...foundSlots);
             }
-            vorschlagDict[hm.name] = hmVorschlagList;
+            vorschlagDict[rhm.Heilmittel.name] = hmVorschlagList;
           }
 
           return vorschlagDict;
@@ -388,8 +394,8 @@ export default {
     },
     maxSelectionNum() {
       let sum = 0;
-      this.heilmittel.forEach((hm) => {
-        sum += hm.terminNumber;
+      this.rezeptHeilmittel.forEach((rhm) => {
+        sum += rhm.terminNumber;
       });
       return sum;
     },
