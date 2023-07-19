@@ -1,6 +1,11 @@
 <template>
   <div id="RezeptView">
-    <h2>Rezeptübersicht</h2>
+    <h2>
+      <b-button pill variant="outline-secondary" :to="{ name: 'Verwaltung' }">
+        <b-icon-arrow-left />
+      </b-button>
+      Rezeptübersicht
+    </h2>
 
     <SpinnerLogo v-if="!rezepte" />
 
@@ -8,64 +13,93 @@
       <b-row class="my-2">
         <b-col md="6" lg="4">
           <b-form-group label="ID:" label-for="id-search">
-            <b-form-input
-              id="od-search"
-              type="search"
-              list="idlist"
-              placeholder="ID"
-              :value="selectedRezeptId"
-              @change="changeId"
-            ></b-form-input>
+            <b-input-group>
+              <template #append>
+                <b-button @click="() => (selectedRezeptId = null)">
+                  <b-icon-x />
+                </b-button>
+              </template>
+              <b-form-input
+                id="od-search"
+                type="search"
+                list="idlist"
+                placeholder="ID"
+                :value="selectedRezeptId"
+                @change="changeId"
+              ></b-form-input>
 
-            <datalist id="idlist">
-              <option
-                v-for="rezept in rezepte"
-                :key="rezept.id"
-                :value="rezept.id"
-              >
-                {{ rezept.id }}
-              </option>
-            </datalist>
+              <datalist id="idlist">
+                <option
+                  v-for="rezept in rezepte"
+                  :key="rezept.id"
+                  :value="rezept.id"
+                >
+                  {{ rezept.id }}
+                </option>
+              </datalist>
+            </b-input-group>
           </b-form-group>
         </b-col>
 
         <b-col md="6" lg="4">
           <b-form-group label="Kunde:" label-for="kunde-search">
-            <b-form-input
-              id="kunde-search"
-              type="search"
-              list="kundenlist"
-              placeholder="Nachname, Vorname"
-              @change="changedKunde"
-            ></b-form-input>
+            <b-input-group>
+              <template #append>
+                <b-button @click="() => (selectedKundeId = null)">
+                  <b-icon-x />
+                </b-button>
+              </template>
+              <b-form-input
+                id="kunde-search"
+                type="search"
+                list="kundenlist"
+                placeholder="Nachname, Vorname"
+                :value="
+                  selectedPatient
+                    ? selectedPatient.lastname +
+                      ', ' +
+                      selectedPatient.firstname
+                    : null
+                "
+                @change="changedKunde"
+              ></b-form-input>
 
-            <datalist id="kundenlist">
-              <option
-                v-for="kunde in kunden"
-                :key="kunde.id"
-                :value="kunde.lastname + ', ' + kunde.firstname"
-              >
-                {{ kunde.lastname }}, {{ kunde.firstname }}
-              </option>
-            </datalist>
+              <datalist id="kundenlist">
+                <option
+                  v-for="kunde in kunden"
+                  :key="kunde.id"
+                  :value="kunde.lastname + ', ' + kunde.firstname"
+                >
+                  {{ kunde.lastname }}, {{ kunde.firstname }}
+                </option>
+              </datalist>
+            </b-input-group>
           </b-form-group>
         </b-col>
 
         <b-col md="12" lg="4">
           <b-form-group label="Heilmittel:" label-for="heilmittel-search">
-            <b-form-input
-              id="heilmittel-search"
-              type="search"
-              list="heilmittellist"
-              placeholder="Abkürzung"
-              @change="changedHeilmittel"
-            ></b-form-input>
+            <b-input-group>
+              <template #append>
+                <b-button @click="() => (selectedHeilmittelId = null)">
+                  <b-icon-x />
+                </b-button>
+              </template>
+              <b-form-input
+                id="heilmittel-search"
+                type="search"
+                list="heilmittellist"
+                placeholder="Abkürzung"
+                :value="selectedHeilmittel?.abk"
+                @change="changedHeilmittel"
+              ></b-form-input>
 
-            <datalist id="heilmittellist">
-              <option v-for="hm in heilmittel" :key="hm.id" :value="hm.abk">
-                {{ hm.abk }}
-              </option>
-            </datalist>
+              <datalist id="heilmittellist">
+                <option v-for="hm in heilmittel" :key="hm.id" :value="hm.abk">
+                  {{ hm.abk }}
+                </option>
+              </datalist>
+            </b-input-group>
           </b-form-group>
         </b-col>
       </b-row>
@@ -305,7 +339,9 @@ export default {
         .filter((r) => {
           return (
             !this.selectedHeilmittelId ||
-            r.Heilmittels.map((hm) => hm.id).includes(this.selectedHeilmittelId)
+            r.RezeptHeilmittels.map((hm) => hm.Heilmittel.id).includes(
+              this.selectedHeilmittelId
+            )
           );
         });
     },
@@ -330,6 +366,12 @@ export default {
           });
         });
       return heilmittel;
+    },
+    selectedHeilmittel() {
+      return this.heilmittel.find((hm) => hm.id == this.selectedHeilmittelId);
+    },
+    selectedPatient() {
+      return this.kunden.find((k) => k.id == this.selectedKundeId);
     },
   },
 };
