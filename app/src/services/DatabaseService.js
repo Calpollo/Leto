@@ -90,19 +90,6 @@ class DatabaseService {
     }
   }
 
-  getRezeptHeilmittel(data) {
-    if (this.isOffline()) {
-      return window.ipc.getRezeptHeilmittel(data).then(JSON.parse);
-    } else {
-      const params = { include: data.include };
-      if (data.id)
-        return ax
-          .get("/rezeptheilmittel/" + data.id, { params })
-          .then((res) => res.data);
-      return ax.get("/rezeptheilmittel/", { params }).then((res) => res.data);
-    }
-  }
-
   getHeilmittel(data) {
     if (this.isOffline()) {
       return window.ipc.getHeilmittel(data).then(JSON.parse);

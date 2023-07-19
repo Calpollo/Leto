@@ -279,7 +279,6 @@ class LocalDbAdapter {
     );
 
     console.log("Modelle:", Object.keys(this.sequelize.models));
-    // console.log("Kundenassociations:", this.Kunde.associations);
   }
 
   // Initialize Database
@@ -747,15 +746,6 @@ class LocalDbAdapter {
 
   update(table, { id, instance }) {
     return table.update(instance, { where: { id } });
-    // return this.get(table, { id }).then((found) => {
-    //   console.log(found);
-    //   if (found) {
-    //     found.set(instance);
-    //     return found.save();
-    //   } else {
-    //     return this.create(table, { where: instance, findIfExists: false });
-    //   }
-    // });
   }
 
   setTherhapeutHeilmittels({ therapeutId, hms }) {
@@ -769,18 +759,10 @@ class LocalDbAdapter {
   }
 
   setTerminHeilmittels({ terminId, hms }) {
-    console.log({ terminId, hms });
     return this.Termin.findByPk(terminId).then((t) => {
-      console.log({ TerminId: t.id });
-      return Promise.all(
-        hms.map((hm) => {
-          console.log({ hm });
-          return this.Heilmittel.findByPk(hm);
-        })
-      ).then((hmList) => {
-        console.log(hmList);
-        return t.setHeilmittels(hmList);
-      });
+      return Promise.all(hms.map((hm) => this.Heilmittel.findByPk(hm))).then(
+        (hmList) => t.setHeilmittels(hmList)
+      );
     });
   }
 

@@ -62,9 +62,6 @@ ipcMain.handle("getTermin", async (event, data) => {
 ipcMain.handle("getRezept", async (event, data) => {
   return JSON.stringify(await localDB.get(Rezept, data));
 });
-ipcMain.handle("getRezeptHeilmittel", async (event, data) => {
-  return JSON.stringify(await localDB.get(RezeptHeilmittel, data));
-});
 
 ipcMain.handle("getICD10Code", async (event, data) => {
   return JSON.stringify(await localDB.get(ICD10Code, data));

@@ -37,7 +37,7 @@
         <v-stepper-content step="3">
           <termin-vorschlaege
             v-if="currentStep == 3"
-            :heilmittel="rezept.Heilmittels"
+            :rezeptHeilmittel="rezept.RezeptHeilmittels"
             v-model="terminvorschlaege"
             :showSaveButton="false"
           />
@@ -156,7 +156,7 @@ export default {
             RezeptHeilmittels,
             ausstellungsdatum,
             ArztLanr,
-            ICD10code,
+            icd10code,
             hausbesuch,
             indikation,
             therapieBericht,
@@ -165,7 +165,7 @@ export default {
             RezeptHeilmittels.length > 0 &&
             ausstellungsdatum &&
             ArztLanr &&
-            ICD10code &&
+            icd10code &&
             hausbesuch != null &&
             indikation &&
             therapieBericht != null
