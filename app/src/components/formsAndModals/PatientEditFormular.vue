@@ -103,6 +103,9 @@ export default {
     value() {
       this.kunde = this.value;
     },
+    kunde() {
+      this.$emit("input", this.kunde);
+    },
   },
   computed: {
     showVersichertenNummer() {

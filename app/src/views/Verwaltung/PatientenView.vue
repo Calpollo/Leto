@@ -152,7 +152,8 @@
                 <p
                   v-if="
                     patient.versichertennummer &&
-                    patient.versichertenstatus != 'SZ'
+                    patient.versichertenstatus != 'SZ' &&
+                    patient.Krankenkasse
                   "
                 >
                   <b-icon-building class="mr-2" />

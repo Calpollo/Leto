@@ -98,13 +98,25 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
   if (!kunde || kunde.id) {
     createdKunde = await KundenService.getOne(kunde?.id || rezept.Kunde.id);
   } else {
-    const { lastname, firstname, email, phone, address } = kunde;
+    const {
+      lastname,
+      firstname,
+      email,
+      phone,
+      address,
+      geburtstag,
+      versichertenstatus,
+      versichertennummer,
+    } = kunde;
     createdKunde = await KundenService.create(
       lastname,
       firstname,
       email,
       phone,
-      address
+      address,
+      geburtstag,
+      versichertenstatus,
+      versichertennummer
     );
   }
 

@@ -15,14 +15,16 @@ class KundenService {
     });
   }
 
-  create(lastname, firstname, email, phone, address) {
-    // console.log("Creating new Kunde with", {
-    //   lastname,
-    //   firstname,
-    //   email,
-    //   phone,
-    //   address,
-    // });
+  create(
+    lastname,
+    firstname,
+    email,
+    phone,
+    address,
+    geburtstag,
+    versichertenstatus,
+    versichertennummer
+  ) {
     return DatabaseService.createKunde({
       where: {
         lastname,
@@ -30,6 +32,9 @@ class KundenService {
         email,
         phone,
         address,
+        geburtstag,
+        versichertenstatus,
+        versichertennummer,
       },
     });
   }

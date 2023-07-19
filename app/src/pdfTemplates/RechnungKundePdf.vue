@@ -20,102 +20,121 @@
     >
       <section slot="pdf-content">
         <!-- PDF Content Here -->
-        <div id="full-page">
-          <div>
-            <img id="leto-logo" src="@/assets/Leto - Text.png" />
+        <div>
+          <img id="leto-logo" src="@/assets/Leto - Text.png" />
+
+          <b-row>
+            <b-col class="anschrift">
+              <p>
+                {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
+              </p>
+              <p>{{ Rezept?.Kunde?.address }}</p>
+              <p>
+                Tel:
+                <a :href="'tel:' + Rezept?.Kunde?.phone">
+                  {{ Rezept?.Kunde?.phone }}
+                </a>
+              </p>
+              <p>
+                Email:
+                <a :href="'mailto:' + Rezept?.Kunde?.email">
+                  {{ Rezept?.Kunde?.email }}
+                </a>
+              </p>
+            </b-col>
+            <b-col class="anschrift">
+              <p>{{ Praxis?.name }}</p>
+              <p>{{ Praxis?.address }}</p>
+              <p>
+                Tel: <a :href="'tel:' + Praxis?.phone">{{ Praxis?.phone }}</a>
+              </p>
+              <p>
+                Email:
+                <a :href="'mailto:' + Praxis?.email">
+                  {{ Praxis?.email }}
+                </a>
+              </p>
+            </b-col>
+          </b-row>
+
+          <h2 id="betreff">Rechnung</h2>
+
+          <p>Hallo {{ Rezept?.Kunde?.firstname }},</p>
+          <p>
+            für deine erhaltenen und kommenden Leistungen erhälst du diese
+            Rechnung von uns. Bei Terminausfall o.ä. kann sich der entgültige
+            Betrag ändern. Für Zahlungsänderungen stellen wir weitere Rechnungen
+            aus.
+          </p>
+
+          <b-table
+            v-if="RezeptId"
+            id="kostenaufstellung"
+            striped
+            :items="kostenaufstellungen"
+          >
+            <template #cell(Preis)="data">
+              {{
+                data.value.toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                })
+              }}
+              €
+            </template>
+          </b-table>
+
+          <div
+            v-if="Rezept?.Kunde?.versichertenstatus == 'PKV'"
+            class="pdf-item mb-1"
+          >
+            <p>
+              Für die obenstehenden Leistungen sind folgende Termine
+              wahrgenommen worden:
+            </p>
 
             <b-row>
-              <b-col class="anschrift">
-                <p>
-                  {{ Rezept?.Kunde?.firstname }} {{ Rezept?.Kunde?.lastname }}
-                </p>
-                <p>{{ Rezept?.Kunde?.address }}</p>
-                <p>
-                  Tel:
-                  <a :href="'tel:' + Rezept?.Kunde?.phone">
-                    {{ Rezept?.Kunde?.phone }}
-                  </a>
-                </p>
-                <p>
-                  Email:
-                  <a :href="'mailto:' + Rezept?.Kunde?.email">
-                    {{ Rezept?.Kunde?.email }}
-                  </a>
-                </p>
-              </b-col>
-              <b-col class="anschrift">
-                <p>{{ Praxis?.name }}</p>
-                <p>{{ Praxis?.address }}</p>
-                <p>
-                  Tel: <a :href="'tel:' + Praxis?.phone">{{ Praxis?.phone }}</a>
-                </p>
-                <p>
-                  Email:
-                  <a :href="'mailto:' + Praxis?.email">
-                    {{ Praxis?.email }}
-                  </a>
-                </p>
+              <b-col
+                cols="6"
+                v-for="t in Rezept.Termins.filter((t) => t.erschienen)"
+                :key="t.id"
+              >
+                {{ toLocale(t.start) }}: {{ toLocaleTime(t.start) }} -
+                {{ toLocaleTime(t.start + t.minutes * 60 * 1000) }}
               </b-col>
             </b-row>
-
-            <h2 id="betreff">Rechnung</h2>
-
-            <p>Hallo {{ Rezept?.Kunde?.firstname }},</p>
-            <p>
-              für deine erhaltenen und kommenden Leistungen erhälst du diese
-              Rechnung von uns. Bei Terminausfall o.ä. kann sich der entgültige
-              Betrag ändern. Für Zahlungsänderungen stellen wir weitere
-              Rechnungen aus.
-            </p>
-
-            <b-table
-              v-if="RezeptId"
-              id="kostenaufstellung"
-              striped
-              :items="kostenaufstellungen"
-            >
-              <template #cell(Preis)="data">
-                {{
-                  data.value.toLocaleString("de-DE", {
-                    minimumFractionDigits: 2,
-                  })
-                }}
-                €
-              </template>
-            </b-table>
-
-            <p>
-              Bitte überweise den Betrag von
-              <b>
-                {{
-                  totalPrice.toLocaleString("de-DE", {
-                    minimumFractionDigits: 2,
-                  })
-                }}
-                € </b
-              >bis zum
-              <b>
-                {{ this.dateToLocale(this.PaymentDeadline) }}
-              </b>
-              an die untenstehende Bankverbindung.
-            </p>
-
-            <p>
-              Bei Fragen zu dieser Rechnung kannst du dich gerne bei uns melden!
-            </p>
-
-            <p>Mit freundlichen Grüßen</p>
-
-            <p>{{ Praxis?.name }}</p>
           </div>
 
-          <footer>
-            <small
-              >Automatisch generiert von
-              <a href="https://leto.andreasnicklaus.de">Leto</a>.</small
-            >
-          </footer>
+          <p>
+            Bitte überweise den Betrag von
+            <b>
+              {{
+                totalPrice.toLocaleString("de-DE", {
+                  minimumFractionDigits: 2,
+                })
+              }}
+              € </b
+            >bis zum
+            <b>
+              {{ toLocale(this.PaymentDeadline) }}
+            </b>
+            an die untenstehende Bankverbindung.
+          </p>
+
+          <p>
+            Bei Fragen zu dieser Rechnung kannst du dich gerne bei uns melden!
+          </p>
+
+          <p>Mit freundlichen Grüßen</p>
+
+          <p>{{ Praxis?.name }}</p>
         </div>
+
+        <footer>
+          <small
+            >Automatisch generiert von
+            <a href="https://leto.andreasnicklaus.de">Leto</a>.</small
+          >
+        </footer>
       </section>
     </vue-html2pdf>
   </div>
@@ -139,6 +158,8 @@ export default {
     };
   },
   methods: {
+    toLocale,
+    toLocaleTime,
     generatePdf() {
       return this.$refs.html2Pdf.generatePdf();
     },
@@ -158,12 +179,6 @@ export default {
       }).then((r) => {
         this.Rezept = r;
       });
-    },
-    timeToLocale(date) {
-      return toLocaleTime(date);
-    },
-    dateToLocale(date) {
-      return toLocale(date);
     },
     priceOfHeilmittel(heilmittel, versichertenstatus) {
       switch (versichertenstatus) {
@@ -213,7 +228,7 @@ export default {
       const heilmittel = this.Rezept.RezeptHeilmittels.map(
         (hmR) => hmR.Heilmittel
       );
-      return heilmittel
+      const terminKosten = heilmittel
         .map((hm) => {
           const erschieneneTermine = this.Rezept.Termins.filter(
             (t) =>
@@ -260,6 +275,13 @@ export default {
           }
         })
         .flat();
+
+      const rezeptgebühr = {
+        Heilmittel: "Rezeptgebühr",
+        Preis: 10,
+      };
+
+      return [...terminKosten, rezeptgebühr];
     },
   },
 };
