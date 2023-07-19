@@ -25,6 +25,8 @@
 
 <script>
 import TerminService from "@/services/dbServices/TerminService";
+import { roundToDecimals } from "@/utils/numbers";
+
 export default {
   name: "ArbeitszeitOverview",
   props: {
@@ -67,7 +69,7 @@ export default {
   },
   async mounted() {
     this.updatetermineZeitSumme().then(
-      (sum) => (this.termineZeitSumme = Math.round(sum * 100) / 100)
+      (sum) => (this.termineZeitSumme = roundToDecimals(sum))
     );
   },
 };

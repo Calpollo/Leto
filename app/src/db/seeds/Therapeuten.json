@@ -3,7 +3,7 @@
     "name": "Tanja Therapeutin",
     "geschlecht": "w",
     "color": "#7c009e",
-    "Heilmittel": ["MT-6"],
+    "Heilmittel": ["MT"],
     "Vertrag": {
       "wochenstunden": 38,
       "hausbesuchsstunden": 0,
@@ -47,12 +47,12 @@
     "geschlecht": "m",
     "color": "#026431",
     "Heilmittel": [
-      "KG-6",
-      "KG-Gruppe-6",
-      "KGG-6",
-      "KG-BWB-6",
-      "KG-BWB-Gruppe-6",
-      "MT-6"
+      "KG",
+      "KG-Gruppe",
+      "KGG",
+      "KG-BWB",
+      "KG-BWB-Gruppe-klein",
+      "MT"
     ],
     "Vertrag": {
       "wochenstunden": 35,

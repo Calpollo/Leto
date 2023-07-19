@@ -67,6 +67,11 @@ const routes = [
         component: () => import("../views/settings/TermineSettings.vue"),
       },
       {
+        path: "Heilmittel",
+        name: "Einstellungen.Heilmittel",
+        component: () => import("../views/settings/HeilmittelSettings.vue"),
+      },
+      {
         path: "Darstellung",
         name: "Einstellungen.Darstellung",
         component: () => import("../views/settings/DarstellungSettings.vue"),

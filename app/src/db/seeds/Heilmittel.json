@@ -1,284 +1,162 @@
 [
   {
-    "abk": "KG-6",
+    "abk": "KG",
     "name": "Krankengymnasitk",
-    "terminNumber": 6,
-    "terminMinutes": 20
+    "terminMinutes": 20,
+    "krankenkassenbeteiligung": 26.12,
+    "kundenbeteiligung": 2.61
   },
   {
-    "abk": "KG-Gruppe-6",
+    "abk": "KG-Gruppe",
     "name": "Krankengymnasitk Gruppe",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 11.69,
+    "kundenbeteiligung": 1.17
   },
   {
-    "abk": "KGG-6",
+    "abk": "KGG",
     "name": "Krankengymnasitk-Gerät",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 49.18,
+    "kundenbeteiligung": 4.92
   },
   {
-    "abk": "KG-BWB-6",
-    "name": "Krankengymnasitk im Bewegungsbad",
-    "terminNumber": 6
-  },
-  {
-    "abk": "KG-BWB-Gruppe-6",
-    "name": "Krankengymnasitk im Bewegungsbad Gruppe",
-    "terminNumber": 6
-  },
-  {
-    "abk": "MT-6",
+    "abk": "MT",
     "name": "Manuelle Therapie",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 31.37,
+    "kundenbeteiligung": 3.14
   },
   {
-    "abk": "ÜBB-6",
-    "name": "Übungsbehandlung",
-    "terminNumber": 6
-  },
-  {
-    "abk": "ÜBB-Gruppe-6",
-    "name": "Übungsbehandlung Gruppe",
-    "terminNumber": 6
-  },
-  {
-    "abk": "ÜBB-BWB-6",
-    "name": "Übungsbehandlung im Bewegungsbad",
-    "terminNumber": 6
-  },
-  {
-    "abk": "ÜBB-BWB-Gruppe-6",
-    "name": "Übungsbehandlung im Bewegungsbad Gruppe",
-    "terminNumber": 6
-  },
-  {
-    "abk": "CG-6",
+    "abk": "CG",
     "name": "Chirogymnastik",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 18.0,
+    "kundenbeteiligung": 1.8
   },
   {
-    "abk": "KMT-6",
+    "abk": "KMT",
     "name": "Klassische Massagetherapie",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 19.06,
+    "kundenbeteiligung": 1.91
   },
   {
-    "abk": "UWM-6",
+    "abk": "UWM",
     "name": "Unterwasserdruckstrahlmassage",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 29.74,
+    "kundenbeteiligung": 2.97
   },
   {
-    "abk": "SM-6",
-    "name": "Segmentmassage",
-    "terminNumber": 6
+    "abk": "SM-PM-CM",
+    "name": "Segment-, Periost-, Colonmassage",
+    "krankenkassenbeteiligung": 19.06,
+    "kundenbeteiligung": 1.91
   },
   {
-    "abk": "PM-6",
-    "name": "Periostmassage",
-    "terminNumber": 6
-  },
-  {
-    "abk": "BGM-6",
+    "abk": "BGM",
     "name": "Bindegewebsmassage",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 22.9,
+    "kundenbeteiligung": 2.29
   },
   {
-    "abk": "Wärmetherapie-6",
-    "name": "Wärmetherapie",
-    "terminNumber": 6
+    "abk": "Wärmetherapie-Heißluft",
+    "name": "Wärmetherapie mittels Heißluft",
+    "krankenkassenbeteiligung": 6.55,
+    "kundenbeteiligung": 0.66
   },
   {
-    "abk": "Kältetherapie-6",
+    "abk": "Wärmetherapie-Ultraschall",
+    "name": "Ultraschall-Wärmetherapie",
+    "krankenkassenbeteiligung": 12.92,
+    "kundenbeteiligung": 1.29
+  },
+  {
+    "abk": "Kältetherapie",
     "name": "Kältetherapie",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 10.53,
+    "kundenbeteiligung": 1.05
   },
   {
-    "abk": "Traktion-6",
-    "name": "Traktion",
-    "terminNumber": 6
+    "abk": "Traktion",
+    "name": "Traktionsbehandlung mit Gerät",
+    "krankenkassenbeteiligung": 7.61,
+    "kundenbeteiligung": 0.76
   },
   {
-    "abk": "Elektrotherapie-6",
+    "abk": "Elektrotherapie",
     "name": "Elektrotherapie",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 7.43,
+    "kundenbeteiligung": 0.74
   },
   {
-    "abk": "Hydroelektrische Bäder-6",
-    "name": "Hydroelektrische Bäder",
-    "terminNumber": 6
-  },
-  {
-    "abk": "KG-10",
-    "name": "Krankengymnasitk",
-    "terminNumber": 10
-  },
-  {
-    "abk": "KG-Gruppe-10",
-    "name": "Krankengymnasitk Gruppe",
-    "terminNumber": 10
-  },
-  {
-    "abk": "KG-BWB-10",
+    "abk": "KG-BWB",
     "name": "Krankengymnasitk im Bewegungsbad",
-    "terminNumber": 10
+    "krankenkassenbeteiligung": 29.86,
+    "kundenbeteiligung": 2.99
   },
   {
-    "abk": "KG-BWB-Gruppe-10",
-    "name": "Krankengymnasitk im Bewegungsbad Gruppe",
-    "terminNumber": 10
+    "abk": "KG-BWB-Gruppe-klein",
+    "name": "Krankengymnasitk im Bewegungsbad Gruppe 2-3 Patienten",
+    "krankenkassenbeteiligung": 21.29,
+    "kundenbeteiligung": 2.13
   },
   {
-    "abk": "KG-ZNS-10",
+    "abk": "KG-BWB-Gruppe-groß",
+    "name": "Krankengymnasitk im Bewegungsbad Gruppe 4-5 Patienten",
+    "krankenkassenbeteiligung": 14.07,
+    "kundenbeteiligung": 1.41
+  },
+  {
+    "abk": "KG-ZNS",
     "name": "Krankengymnasitk ZNS",
-    "terminNumber": 10
+    "krankenkassenbeteiligung": 41.48,
+    "kundenbeteiligung": 4.15
   },
   {
-    "abk": "KG-ZNS-Kinder-10",
+    "abk": "KG-ZNS-Kinder",
     "name": "Krankengymnasitk ZNS Kinder",
-    "terminNumber": 10
+    "krankenkassenbeteiligung": 51.85,
+    "kundenbeteiligung": 0
   },
   {
-    "abk": "Wärmetherapie-10",
-    "name": "Wärmetherapie",
-    "terminNumber": 10
-  },
-  {
-    "abk": "Kältetherapie-10",
-    "name": "Kältetherapie",
-    "terminNumber": 10
-  },
-  {
-    "abk": "Traktion-10",
-    "name": "Traktion",
-    "terminNumber": 10
-  },
-  {
-    "abk": "Elektrotherapie-10",
-    "name": "Elektrotherapie",
-    "terminNumber": 10
-  },
-  {
-    "abk": "Elektrostimulation-10",
+    "abk": "Elektrostimulation",
     "name": "Elektrostimulation",
-    "terminNumber": 10
+    "krankenkassenbeteiligung": 16.49,
+    "kundenbeteiligung": 1.65
   },
   {
-    "abk": "KG-Atem-6",
-    "name": "Krankengymnasitk (Atemtherapie)",
-    "terminNumber": 6
-  },
-  {
-    "abk": "KG-Atem-Gruppe-6",
-    "name": "Krankengymnasitk (Atemtherapie) Gruppe",
-    "terminNumber": 6
-  },
-  {
-    "abk": "KG-Muko-6",
+    "abk": "KG-Muko",
     "name": "Krankengymnasitk-Muko",
-    "terminNumber": 6
+    "krankenkassenbeteiligung": 80.24,
+    "kundenbeteiligung": 8.02
   },
   {
-    "abk": "Inhalation-6",
-    "name": "Inhalation",
-    "terminNumber": 6
+    "abk": "Inhalation",
+    "name": "Inhalationstherapie",
+    "krankenkassenbeteiligung": 10.88,
+    "kundenbeteiligung": 1.09
   },
   {
     "abk": "MLD-30",
     "name": "Manuelle Lymphdrainage (Teilbehandlung)",
-    "terminNumber": 6,
-    "terminMinutes": 30
-  },
-  {
-    "abk": "MLD-30-Kompression",
-    "name": "Manuelle Lymphdrainage (Teilbehandlung) + Kompressionsbandagierung",
-    "terminNumber": 6,
+    "krankenkassenbeteiligung": 31.71,
+    "kundenbeteiligung": 3.17,
     "terminMinutes": 30
   },
   {
     "abk": "MLD-45",
     "name": "Manuelle Lymphdrainage (Großbehandlung)",
-    "terminNumber": 6,
-    "terminMinutes": 45
-  },
-  {
-    "abk": "MLD-45-Kompression",
-    "name": "Manuelle Lymphdrainage (Großbehandlung) + Kompressionsbandagierung",
-    "terminNumber": 6,
+    "krankenkassenbeteiligung": 47.54,
+    "kundenbeteiligung": 4.75,
     "terminMinutes": 45
   },
   {
     "abk": "MLD-60",
     "name": "Manuelle Lymphdrainage (Ganzbehandlung)",
-    "terminNumber": 6,
+    "krankenkassenbeteiligung": 63.4,
+    "kundenbeteiligung": 6.34,
     "terminMinutes": 60
   },
   {
-    "abk": "MLD-60",
-    "name": "Manuelle Lymphdrainage (Ganzbehandlung) + Kompressionsbandagierung",
-    "terminNumber": 6,
-    "terminMinutes": 60
-  },
-  {
-    "abk": "CM-6",
-    "name": "Colonmassage",
-    "terminNumber": 6
-  },
-  {
-    "abk": "CO2-Bad-6",
-    "name": "CO2-Bad",
-    "terminNumber": 6
-  },
-  {
-    "abk": "Hornhautabtragung-6",
-    "name": "Hornhautabtragung",
-    "terminNumber": 6
-  },
-  {
-    "abk": "Nagelbearbeitung-6",
-    "name": "Nagelbearbeitung",
-    "terminNumber": 6
-  },
-  {
-    "abk": "PodolKomplex-6",
-    "name": "Podologische Komplexbehandlung",
-    "terminNumber": 6
-  },
-  {
-    "abk": "Nagelspangenbehandlung-8",
-    "name": "Nagelspangenbehandlung",
-    "terminNumber": 8
-  },
-  {
-    "abk": "Nagelspangenbehandlung-4",
-    "name": "Nagelspangenbehandlung",
-    "terminNumber": 4
-  },
-  {
-    "abk": "ST-30-10",
-    "name": "Stimmtherapie-30",
-    "terminNumber": 10,
-    "terminMinutes": 30
-  },
-  {
-    "abk": "ST-45-10",
-    "name": "Stimmtherapie-45",
-    "terminNumber": 10,
-    "terminMinutes": 45
-  },
-  {
-    "abk": "ST-60-10",
-    "name": "Stimmtherapie-60",
-    "terminNumber": 10,
-    "terminMinutes": 60
-  },
-  {
-    "abk": "ST-Gruppe-45-10",
-    "name": "Stimmtherapie-Gruppe-45",
-    "terminNumber": 10,
-    "terminMinutes": 45
-  },
-  {
-    "abk": "ST-Gruppe-90-10",
-    "name": "Stimmtherapie-Gruppe-90",
-    "terminNumber": 10,
-    "terminMinutes": 90
+    "abk": "Kompression",
+    "name": "Kompressionsbandagierung einer Extremität",
+    "krankenkassenbeteiligung": 20.2,
+    "kundenbeteiligung": 2.02
   }
 ]

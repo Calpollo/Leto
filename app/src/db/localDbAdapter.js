@@ -379,22 +379,17 @@ class LocalDbAdapter {
       },
       kundenbeteiligung: {
         type: Float32Array,
-        defaultValue: 20,
+        defaultValue: 0,
         allowNull: false,
       },
       krankenkassenbeteiligung: {
         type: Float32Array,
-        defaultValue: 200,
+        defaultValue: 0,
         allowNull: false,
       },
       selbstzahlerPreis: {
         type: Float32Array,
-        defaultValue: 200,
-        allowNull: false,
-      },
-      privatVersichertenPreis: {
-        type: Float32Array,
-        defaultValue: 200,
+        defaultValue: 0,
         allowNull: false,
       },
     });

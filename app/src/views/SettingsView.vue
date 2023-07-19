@@ -12,21 +12,24 @@
         <div>
           <h2 id="einstellungen">Einstellungen</h2>
           <nav>
-            <router-link :to="{ name: 'Einstellungen.Konto' }"
-              >Konto</router-link
-            >
-            <router-link :to="{ name: 'Einstellungen.Standort' }"
-              >Standort</router-link
-            >
-            <router-link :to="{ name: 'Einstellungen.Therapeuten' }"
-              >Therapeuten</router-link
-            >
-            <router-link :to="{ name: 'Einstellungen.Termine' }"
-              >Termine</router-link
-            >
-            <router-link :to="{ name: 'Einstellungen.Darstellung' }"
-              >Darstellung</router-link
-            >
+            <router-link :to="{ name: 'Einstellungen.Konto' }">
+              Konto
+            </router-link>
+            <router-link :to="{ name: 'Einstellungen.Standort' }">
+              Standort
+            </router-link>
+            <router-link :to="{ name: 'Einstellungen.Therapeuten' }">
+              Therapeuten
+            </router-link>
+            <router-link :to="{ name: 'Einstellungen.Termine' }">
+              Termine
+            </router-link>
+            <router-link :to="{ name: 'Einstellungen.Heilmittel' }">
+              Heilmittel
+            </router-link>
+            <router-link :to="{ name: 'Einstellungen.Darstellung' }">
+              Darstellung
+            </router-link>
           </nav>
         </div>
         <b-button class="mx-3 mb-2" variant="success" @click="saveConfig">

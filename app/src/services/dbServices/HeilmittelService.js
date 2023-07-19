@@ -18,7 +18,6 @@ class HeilmittelService {
   create(
     abk,
     name,
-    terminNumber,
     terminMinutes,
     kundenbeteiligung,
     krankenkassenbeteiligung
@@ -27,7 +26,6 @@ class HeilmittelService {
       where: {
         abk,
         name,
-        terminNumber,
         terminMinutes,
         kundenbeteiligung,
         krankenkassenbeteiligung,
@@ -48,7 +46,6 @@ class HeilmittelService {
         await this.create(
           hm.abk,
           hm.name,
-          hm.terminNumber,
           hm.terminMinutes,
           hm.kundenbeteiligung,
           hm.krankenkassenbeteiligung

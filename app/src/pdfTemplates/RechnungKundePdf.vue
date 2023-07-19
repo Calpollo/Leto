@@ -73,11 +73,27 @@
               id="kostenaufstellung"
               striped
               :items="kostenaufstellungen"
-            ></b-table>
+            >
+              <template #cell(Preis)="data">
+                {{
+                  data.value.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                  })
+                }}
+                €
+              </template>
+            </b-table>
 
             <p>
               Bitte überweise den Betrag von
-              <b> {{ totalPrice }} € </b>bis zum
+              <b>
+                {{
+                  totalPrice.toLocaleString("de-DE", {
+                    minimumFractionDigits: 2,
+                  })
+                }}
+                € </b
+              >bis zum
               <b>
                 {{ this.dateToLocale(this.PaymentDeadline) }}
               </b>
@@ -111,6 +127,7 @@ import VueHtml2pdf from "vue-html2pdf";
 import PraxisService from "@/services/dbServices/PraxisService";
 import ConfigService from "@/services/ConfigService";
 import { toLocaleTime, toLocale } from "@/utils/dates";
+import { roundToDecimals } from "@/utils/numbers";
 
 export default {
   components: { VueHtml2pdf },
@@ -129,6 +146,10 @@ export default {
       RezeptService.getOne(id, {
         include: [
           "Kunde",
+          {
+            association: "Termins",
+            include: "Heilmittels",
+          },
           {
             association: "RezeptHeilmittels",
             include: "Heilmittel",
@@ -149,7 +170,9 @@ export default {
         case "GKV":
           return heilmittel.kundenbeteiligung;
         case "PKV":
-          return heilmittel.privatVersichertenPreis;
+          return (
+            heilmittel.kundenbeteiligung + heilmittel.krankenkassenbeteiligung
+          );
         case "SZ":
           return heilmittel.selbstzahlerPreis;
         default:
@@ -179,31 +202,64 @@ export default {
   },
   computed: {
     totalPrice() {
-      let priceSum = 0;
-      if (this.RezeptId)
-        this.Rezept?.RezeptHeilmittels.forEach(
-          (hmR) =>
-            (priceSum += this.priceOfHeilmittel(
-              hmR.Heilmittel,
-              this.Rezept?.Kunde?.versichertenstatus
-            ))
-        );
-      return priceSum;
+      return roundToDecimals(
+        this.kostenaufstellungen
+          .map((k) => k.Preis)
+          .reduce((partialSum, a) => partialSum + a, 0)
+      );
     },
     kostenaufstellungen() {
-      if (!this.RezeptId) return [];
-      return this.Rezept?.RezeptHeilmittels.map((hmR) => {
-        return {
-          Heilmittel: `${hmR.Heilmittel.abk}: ${hmR.Heilmittel.name}`,
-          Termine: hmR.Heilmittel.terminNumber,
-          Dauer: hmR.Heilmittel.terminMinutes,
-          Preis:
-            this.priceOfHeilmittel(
-              hmR.Heilmittel,
-              this.Rezept.Kunde.versichertenstatus
-            ) + " €",
-        };
-      });
+      if (!this.RezeptId || !this.Rezept) return [];
+      const heilmittel = this.Rezept.RezeptHeilmittels.map(
+        (hmR) => hmR.Heilmittel
+      );
+      return heilmittel
+        .map((hm) => {
+          const erschieneneTermine = this.Rezept.Termins.filter(
+            (t) =>
+              t.Heilmittels.some((hm_t) => hm_t.id == hm.id) && t.erschienen
+          );
+          const erschienenPreis = {
+            Heilmittel: `${hm.abk}: ${hm.name}`,
+            Termine: erschieneneTermine.length,
+            Dauer: hm.terminMinutes,
+            Preis: roundToDecimals(
+              this.priceOfHeilmittel(hm, this.Rezept.Kunde.versichertenstatus) *
+                erschieneneTermine.length
+            ),
+          };
+          let ausfallPreis;
+          const nichtErschieneneTermine = this.Rezept.Termins.filter(
+            (t) =>
+              t.Heilmittels.some((hm_t) => hm_t.id == hm.id) && !t.erschienen
+          );
+          if (nichtErschieneneTermine.length == 0) return erschienenPreis;
+          else {
+            const ausfallterminPreis = ConfigService.getAusfallterminPreis();
+            const ausfallterminPreisproMinute =
+              ConfigService.getAusfallterminPreisProMinute();
+            const minutesTotal = nichtErschieneneTermine
+              .map((t) => t.minutes)
+              .reduce((partialSum, a) => partialSum + a, 0);
+
+            ausfallPreis = {
+              Heilmittel: `${hm.abk}: ${hm.name} (Ausfalltermine)`,
+              Termine: nichtErschieneneTermine.length,
+              Preis:
+                ausfallterminPreis != null
+                  ? roundToDecimals(
+                      ausfallterminPreis *
+                        (ausfallterminPreisproMinute ? minutesTotal : 1)
+                    )
+                  : roundToDecimals(
+                      this.priceOfHeilmittel(hm, "PKV") *
+                        nichtErschieneneTermine.length
+                    ),
+            };
+            return [erschienenPreis, ausfallPreis];
+          }
+        })
+        .flat();
     },
   },
 };

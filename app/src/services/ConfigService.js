@@ -4,6 +4,8 @@ import { ax } from "@/services/RequestService";
 const defaultConfig = {
   calendarDefault: 5,
   paymentDeadlineDays: 30,
+  ausfallterminPreis: 1,
+  ausfallterminPreisproMinute: true,
 };
 
 class ConfigService {
@@ -17,6 +19,12 @@ class ConfigService {
     // eslint-disable-next-line no-unused-vars
     const { username, email, ...config } = store.state.me;
     const result = Object.assign(interimConfig, config);
+    // console.log({
+    //   me,
+    //   interimConfig,
+    //   result,
+    //   defaultConfig,
+    // });
     return result;
   }
 
@@ -36,12 +44,16 @@ class ConfigService {
     return this.config().praxis;
   }
 
-  getDefaultPause() {
-    return this.config().defaultPause;
-  }
-
   getPaymentDeadlineDays() {
     return this.config().paymentDeadlineDays || 0;
+  }
+
+  getAusfallterminPreis() {
+    return this.config().ausfallterminPreis;
+  }
+
+  getAusfallterminPreisProMinute() {
+    return this.config().ausfallterminPreisproMinute;
   }
 
   setCalendarDefault(calendarDefault) {
@@ -62,6 +74,17 @@ class ConfigService {
 
   setPraxis(id) {
     this.configOverrides.praxis = id;
+  }
+
+  setAusfallterminPreis(ausfallterminPreis) {
+    return ax.put("/auth/" + store.state.me.id, {
+      ausfallterminPreis,
+    });
+  }
+  setAusfallterminPreisProMinute(ausfallterminPreisproMinute) {
+    return ax.put("/auth/" + store.state.me.id, {
+      ausfallterminPreisproMinute,
+    });
   }
 }
 
