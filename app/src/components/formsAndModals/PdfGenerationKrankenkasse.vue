@@ -170,6 +170,7 @@ export default {
       return [...this.rezepte]
         .filter((r) => {
           return (
+            r.Kunde.versichertenstatus != "SZ" &&
             new Date(r.ausstellungsdatum).valueOf() >
               new Date(this.filterStartDate).valueOf() - 1000 * 60 * 60 * 24 &&
             new Date(r.ausstellungsdatum).valueOf() <

@@ -84,7 +84,7 @@
           </b-table>
 
           <div
-            v-if="Rezept?.Kunde?.versichertenstatus == 'Privat'"
+            v-if="['Privat', 'SZ'].includes(Rezept?.Kunde?.versichertenstatus)"
             class="pdf-item mb-1"
           >
             <p>
