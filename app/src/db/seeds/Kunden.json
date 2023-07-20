@@ -111,10 +111,6 @@
         "therapieBericht": false,
         "terminNumber": 6,
         "dringend": false,
-        "indikation": "EX-a",
-        "ICD10Code": {
-          "primärschlüssel": "M99.99"
-        },
         "ArztLanr": "632289001",
         "Termine": [
           {
@@ -139,6 +135,135 @@
           },
           {
             "start": { "plusdays": 5, "hours": 12, "minutes": 0 },
+            "minutes": 20
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "firstname": "Katharina",
+    "lastname": "Knieprobleme",
+    "address": "Kanzlerstraße 42, 10115 Berlin",
+    "email": "kknie@hotmail.de",
+    "phone": "+49 22899 680-0",
+    "geburtstag": "1987-09-04",
+    "versichertenstatus": "SZ",
+    "Rezepte": [
+      {
+        "Heilmittel": ["KGG"],
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Peter Physio",
+        "hausbesuch": true,
+        "therapieBericht": true,
+        "terminNumber": 4,
+        "dringend": false,
+        "indikation": "EX-a",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "632289001",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 12, "minutes": 20 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 1, "hours": 10, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 2, "hours": 15, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 3, "hours": 12, "minutes": 40 },
+            "minutes": 20
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "firstname": "Ben",
+    "lastname": "Bänderriss",
+    "address": "Alter Wall 40, 97956 Werbach",
+    "email": "b.baenderriss@t-online.de",
+    "phone": "09341 15 21 69",
+    "geburtstag": "2002-06-01",
+    "versichertenstatus": "GKV",
+    "versichertennummer": "G36B48832H20",
+    "KrankenkasseKostenträgerkennung": "100180008",
+    "Rezepte": [
+      {
+        "Heilmittel": ["MT"],
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Peter Physio",
+        "hausbesuch": false,
+        "therapieBericht": true,
+        "terminNumber": 5,
+        "dringend": false,
+        "indikation": "EX-b",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "632289001",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 13, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 1, "hours": 10, "minutes": 20 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 2, "hours": 15, "minutes": 20 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 3, "hours": 13, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 4, "hours": 13, "minutes": 20 },
+            "minutes": 20
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "firstname": "Max",
+    "lastname": "Muskelbeschwerden",
+    "address": "Schönhauser Allee 19, 79837 Häusern",
+    "email": "muskelmax@gmail.com",
+    "phone": "07672736233",
+    "geburtstag": "1993-12-26",
+    "versichertenstatus": "GKV",
+    "versichertennummer": "G36B48972H21",
+    "KrankenkasseKostenträgerkennung": "100180008",
+    "Rezepte": [
+      {
+        "Heilmittel": ["MT"],
+        "Praxis": "Körpertherapie Wagner",
+        "Therapeut": "Tanja Therapeutin",
+        "hausbesuch": false,
+        "therapieBericht": false,
+        "terminNumber": 2,
+        "dringend": false,
+        "indikation": "EX-b",
+        "ICD10Code": {
+          "primärschlüssel": "M99.99"
+        },
+        "ArztLanr": "632289001",
+        "Termine": [
+          {
+            "start": { "plusdays": 0, "hours": 13, "minutes": 0 },
+            "minutes": 20
+          },
+          {
+            "start": { "plusdays": 1, "hours": 9, "minutes": 0 },
             "minutes": 20
           }
         ]
