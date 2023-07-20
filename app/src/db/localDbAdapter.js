@@ -429,7 +429,7 @@ class LocalDbAdapter {
         defaultValue: "GKV",
         allowNull: false,
         validate: {
-          isIn: [["GKV", "PKV", "SZ"]],
+          isIn: [["GKV", "Privat", "SZ"]],
         },
       },
       versichertennummer: {
@@ -480,6 +480,9 @@ class LocalDbAdapter {
         defaultValue: false,
       },
       indikation: {
+        type: DataTypes.STRING,
+      },
+      beschreibung: {
         type: DataTypes.STRING,
       },
     });

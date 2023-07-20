@@ -49,12 +49,12 @@
     <b-form-group
       id="versicherstatus-group"
       label="Versicherungsstatus:"
-      label-for="versicherstatus"
+      label-for="Versicherungsstatus"
     >
       <b-dropdown id="versicherstatus">
         <template #button-content>{{ kunde.versichertenstatus }}</template>
         <b-dropdown-item
-          v-for="status in ['GKV', 'PKV', 'SZ']"
+          v-for="status in ['GKV', 'Privat', 'SZ']"
           :key="status"
           @click="setVersichertenStatus(status)"
           >{{ status }}</b-dropdown-item
@@ -63,15 +63,15 @@
     </b-form-group>
 
     <b-form-group
-      v-if="showVersichertenNummer"
       id="versichertennummer-group"
       label="Versichertennummer:"
       label-for="versichertennummer"
     >
       <b-form-input
+        :disabled="!showVersichertenNummer"
         id="versichertennummer"
         type="text"
-        placeholder="versichertennummer"
+        placeholder="Versichertennummer"
         v-model="kunde.versichertennummer"
       />
     </b-form-group>
@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     showVersichertenNummer() {
-      return ["GKV", "PKV"].includes(this.kunde.versichertenstatus);
+      return ["GKV", "Privat"].includes(this.kunde.versichertenstatus);
     },
   },
 };

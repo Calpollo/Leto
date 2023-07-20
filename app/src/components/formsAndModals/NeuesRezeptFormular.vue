@@ -31,7 +31,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <rezept-daten v-model="rezept" :showSaveButton="false" />
+          <rezept-daten
+            v-model="rezept"
+            :kunde="kunde"
+            :showSaveButton="false"
+          />
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -148,27 +152,49 @@ export default {
   },
   computed: {
     currentStepIsValid() {
+      const {
+        lastname,
+        firstname,
+        address,
+        phone,
+        email,
+        versichertenstatus,
+        versichertennummer,
+      } = this.kunde;
+      const {
+        RezeptHeilmittels,
+        ausstellungsdatum,
+        ArztLanr,
+        icd10code,
+        hausbesuch,
+        beschreibung,
+        indikation,
+        therapieBericht,
+      } = this.rezept;
       switch (this.currentStep) {
-        case 1:
-          return Object.keys(this.kunde).length > 0;
+        case 1: {
+          return (
+            lastname &&
+            firstname &&
+            address &&
+            phone &&
+            email &&
+            versichertenstatus &&
+            (["GKV", "Privat"].includes(versichertenstatus)
+              ? versichertennummer
+              : true)
+          );
+        }
         case 2: {
-          const {
-            RezeptHeilmittels,
-            ausstellungsdatum,
-            ArztLanr,
-            icd10code,
-            hausbesuch,
-            indikation,
-            therapieBericht,
-          } = this.rezept;
           return (
             RezeptHeilmittels.length > 0 &&
             ausstellungsdatum &&
             ArztLanr &&
-            icd10code &&
             hausbesuch != null &&
-            indikation &&
-            therapieBericht != null
+            therapieBericht != null &&
+            (versichertenstatus == "GKV"
+              ? icd10code && indikation
+              : beschreibung)
           );
         }
         case 3: {

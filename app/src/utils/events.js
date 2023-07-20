@@ -128,6 +128,7 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
     therapieBericht,
     icd10codeId,
     indikation,
+    beschreibung,
   } = rezept;
 
   return RezeptService.create(
@@ -137,7 +138,8 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
     hausbesuch,
     therapieBericht,
     icd10codeId,
-    indikation
+    indikation,
+    beschreibung
   ).then((createdRezept) => {
     const PraxisId = ConfigService.getPraxis();
 

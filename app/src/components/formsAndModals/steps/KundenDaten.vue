@@ -76,6 +76,11 @@ export default {
       }
     },
   },
+  watch: {
+    kunde() {
+      this.$emit("input", this.kunde);
+    },
+  },
   mounted() {
     KundenService.getAll().then((kundenList) => {
       this.kunden = kundenList;

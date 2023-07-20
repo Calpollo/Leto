@@ -36,7 +36,7 @@ class RezeptService {
     therapieBericht,
     icd10codeId,
     indikation,
-    HeilmittelIds = null
+    beschreibung
   ) {
     return DatabaseService.createRezept({
       where: {
@@ -47,14 +47,8 @@ class RezeptService {
         therapieBericht,
         icd10codeId,
         indikation,
+        beschreibung,
       },
-    }).then((rezept) => {
-      if (HeilmittelIds) {
-        return DatabaseService.setRezeptHeilmittel({
-          rezeptId: rezept.id,
-          hms: HeilmittelIds,
-        });
-      } else return rezept;
     });
   }
 }

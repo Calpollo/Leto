@@ -84,7 +84,7 @@
           </b-table>
 
           <div
-            v-if="Rezept?.Kunde?.versichertenstatus == 'PKV'"
+            v-if="Rezept?.Kunde?.versichertenstatus == 'Privat'"
             class="pdf-item mb-1"
           >
             <p>
@@ -184,7 +184,7 @@ export default {
       switch (versichertenstatus) {
         case "GKV":
           return heilmittel.kundenbeteiligung;
-        case "PKV":
+        case "Privat":
           return (
             heilmittel.kundenbeteiligung + heilmittel.krankenkassenbeteiligung
           );
@@ -235,7 +235,11 @@ export default {
               t.Heilmittels.some((hm_t) => hm_t.id == hm.id) && t.erschienen
           );
           const erschienenPreis = {
-            Heilmittel: `${hm.abk}: ${hm.name}`,
+            Heilmittel: `${hm.abk}: ${hm.name} ${
+              this.Rezept?.Kunde?.versichertenstatus == "Privat"
+                ? `(${this.toLocale(this.Rezept.ausstellungsdatum)})`
+                : ""
+            }`,
             Termine: erschieneneTermine.length,
             Dauer: hm.terminMinutes,
             Preis: roundToDecimals(
@@ -267,7 +271,7 @@ export default {
                         (ausfallterminPreisproMinute ? minutesTotal : 1)
                     )
                   : roundToDecimals(
-                      this.priceOfHeilmittel(hm, "PKV") *
+                      this.priceOfHeilmittel(hm, "Privat") *
                         nichtErschieneneTermine.length
                     ),
             };
@@ -276,12 +280,16 @@ export default {
         })
         .flat();
 
-      const rezeptgebühr = {
-        Heilmittel: "Rezeptgebühr",
-        Preis: 10,
-      };
+      if (this.Rezept?.Kunde?.versichertenstatus == "GKV") {
+        const rezeptgebühr = {
+          Heilmittel: "Rezeptgebühr",
+          Preis: 10,
+        };
 
-      return [...terminKosten, rezeptgebühr];
+        return [...terminKosten, rezeptgebühr];
+      } else {
+        return terminKosten;
+      }
     },
   },
 };

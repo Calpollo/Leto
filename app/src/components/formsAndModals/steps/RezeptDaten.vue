@@ -83,7 +83,12 @@
       />
     </b-form-group>
 
-    <b-form-group id="icd10-group" label="ICD 10 Code:" label-for="icd10">
+    <b-form-group
+      id="icd10-group"
+      label="ICD 10 Code:"
+      label-for="icd10"
+      v-if="kundeDaten?.versichertenstatus != 'Privat'"
+    >
       <b-form-input
         id="icd10"
         @change="setICD10Code"
@@ -109,11 +114,25 @@
       id="indikation-group"
       label="Indikation:"
       label-for="indikation"
+      v-if="kundeDaten?.versichertenstatus != 'Privat'"
     >
       <b-form-input
         id="indikation"
         v-model="rezept.indikation"
         placeholder="z.B. Ex-a"
+      />
+    </b-form-group>
+
+    <b-form-group
+      v-else
+      id="freitext-group"
+      label="Freitext:"
+      label-for="freitext"
+    >
+      <b-form-input
+        id="freitext"
+        v-model="rezept.beschreibung"
+        placeholder="freie Diagnose, Notizen etc."
       />
     </b-form-group>
 
@@ -183,6 +202,9 @@ export default {
           ausstellungsdatum: new Date(),
         };
       },
+    },
+    kunde: {
+      type: Object,
     },
     showSaveButton: {
       type: Boolean,
@@ -267,6 +289,9 @@ export default {
             (rhm) => rhm.HeilmittelId
           ).includes(hm.id)
       );
+    },
+    kundeDaten() {
+      return this.kunde || this.Rezept.Kunde;
     },
   },
   mounted() {

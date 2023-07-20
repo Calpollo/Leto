@@ -395,7 +395,7 @@ export default {
     maxSelectionNum() {
       let sum = 0;
       this.rezeptHeilmittel.forEach((rhm) => {
-        sum += rhm.terminNumber;
+        sum += parseInt(rhm.terminNumber);
       });
       return sum;
     },
