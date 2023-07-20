@@ -6,6 +6,7 @@
 
 Der ultimative Terminplaner für junge Physiotherapeuten und neue Gründer: Einfach, Schnell und Preiswert!
 
+![Version](https://img.shields.io/github/v/release/Calpollo/leto?style=for-the-badge&logo=github)
 ![Workflow status](https://img.shields.io/github/actions/workflow/status/Calpollo/leto/docker-images.yml?style=for-the-badge&logo=github)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge&logo=github)](https://opensource.org/licenses/Apache-2.0)
 ![License](https://img.shields.io/github/last-commit/Calpollo/leto?style=for-the-badge&logo=github)
