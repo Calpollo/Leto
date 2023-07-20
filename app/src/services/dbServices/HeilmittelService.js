@@ -34,7 +34,6 @@ class HeilmittelService {
   }
 
   update(hm) {
-    console.log(hm);
     return DatabaseService.updateHeilmittel({ id: hm.id, instance: hm });
   }
 

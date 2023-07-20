@@ -138,8 +138,7 @@ export default {
     },
     ok() {
       if (this.selectedHm.id) {
-        HeilmittelService.update(this.selectedHm).then((d) => {
-          console.log(d);
+        HeilmittelService.update(this.selectedHm).then(() => {
           this.loadHeilmittel();
         });
       } else {
@@ -149,8 +148,7 @@ export default {
           this.selectedHm.terminMinutes,
           this.selectedHm.kundenbeteiligung,
           this.selectedHm.krankenkassenbeteiligung
-        ).then((d) => {
-          console.log(d);
+        ).then(() => {
           this.loadHeilmittel();
         });
       }

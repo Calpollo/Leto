@@ -292,8 +292,7 @@ export default {
     },
     ok() {
       if (this.selectedEditKunde.id) {
-        KundenService.update(this.selectedEditKunde).then((d) => {
-          console.log(d);
+        KundenService.update(this.selectedEditKunde).then(() => {
           this.loadKunden();
         });
       } else {
@@ -303,8 +302,7 @@ export default {
           this.selectedEditKunde.name,
           this.selectedEditKunde.terminNumber,
           this.selectedEditKunde.terminMinutes
-        ).then((d) => {
-          console.log(d);
+        ).then(() => {
           this.loadKunden();
         });
       }

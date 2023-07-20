@@ -40,7 +40,6 @@ class KundenService {
   }
 
   update(kunde) {
-    console.log(kunde);
     return DatabaseService.updateKunde({ id: kunde.id, instance: kunde });
   }
 
