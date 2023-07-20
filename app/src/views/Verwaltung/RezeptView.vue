@@ -11,7 +11,7 @@
 
     <div v-else>
       <b-row class="my-2">
-        <b-col md="6" lg="4">
+        <b-col md="12" lg="4">
           <b-form-group label="ID:" label-for="id-search">
             <b-input-group>
               <template #append>
@@ -41,7 +41,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col md="6" lg="4">
+        <b-col md="12" lg="4">
           <b-form-group label="Kunde:" label-for="kunde-search">
             <b-input-group>
               <template #append>
@@ -102,7 +102,37 @@
             </b-input-group>
           </b-form-group>
         </b-col>
+
+        <b-col md="12" lg="6">
+          <b-form-group label="Ausstellungsdatum Start:">
+            <b-input-group>
+              <template #append>
+                <b-button @click="() => (filterAusstellungsdatumStart = null)">
+                  <b-icon-x />
+                </b-button>
+              </template>
+              <b-form-input
+                type="date"
+                v-model="filterAusstellungsdatumStart"
+              />
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+        <b-col md="12" lg="6">
+          <b-form-group label="Ausstellungsdatum Ende:">
+            <b-input-group>
+              <template #append>
+                <b-button @click="() => (filterAusstellungsdatumEnde = null)">
+                  <b-icon-x />
+                </b-button>
+              </template>
+              <b-form-input type="date" v-model="filterAusstellungsdatumEnde" />
+            </b-input-group>
+          </b-form-group>
+        </b-col>
       </b-row>
+
+      <hr />
 
       <b-row class="mb-4">
         <b-col>
@@ -190,14 +220,14 @@
                 </p>
               </b-col>
               <b-col>
-                <p>
+                <p v-if="rezept.icd10code">
                   <span v-b-tooltip.hover title="icd10code">
                     <b-icon-code-square class="mr-2" />
                     {{ rezept.icd10code.primärschlüssel }}:
                     {{ rezept.icd10code.text }}
                   </span>
                 </p>
-                <p>
+                <p v-if="rezept.indikation">
                   <span v-b-tooltip.hover title="Indikation">
                     <b-icon-bullseye class="mr-2" />
                     {{ rezept.indikation }}
@@ -260,6 +290,8 @@ export default {
       selectedKundeId: null,
       selectedHeilmittelId: null,
       selectedRezeptId: null,
+      filterAusstellungsdatumStart: null,
+      filterAusstellungsdatumEnde: null,
     };
   },
   components: { SpinnerLogo, RechnungKundePdf, TerminUebersichtPdf },
@@ -325,25 +357,28 @@ export default {
       this.selectedHeilmittelId = null;
       this.selectedKundeId = null;
       this.selectedRezeptId = null;
+      this.filterAusstellungsdatumStart = null;
+      this.filterAusstellungsdatumEnde = null;
     },
   },
   computed: {
     filteredRezepte() {
-      return [...this.rezepte]
-        .filter((r) => {
-          return !this.selectedRezeptId || r.id == this.selectedRezeptId;
-        })
-        .filter((r) => {
-          return !this.selectedKundeId || r.KundeId == this.selectedKundeId;
-        })
-        .filter((r) => {
-          return (
-            !this.selectedHeilmittelId ||
+      return [...this.rezepte].filter((r) => {
+        return (
+          (this.filterAusstellungsdatumStart == null ||
+            new Date(this.filterAusstellungsdatumStart) <=
+              new Date(r.ausstellungsdatum)) &&
+          (this.filterAusstellungsdatumEnde == null ||
+            new Date(this.filterAusstellungsdatumEnde) >=
+              new Date(r.ausstellungsdatum)) &&
+          (!this.selectedRezeptId || r.id == this.selectedRezeptId) &&
+          (!this.selectedKundeId || r.KundeId == this.selectedKundeId) &&
+          (!this.selectedHeilmittelId ||
             r.RezeptHeilmittels.map((hm) => hm.Heilmittel.id).includes(
               this.selectedHeilmittelId
-            )
-          );
-        });
+            ))
+        );
+      });
     },
     kunden() {
       let temp = [];
