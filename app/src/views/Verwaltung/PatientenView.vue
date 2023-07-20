@@ -295,16 +295,6 @@ export default {
         KundenService.update(this.selectedEditKunde).then(() => {
           this.loadKunden();
         });
-      } else {
-        // FIXME: what?
-        KundenService.create(
-          this.selectedEditKunde.abk,
-          this.selectedEditKunde.name,
-          this.selectedEditKunde.terminNumber,
-          this.selectedEditKunde.terminMinutes
-        ).then(() => {
-          this.loadKunden();
-        });
       }
       this.$bvModal.hide("editModal");
     },
