@@ -94,7 +94,12 @@ export default {
       const rowStart = dateRowStart(event, this.openingHours);
       const rowEnd = dateRowEnd(event, this.openingHours);
       const concurrentEvents = eventListToConcurringEventnumber(this.events);
+      const marginTop =
+        (new Date(event.start).getMinutes() % (60 / 4)) *
+        (this.pixelPerHour / 60);
+
       const result = {
+        margin: `${marginTop}px 0 0 0`,
         height: eventHours(event) * this.pixelPerHour + "px",
         gridRow: rowStart + "/" + rowEnd,
         gridColumn:

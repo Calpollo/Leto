@@ -169,6 +169,7 @@
       :ref="'terminuebersicht-' + event?.id"
       :RezeptId="this.event.RezeptId.toString()"
     />
+
     <RechnungKundePdf
       v-if="this.event?.RezeptId"
       :ref="'rechnung-' + event?.id"
