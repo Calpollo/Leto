@@ -6,8 +6,12 @@
 
 Der ultimative Terminplaner für junge Physiotherapeuten und neue Gründer: Einfach, Schnell und Preiswert!
 
+![Workflow status](https://img.shields.io/github/actions/workflow/status/Calpollo/leto/docker-images.yml?style=for-the-badge&logo=github)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge&logo=github)](https://opensource.org/licenses/Apache-2.0)
+![License](https://img.shields.io/github/last-commit/Calpollo/leto?style=for-the-badge&logo=github)
+![Github Repo size](https://img.shields.io/github/repo-size/Calpollo/leto?style=for-the-badge&logo=github)
+[![Docker Image Size](https://img.shields.io/docker/image-size/letoapp/leto/latest?style=for-the-badge&logo=docker)](https://hub.docker.com/repository/docker/letoapp/leto/general)
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 - [Leto](#leto)
   - [Features](#features)
