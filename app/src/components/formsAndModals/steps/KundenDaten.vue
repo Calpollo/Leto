@@ -51,7 +51,7 @@ export default {
     },
     showSaveButton: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data() {

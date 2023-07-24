@@ -21,14 +21,13 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <folgerezept-daten v-model="rezept" :showSaveButton="false" />
+          <folgerezept-daten v-model="rezept" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
           <termin-vorschlaege
             v-if="currentStep == 2"
             :rezeptHeilmittel="rezept.RezeptHeilmittels"
-            :showSaveButton="false"
             v-model="terminvorschlaege"
           />
         </v-stepper-content>

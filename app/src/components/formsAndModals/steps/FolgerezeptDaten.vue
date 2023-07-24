@@ -56,7 +56,6 @@
       v-if="showRezeptDaten"
       v-model="rezept"
       @input="updateRezept"
-      :showSaveButton="false"
     />
 
     <b-button
@@ -82,7 +81,7 @@ export default {
     },
     showSaveButton: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data() {
