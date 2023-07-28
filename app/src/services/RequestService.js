@@ -57,7 +57,7 @@ class RequestService {
           store.commit("logIn");
           return new Promise((resolve) => resolve(true));
         }
-        return err;
+        throw err;
       });
   }
 

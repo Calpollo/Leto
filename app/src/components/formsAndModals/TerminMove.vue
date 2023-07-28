@@ -7,7 +7,6 @@
   >
     <TerminVorschlaege
       :heilmittel="replacementHeilmittel"
-      :showSaveButton="false"
       :preSelect="false"
       v-model="ersatzvorschlaege"
     />

@@ -27,15 +27,11 @@
 
       <v-stepper-items>
         <v-stepper-content step="1">
-          <kunden-daten v-model="kunde" :showSaveButton="false" />
+          <kunden-daten v-model="kunde" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <rezept-daten
-            v-model="rezept"
-            :kunde="kunde"
-            :showSaveButton="false"
-          />
+          <rezept-daten v-model="rezept" :kunde="kunde" />
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -43,7 +39,6 @@
             v-if="currentStep == 3"
             :rezeptHeilmittel="rezept.RezeptHeilmittels"
             v-model="terminvorschlaege"
-            :showSaveButton="false"
           />
         </v-stepper-content>
 

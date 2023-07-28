@@ -57,6 +57,12 @@ export default {
         })
         .catch((err) => {
           console.error(err);
+          this.$bvToast.toast(err.response?.data, {
+            title: "Login nicht möglich",
+            autoHideDelay: 5000,
+            variant: "danger",
+            solid: true,
+          });
         });
     },
     workOffline() {
