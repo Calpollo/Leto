@@ -177,45 +177,9 @@
                 {{ rezept.Kunde.firstname }}
                 {{ rezept.Kunde.lastname }}
               </router-link>
-              <span class="ml-2" :id="`rezept-icons-${rezept.id}`">
+              <span class="ml-2" v-b-tooltip.hover :title="rezept.id">
                 <b-icon-info-circle />
-                <b-icon-house v-if="rezept.hausbesuch" class="ml-1" />
-                <b-icon-journal-text
-                  v-if="rezept.therapieBericht"
-                  class="ml-1"
-                />
-                <b-icon-stopwatch v-if="rezept.dringend" class="ml-1" />
               </span>
-              <b-tooltip
-                :target="`rezept-icons-${rezept.id}`"
-                v-b-tooltip.focus
-              >
-                #{{ rezept.id }}
-                <span v-if="rezept.hausbesuch">
-                  <br /><b-icon-house />Hausbesuch
-                </span>
-                <span v-if="rezept.therapieBericht">
-                  <br />
-                  <b-icon-journal-text />
-                  Therapiebericht
-                </span>
-                <span v-if="rezept.dringend">
-                  <br /><b-icon-house />Dringend
-                </span>
-              </b-tooltip>
-              <b-dropdown class="ml-2" variant="transparent" right no-caret>
-                <template #button-content>
-                  <b-icon-three-dots />
-                </template>
-                <b-dropdown-item @click="edit(rezept)">
-                  <b-icon-pen />
-                  bearbeiten
-                </b-dropdown-item>
-                <!-- <b-dropdown-item @click="remove(rezept)">
-                  <b-icon-trash />
-                  löschen
-                </b-dropdown-item> -->
-              </b-dropdown>
             </b-col>
             <b-col :style="{ textAlign: 'right' }">
               <b-icon-chevron-bar-expand />
@@ -282,10 +246,6 @@
                     {{ rezept.hausbesuch ? "" : "kein" }} Hausbesuch
                   </span>
                 </p>
-                <p v-if="rezept.dringend">
-                  <b-icon-stopwatch class="mr-2" />
-                  Dringendes Rezept
-                </p>
               </b-col>
             </b-row>
 
@@ -311,23 +271,12 @@
           </b-card-body>
         </b-collapse>
       </b-card>
-
-      <b-modal id="editModal" size="lg" scrollable title="Rezept-Daten">
-        <RezeptDaten v-model="selectedEditRezept" />
-        <template #modal-footer="{}">
-          <b-button size="sm" variant="success" @click="ok">Speichern</b-button>
-          <b-button size="sm" variant="outline-danger" @click="cancel">
-            Abbrechen
-          </b-button>
-        </template>
-      </b-modal>
     </div>
   </div>
 </template>
 
 <script>
 import SpinnerLogo from "@/components/SpinnerLogo.vue";
-import RezeptDaten from "@/components/formsAndModals/steps/RezeptDaten.vue";
 import { toLocale } from "@/utils/dates";
 import RezeptService from "@/services/dbServices/RezeptService";
 import RechnungKundePdf from "@/pdfTemplates/RechnungKundePdf.vue";
@@ -343,38 +292,29 @@ export default {
       selectedRezeptId: null,
       filterAusstellungsdatumStart: null,
       filterAusstellungsdatumEnde: null,
-      selectedEditRezept: null,
     };
   },
-  components: {
-    SpinnerLogo,
-    RezeptDaten,
-    RechnungKundePdf,
-    TerminUebersichtPdf,
-  },
+  components: { SpinnerLogo, RechnungKundePdf, TerminUebersichtPdf },
   mounted() {
-    this.loadRezepte();
+    RezeptService.getAll({
+      include: [
+        "Kunde",
+        "Termins",
+        "icd10code",
+        {
+          association: "RezeptHeilmittels",
+          include: "Heilmittel",
+        },
+      ],
+    }).then((rezeptList) => {
+      this.rezepte = rezeptList;
+    });
 
     this.selectedRezeptId = this.$route.query?.rezept;
     this.selectedKundeId = this.$route.query?.kunde;
     this.selectedHeilmittelId = this.$route.query?.heilmittel;
   },
   methods: {
-    loadRezepte() {
-      RezeptService.getAll({
-        include: [
-          "Kunde",
-          "Termins",
-          "icd10code",
-          {
-            association: "RezeptHeilmittels",
-            include: "Heilmittel",
-          },
-        ],
-      }).then((rezeptList) => {
-        this.rezepte = rezeptList;
-      });
-    },
     getDateRange(rezeptId) {
       let r = [...this.rezepte];
       r = r.find((r) => r.id == rezeptId);
@@ -419,22 +359,6 @@ export default {
       this.selectedRezeptId = null;
       this.filterAusstellungsdatumStart = null;
       this.filterAusstellungsdatumEnde = null;
-    },
-    ok() {
-      if (this.selectedEditRezept.id) {
-        RezeptService.update(this.selectedEditRezept).then(() => {
-          this.loadRezepte();
-        });
-      }
-      this.$bvModal.hide("editModal");
-    },
-    cancel() {
-      this.loadRezepte();
-      this.$bvModal.hide("editModal");
-    },
-    edit(rezept) {
-      this.selectedEditRezept = rezept;
-      this.$bvModal.show("editModal");
     },
   },
   computed: {

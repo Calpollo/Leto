@@ -87,11 +87,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(to.path, from.path);
   const publicPaths = ["/"];
   if (publicPaths.includes(to.path)) next();
   else if (!store.state.loggedIn) next("/");
-  else if (to.path != from.path) next();
+  else next();
 });
 
 export default router;

@@ -199,7 +199,7 @@ export default {
     rezeptHeilmittel: Array,
     showSaveButton: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     preSelect: {
       type: Boolean,
@@ -218,7 +218,6 @@ export default {
   },
   methods: {
     generateVorschläge() {
-      // TODO: update for dringende Termine
       const therapeutenQuery = TherapeutService.getAll({
         include: "Heilmittels",
       });
