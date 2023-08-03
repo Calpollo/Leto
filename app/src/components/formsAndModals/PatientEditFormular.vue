@@ -19,6 +19,16 @@
       />
     </b-form-group>
 
+    <b-form-group id="birthday-group" label="Geburtstag:" label-for="birthday">
+      <b-form-input
+        id="birthday"
+        type="date"
+        placeholder="01.01.1990"
+        :value="YYYY_MM_DD_convert(kunde.geburtstag)"
+        @input="(val) => (kunde.geburtstag = new Date(val))"
+      />
+    </b-form-group>
+
     <b-form-group id="address-group" label="Adresse:" label-for="address">
       <b-form-input
         id="address"
@@ -79,17 +89,21 @@
 </template>
 
 <script>
+import { YYYY_MM_DD_convert } from "@/utils/dates";
+
 export default {
   name: "PatientEditFormular",
   data() {
     return {
       kunde: this.value,
+      dateTest: null,
     };
   },
   props: {
     value: Object,
   },
   methods: {
+    YYYY_MM_DD_convert,
     setVersichertenStatus(status) {
       this.kunde = {
         ...this.kunde,
@@ -97,6 +111,9 @@ export default {
         versichertennummer:
           status == "SZ" ? null : this.kunde.versichertennummer,
       };
+    },
+    log(a) {
+      console.log(a);
     },
   },
   watch: {
