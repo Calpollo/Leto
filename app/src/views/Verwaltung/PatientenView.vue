@@ -136,6 +136,11 @@
                 </p>
               </b-col>
               <b-col>
+                <p>
+                  <b-icon-calendar class="mr-2" />
+                  {{ toLocale(patient.geburtstag) }}
+                  ({{ dateToAge(patient.geburtstag) }})
+                </p>
                 <p v-if="patient.versichertenstatus">
                   <b-icon-lock-fill class="mr-2" />
                   {{ patient.versichertenstatus }}
@@ -232,7 +237,7 @@ import KundenService from "@/services/dbServices/KundenService";
 import HeilmittelService from "@/services/dbServices/HeilmittelService";
 import PatientEditFormular from "@/components/formsAndModals/PatientEditFormular.vue";
 import DeletionConfirmation from "@/components/formsAndModals/DeletionConfirmation.vue";
-import { toLocale } from "@/utils/dates";
+import { toLocale, dateToAge } from "@/utils/dates";
 
 export default {
   name: "PatientenView",
@@ -316,6 +321,7 @@ export default {
       this.$refs.deletionConfirmation.show();
     },
     toLocale,
+    dateToAge,
   },
   components: { SpinnerLogo, PatientEditFormular, DeletionConfirmation },
   mounted() {

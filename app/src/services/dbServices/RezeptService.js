@@ -36,8 +36,7 @@ class RezeptService {
     therapieBericht,
     icd10codeId,
     indikation,
-    beschreibung,
-    dringend
+    beschreibung
   ) {
     return DatabaseService.createRezept({
       where: {
@@ -49,13 +48,8 @@ class RezeptService {
         icd10codeId,
         indikation,
         beschreibung,
-        dringend,
       },
     });
-  }
-
-  update(rezept) {
-    return DatabaseService.updateRezept({ id: rezept.id, instance: rezept });
   }
 }
 

@@ -179,13 +179,10 @@
     <b-form-checkbox v-model="rezept.therapieBericht" @change="save" switch>
       Therapiebericht
     </b-form-checkbox>
-    <b-form-checkbox v-model="rezept.dringend" @change="save" switch>
-      Dringendes Rezept
-    </b-form-checkbox>
 
-    <b-button :disabled="!isValid" v-if="showSaveButton" type="submit">
-      Weiter
-    </b-button>
+    <b-button :disabled="!isValid" v-if="showSaveButton" type="submit"
+      >Weiter</b-button
+    >
   </b-form>
 </template>
 
@@ -211,7 +208,7 @@ export default {
     },
     showSaveButton: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   data() {
@@ -294,7 +291,7 @@ export default {
       );
     },
     kundeDaten() {
-      return this.kunde || this.rezept.Kunde;
+      return this.kunde || this.Rezept.Kunde;
     },
   },
   mounted() {

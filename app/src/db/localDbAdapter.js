@@ -485,11 +485,6 @@ class LocalDbAdapter {
       beschreibung: {
         type: DataTypes.STRING,
       },
-      dringend: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
     });
 
     this.RezeptHeilmittel = this.sequelize.define("RezeptHeilmittel", {

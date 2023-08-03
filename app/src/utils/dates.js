@@ -9,3 +9,28 @@ export function toLocaleTime(date, locale = "de-DE") {
     minute: "2-digit",
   });
 }
+
+export function dateToAge(birthdate) {
+  if (!birthdate) return birthdate;
+  if (typeof birthdate == "string") birthdate = new Date(birthdate);
+  const now = new Date();
+
+  let years = now.getFullYear() - birthdate.getFullYear();
+  const months = now.getMonth() - birthdate.getMonth();
+  const days = now.getDate() - birthdate.getDate();
+
+  if (months < 0 || (months == 0 && days < 0)) years--;
+
+  return years;
+}
+
+export function YYYY_MM_DD_convert(date) {
+  if (!date) return date;
+  if (typeof date == "string") date = new Date(date);
+  console.log(date);
+
+  return `${date?.getFullYear()}-${new String(date?.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${new String(date?.getDate()).padStart(2, "0")}`;
+}

@@ -25,11 +25,12 @@
       }}:
       {{ kunde?.firstname }}
       {{ kunde?.lastname }}
+      ({{ dateToAge(kunde?.geburtstag) }})
     </p>
 
     <b-tooltip
       :target="`tooltip-target-${event.id}`"
-      v-b-tooltip.focus
+      triggers="hover"
       placement="bottom"
     >
       <b-alert variant="warning" :show="event.isFirstEvent">
@@ -187,7 +188,7 @@ import TerminUebersichtPdf from "../../pdfTemplates/TerminUebersichtPdf.vue";
 import RechnungKundePdf from "../../pdfTemplates/RechnungKundePdf.vue";
 import TerminMove from "../formsAndModals/TerminMove.vue";
 import TerminAbsage from "../formsAndModals/TerminAbsage.vue";
-import { toLocale } from "@/utils/dates";
+import { toLocale, dateToAge } from "@/utils/dates";
 
 export default {
   name: "CalendarDate",
@@ -211,6 +212,7 @@ export default {
   },
   methods: {
     toLocale,
+    dateToAge,
     pad(number) {
       return String(number).padStart(2, "0");
     },
