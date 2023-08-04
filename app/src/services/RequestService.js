@@ -2,15 +2,19 @@ import router from "@/router";
 import store from "@/store";
 import axios from "axios";
 import ConfigService from "./ConfigService";
+import { setupCache } from "axios-cache-interceptor";
 
-const ax = axios.create({
-  baseURL:
-    process.env.NODE_ENV == "production"
-      ? "https://leto.andreasnicklaus.de/api/"
-      : "http://localhost:8080/api/",
-  // timeout: 1000,
-  // headers: { 'X-Custom-Header': 'foobar' }
-});
+const ax = setupCache(
+  axios.create({
+    baseURL:
+      process.env.NODE_ENV == "production"
+        ? "https://leto.andreasnicklaus.de/api/"
+        : "http://localhost:8080/api/",
+    // timeout: 1000,
+    // headers: { 'X-Custom-Header': 'foobar' }
+  }),
+  { headerInterpreter: () => 500 }
+);
 
 ax.interceptors.response.use(
   (response) => response,

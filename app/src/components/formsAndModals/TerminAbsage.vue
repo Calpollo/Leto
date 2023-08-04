@@ -193,13 +193,19 @@ export default {
     },
   },
   mounted() {
-    KundenService.getAll().then((kundenList) => {
-      this.patienten = kundenList;
-      if (this.event) {
-        this.selectedTerminId = this.event?.id;
-        this.selectedPatientId = this.event?.Rezept?.KundeId;
-      }
-    });
+    if (!this.event?.Rezept?.Kunde) {
+      KundenService.getAll().then((kundenList) => {
+        this.patienten = kundenList;
+        if (this.event) {
+          this.selectedTerminId = this.event?.id;
+          this.selectedPatientId = this.event?.Rezept?.KundeId;
+        }
+      });
+    } else {
+      this.patienten = [this.event.Rezept.Kunde];
+      this.selectedPatientId = this.selectedTerminId = this.event?.id;
+      this.selectedPatientId = this.event?.Rezept?.KundeId;
+    }
   },
   watch: {
     selectedPatientId() {
