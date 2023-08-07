@@ -7,12 +7,6 @@ import TerminService from "@/services/dbServices/TerminService";
 const millisecondsPerHour = 3600000;
 const millisecondsPerDay = millisecondsPerHour * 24;
 
-// export function timeStringToDate(str, dateString = null) {
-//   const d = dateString ? new Date(dateString) : new Date();
-//   let [hours, minutes, seconds] = str.split(":");
-//   return d.setHours(hours, minutes, seconds);
-// }
-
 export function eventHours(event) {
   if (!event) return 0;
   return event.minutes / 60;
@@ -29,16 +23,6 @@ export function eventsAtTheSameTime(event, events) {
       .setMinutes(new Date(eStart).getMinutes() + e.minutes)
       .valueOf();
 
-    // console.table({
-    //   eStart: eStart - 1670000000000,
-    //   eventStart: eventStart - 1670000000000,
-    //   eEnd: eEnd - 1670000000000,
-    //   eventEnd: eventEnd - 1670000000000,
-    //   startEndOverlapA: eventEnd == eStart,
-    //   startEndOverlapB: eEnd == eventStart,
-    //   inbetweenA: eventStart < eEnd && eventEnd >= eEnd,
-    //   inbetweenB: eventStart <= eStart && eventEnd > eStart,
-    // });
     return (
       eStart == eventStart ||
       eEnd == eventEnd ||
@@ -65,16 +49,6 @@ export function fullDayHours(openingHours) {
 }
 
 export function dateRowStart(event, openingHours) {
-  // if (typeof event.start == "string")
-  //   event.start = timeStringToDate(
-  //     event.start.split("T")[1].substring(0, 9),
-  //     event.start
-  //   );
-  // if (typeof openingHours.Zeitspanne.start == "string")
-  //   openingHours.Zeitspanne.start = timeStringToDate(
-  //     openingHours.Zeitspanne.start
-  //   );
-
   let timeDiff =
     new Date(event.start) - new Date(openingHours.Zeitspanne.start);
   timeDiff = timeDiff % millisecondsPerDay;
