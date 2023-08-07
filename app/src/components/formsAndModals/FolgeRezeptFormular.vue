@@ -29,6 +29,8 @@
             v-if="currentStep == 2"
             :rezeptHeilmittel="rezept.RezeptHeilmittels"
             :showSaveButton="false"
+            :ausstellungsdatum="rezept.ausstellungsdatum"
+            :dringend="rezept.dringend"
             v-model="terminvorschlaege"
           />
         </v-stepper-content>

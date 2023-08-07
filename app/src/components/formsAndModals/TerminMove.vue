@@ -9,6 +9,8 @@
       :heilmittel="replacementHeilmittel"
       :showSaveButton="false"
       :preSelect="false"
+      :ausstellungsdatum="event.Rezept.ausstellungsdatum"
+      :dringend="event.Rezept.dringend"
       v-model="ersatzvorschlaege"
     />
     <template #modal-footer="{}">

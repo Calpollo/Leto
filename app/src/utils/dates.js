@@ -34,3 +34,11 @@ export function YYYY_MM_DD_convert(date) {
     "0"
   )}-${new String(date?.getDate()).padStart(2, "0")}`;
 }
+
+const msPerMinute = 1000 * 60;
+export function roundToMinutes(date, minutes) {
+  const msInQuestion = minutes * msPerMinute;
+  return new Date(
+    date.valueOf() - (date.valueOf() % msInQuestion) + msInQuestion
+  );
+}

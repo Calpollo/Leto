@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="neuesRezept" size="lg" scrollable title="Neues Rezept aufnehmen">
+  <b-modal id="neuesRezept" size="xl" scrollable title="Neues Rezept aufnehmen">
     <v-stepper v-model="currentStep" :flat="false" :dark="false">
       <v-stepper-header>
         <v-stepper-step :complete="currentStep > 1" step="1">
@@ -41,9 +41,11 @@
         <v-stepper-content step="3">
           <termin-vorschlaege
             v-if="currentStep == 3"
-            :rezeptHeilmittel="rezept.RezeptHeilmittels"
             v-model="terminvorschlaege"
+            :rezeptHeilmittel="rezept.RezeptHeilmittels"
             :showSaveButton="false"
+            :ausstellungsdatum="rezept.ausstellungsdatum"
+            :dringend="rezept.dringend"
           />
         </v-stepper-content>
 

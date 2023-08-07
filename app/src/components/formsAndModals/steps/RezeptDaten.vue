@@ -60,6 +60,11 @@
             <b-button
               type="submit"
               :disabled="!creationHeilmittel || !creationTerminNumber"
+              :variant="
+                !creationHeilmittel || !creationTerminNumber
+                  ? 'secondary'
+                  : 'outline-success'
+              "
             >
               <b-icon-plus />
               Hinzufügen
@@ -141,9 +146,6 @@
       label="Aussteller:"
       label-for="aussteller"
     >
-      <b-form-checkbox v-model="createNewArzt" switch>
-        neuen Aussteller anlegen
-      </b-form-checkbox>
       <b-form-input
         id="aussteller"
         type="text"
@@ -171,6 +173,10 @@
       >
         Jetzt anlegen
       </b-button>
+
+      <b-form-checkbox v-model="createNewArzt" switch>
+        neuen Aussteller anlegen
+      </b-form-checkbox>
     </b-form-group>
 
     <b-form-checkbox v-model="rezept.hausbesuch" @change="save" switch>
@@ -283,12 +289,14 @@ export default {
       );
     },
     nonSelectedHeilmittel() {
-      return this.heilmittel.filter(
-        (hm) =>
-          !this.rezept.RezeptHeilmittels.map(
-            (rhm) => rhm.HeilmittelId
-          ).includes(hm.id)
-      );
+      return this.heilmittel
+        .filter(
+          (hm) =>
+            !this.rezept.RezeptHeilmittels.map(
+              (rhm) => rhm.HeilmittelId
+            ).includes(hm.id)
+        )
+        .sort((a, b) => (a.abk > b.abk ? 1 : -1));
     },
     kundeDaten() {
       return this.kunde || this.Rezept.Kunde;

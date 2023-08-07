@@ -1,6 +1,252 @@
 <template>
   <div class="Terminvorschlaege">
-    <p>
+    <b-card border-variant="secondary" no-body>
+      <b-card-header header-bg-variant="secondary" header-text-variant="white">
+        <b-button block v-b-toggle.filter-collapse>
+          <b-row>
+            <b-col>
+              <b-icon-filter class="mr-2" />
+              Filter
+            </b-col>
+            <b-col cols="auto">
+              <b-icon-chevron-down v-if="!filterVisible" />
+              <b-icon-chevron-left v-else />
+            </b-col>
+          </b-row>
+        </b-button>
+      </b-card-header>
+      <b-collapse id="filter-collapse" visible v-model="filterVisible">
+        <b-card-body>
+          <b-form>
+            <b-form-group
+              label-for="therapeutenCheck"
+              description="Schließe Therapeuten in die Vorschläge ein oder aus"
+            >
+              <b-form-checkbox-group
+                id="therapeutenCheck"
+                :options="therapeutenFilterOptions"
+                v-model="selectedTherapeuten"
+                :state="selectedTherapeutenState ? null : false"
+              />
+              <b-form-invalid-feedback :state="selectedTherapeutenState">
+                Die ausgewählten Therapeuten können das Rezept nicht erfüllen.
+              </b-form-invalid-feedback>
+            </b-form-group>
+          </b-form>
+
+          <!-- {{ selectedTherapeuten.map((t) => t.name) }} -->
+          <hr />
+
+          <b-form-group
+            description="Erlaube oder verbiete Zeiten für die Suche nach Terminvorschlägen"
+          >
+            <b-list-group>
+              <b-list-group-item>
+                <b-form-group>
+                  <b-row>
+                    <b-col cols="3">
+                      <span> Montag: </span>
+                    </b-col>
+                    <b-col>
+                      <b-form-radio-group
+                        v-model="montagFilterOption"
+                        :options="timeFilterOptions"
+                      />
+                    </b-col>
+                    <b-col cols="auto">
+                      <b-button
+                        variant="outline-dark"
+                        size="sm"
+                        @click="selectOnly('montag')"
+                      >
+                        <b-icon-arrow-down />
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-if="montagFilterOption == null">
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="montagTime.start"
+                        locale="de"
+                      />
+                    </b-col>
+                    <b-col cols="auto">-</b-col>
+                    <b-col>
+                      <b-form-timepicker v-model="montagTime.end" locale="de" />
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-list-group-item>
+              <b-list-group-item>
+                <b-form-group>
+                  <b-row>
+                    <b-col cols="3">
+                      <span> Dienstag: </span>
+                    </b-col>
+                    <b-col>
+                      <b-form-radio-group
+                        v-model="dienstagFilterOption"
+                        :options="timeFilterOptions"
+                      />
+                    </b-col>
+                    <b-col cols="auto">
+                      <b-button
+                        variant="outline-dark"
+                        size="sm"
+                        @click="selectOnly('dienstag')"
+                      >
+                        <b-icon-arrow-down />
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-if="dienstagFilterOption == null">
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="dienstagTime.start"
+                        locale="de"
+                      />
+                    </b-col>
+                    <b-col cols="auto">-</b-col>
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="dienstagTime.end"
+                        locale="de"
+                      />
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-list-group-item>
+              <b-list-group-item>
+                <b-form-group>
+                  <b-row>
+                    <b-col cols="3">
+                      <span> Mittwoch: </span>
+                    </b-col>
+                    <b-col>
+                      <b-form-radio-group
+                        v-model="mittwochFilterOption"
+                        :options="timeFilterOptions"
+                      />
+                    </b-col>
+                    <b-col cols="auto">
+                      <b-button
+                        variant="outline-dark"
+                        size="sm"
+                        @click="selectOnly('mittwoch')"
+                      >
+                        <b-icon-arrow-down />
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-if="mittwochFilterOption == null">
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="mittwochTime.start"
+                        locale="de"
+                      />
+                    </b-col>
+                    <b-col cols="auto">-</b-col>
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="mittwochTime.end"
+                        locale="de"
+                      />
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-list-group-item>
+              <b-list-group-item>
+                <b-form-group>
+                  <b-row>
+                    <b-col cols="3">
+                      <span> Donnerstag: </span>
+                    </b-col>
+                    <b-col>
+                      <b-form-radio-group
+                        v-model="donnerstagFilterOption"
+                        :options="timeFilterOptions"
+                      />
+                    </b-col>
+                    <b-col cols="auto">
+                      <b-button
+                        variant="outline-dark"
+                        size="sm"
+                        @click="selectOnly('donnerstag')"
+                      >
+                        <b-icon-arrow-down />
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-if="donnerstagFilterOption == null">
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="donnerstagTime.start"
+                        locale="de"
+                      />
+                    </b-col>
+                    <b-col cols="auto">-</b-col>
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="donnerstagTime.end"
+                        locale="de"
+                      />
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-list-group-item>
+              <b-list-group-item>
+                <b-form-group>
+                  <b-row>
+                    <b-col cols="3">
+                      <span> Freitag: </span>
+                    </b-col>
+                    <b-col>
+                      <b-form-radio-group
+                        v-model="freitagFilterOption"
+                        :options="timeFilterOptions"
+                      />
+                    </b-col>
+                    <b-col cols="auto">
+                      <b-button
+                        variant="outline-dark"
+                        size="sm"
+                        @click="selectOnly('freitag')"
+                      >
+                        <b-icon-arrow-down />
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                  <b-row v-if="freitagFilterOption == null">
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="freitagTime.start"
+                        locale="de"
+                      />
+                    </b-col>
+                    <b-col cols="auto">-</b-col>
+                    <b-col>
+                      <b-form-timepicker
+                        v-model="freitagTime.end"
+                        locale="de"
+                      />
+                    </b-col>
+                  </b-row>
+                </b-form-group>
+              </b-list-group-item>
+            </b-list-group>
+          </b-form-group>
+        </b-card-body>
+
+        <b-card-footer align="end">
+          <b-button-group>
+            <b-button variant="success">Filtern</b-button>
+            <b-button variant="outline-secondary">Zurücksetzen</b-button>
+          </b-button-group>
+        </b-card-footer>
+      </b-collapse>
+    </b-card>
+
+    <p id="overall-count-check-indicator" class="my-3">
       <b-icon-exclamation-octagon
         v-if="!(selectionCount == maxSelectionNum)"
         variant="danger"
@@ -9,12 +255,13 @@
 
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
+
     <b-card
       v-for="[key, vorsch] in Object.entries(vorschlaege)"
       :key="key"
       :title="key"
     >
-      <b-card-header>
+      <b-card-header id="specific-count-check-indicator">
         <b-icon-exclamation-octagon
           v-if="
             !(
@@ -65,6 +312,7 @@
           >
             <!-- FIXME: don't allow overlapping appointment -->
             <b-button
+              block
               :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
               class="m-2"
               :disabled="
@@ -93,7 +341,7 @@
             </b-button>
           </b-col>
         </b-row>
-        <b-row>
+        <!-- <b-row>
           <b-col>
             <b-row>
               <b-col>
@@ -157,7 +405,7 @@
               </b-col>
             </b-row>
           </b-col>
-        </b-row>
+        </b-row> -->
       </b-card-text>
     </b-card>
     <br />
@@ -186,12 +434,7 @@
 
 <script>
 import TherapeutService from "@/services/dbServices/TherapeutService";
-import TerminService from "@/services/dbServices/TerminService";
-import PraxisService from "@/services/dbServices/PraxisService";
-import ConfigService from "../../../services/ConfigService";
-
-const milliSecondsPerMinute = 1000 * 60;
-const milliSecondsPerDay = milliSecondsPerMinute * 60 * 24;
+import { generateVorschläge } from "@/utils/rezeptcreation";
 
 export default {
   name: "TerminVorschlaege",
@@ -205,6 +448,13 @@ export default {
       type: Boolean,
       default: true,
     },
+    ausstellungsdatum: {
+      type: String,
+    },
+    dringend: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -213,121 +463,70 @@ export default {
       newVorschlagDate: null,
       newVorschlagTime: null,
       newVorschlagTherapeut: null,
-      praxis: null,
+      filterVisible: false,
+      therapeutenFilterOptions: [],
+      timeFilterOptions: [
+        { text: "erlauben", value: true },
+        { text: "verbieten", value: false },
+        { text: "individuell", value: null },
+      ],
+      selectedTherapeuten: [],
+      montagFilterOption: true,
+      dienstagFilterOption: true,
+      mittwochFilterOption: true,
+      donnerstagFilterOption: true,
+      freitagFilterOption: true,
+      montagTime: { start: "08:00:00", end: "18:00:00" },
+      dienstagTime: { start: "08:00:00", end: "18:00:00" },
+      mittwochTime: { start: "08:00:00", end: "18:00:00" },
+      donnerstagTime: { start: "08:00:00", end: "18:00:00" },
+      freitagTime: { start: "08:00:00", end: "18:00:00" },
     };
   },
   methods: {
-    generateVorschläge() {
-      const therapeutenQuery = TherapeutService.getAll({
-        include: "Heilmittels",
-      });
-      const terminQuery = TerminService.getAll().then((terminList) =>
-        terminList.filter((t) => new Date(t.start) >= new Date())
-      );
-
-      return Promise.all([
-        therapeutenQuery,
-        terminQuery,
-        this.loadPraxis(),
-      ]).then(
-        // eslint-disable-next-line no-unused-vars
-        ([therapeutList, terminList, praxis]) => {
-          let vorschlagDict = {};
-
-          for (let rhm of this.rezeptHeilmittel) {
-            let hmVorschlagList = [];
-            let searchStartDate = new Date(
-              new Date().valueOf() -
-                (new Date().valueOf() % (5 * 1000 * 60)) +
-                5 * 1000 * 60
-            );
-            const therapeutListHmFiltered = therapeutList.filter((t) =>
-              t.Heilmittels.some((thm) => thm.id == rhm.Heilmittel.id)
-            );
-
-            if (therapeutListHmFiltered.length == 0) {
-              vorschlagDict[rhm.Heilmittel.name] = [];
-              continue;
-            }
-
-            while (
-              hmVorschlagList.length <
-              rhm.terminNumber * 2 * therapeutListHmFiltered.length
-            ) {
-              const dayOfTheWeek = new Date(searchStartDate).getDay();
-              const week = [
-                null, // Sunday
-                this.praxis?.montagsZeit, // Monday
-                this.praxis?.dienstagsZeit, // Tuesday
-                this.praxis?.mittwochsZeit, // Wednesday
-                this.praxis?.donnerstagsZeit, // Thursday
-                this.praxis?.freitagsZeit, // Friday
-                null, // Saturday
-              ];
-              const hours = week[dayOfTheWeek];
-              const foundSlots = [];
-              let searchStartDateIsWithinOpeningHours;
-              if (hours == null) searchStartDateIsWithinOpeningHours = false;
-              else {
-                const msSearchStartDay = searchStartDate % milliSecondsPerDay;
-                const msHoursStart = hours.start % milliSecondsPerDay;
-                const msHoursEnd = hours.end % milliSecondsPerDay;
-                searchStartDateIsWithinOpeningHours =
-                  msSearchStartDay - msHoursStart > -milliSecondsPerMinute &&
-                  msSearchStartDay +
-                    rhm.Heilmittel.terminMinutes * milliSecondsPerMinute -
-                    msHoursEnd <=
-                    0;
-              }
-
-              if (searchStartDateIsWithinOpeningHours) {
-                for (let therapeut of therapeutListHmFiltered) {
-                  // if therapeut has an opening at the searchStartDate within the openingHours
-                  if (
-                    terminList.filter(
-                      (t) =>
-                        t.TherapeutId == therapeut.id &&
-                        Math.abs(new Date(t.start) - searchStartDate) <=
-                          rhm.Heilmittel.terminMinutes * 1000 * 60
-                    ).length == 0
-                  ) {
-                    foundSlots.push({
-                      date: new Date(searchStartDate),
-                      selected:
-                        this.preSelect &&
-                        hmVorschlagList.length < rhm.terminNumber,
-                      Therapeut: therapeut,
-                      TherapeutId: therapeut.id,
-                      Heilmittel: rhm.Heilmittel,
-                      HeilmittelId: rhm.Heilmittel.id,
-                    });
-                  }
-                }
-              }
-              const minuteStep =
-                foundSlots.length == 0 ? 5 : rhm.Heilmittel.terminMinutes;
-              searchStartDate = new Date(
-                searchStartDate.getTime() + minuteStep * 1000 * 60
-              );
-              hmVorschlagList.push(...foundSlots);
-            }
-            vorschlagDict[rhm.Heilmittel.name] = hmVorschlagList;
-          }
-
-          return vorschlagDict;
-        }
-      );
-    },
-    loadPraxis() {
-      return PraxisService.getOne(ConfigService.getPraxis(), {
-        include: { all: true },
-      }).then((praxis) => (this.praxis = praxis));
-    },
+    generateVorschläge,
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
     },
     pad(number) {
       return String(number).padStart(2, "0");
+    },
+    selectOnly(dayString) {
+      const dayFilterOptions = [false, false, false, false, false];
+      let dayIndex = 0;
+      let dayFilterOption = null;
+      switch (dayString) {
+        case "montag":
+          dayIndex = 0;
+          dayFilterOption = this.montagFilterOption;
+          break;
+        case "dienstag":
+          dayIndex = 1;
+          dayFilterOption = this.dienstagFilterOption;
+          break;
+        case "mittwoch":
+          dayIndex = 2;
+          dayFilterOption = this.mittwochFilterOption;
+          break;
+        case "donnerstag":
+          dayIndex = 3;
+          dayFilterOption = this.donnerstagFilterOption;
+          break;
+        case "freitag":
+          dayIndex = 4;
+          dayFilterOption = this.freitagFilterOption;
+          break;
+      }
+      console.log(dayFilterOption != false, dayFilterOption);
+      dayFilterOptions[dayIndex] =
+        dayFilterOption != false ? dayFilterOption : true;
+      [
+        this.montagFilterOption,
+        this.dienstagFilterOption,
+        this.mittwochFilterOption,
+        this.donnerstagFilterOption,
+        this.freitagFilterOption,
+      ] = dayFilterOptions;
     },
     selectVorschlag(vorschlag) {
       vorschlag.selected = !vorschlag.selected;
@@ -399,15 +598,46 @@ export default {
       });
       return sum;
     },
+    heilmittelList() {
+      return this.rezeptHeilmittel.map((rhm) => rhm.Heilmittel);
+    },
+    heilmittelIdList() {
+      return this.rezeptHeilmittel.map((rhm) => rhm.HeilmittelId);
+    },
+    selectedTherapeutenState() {
+      // TODO: improve by including wether rezeptHeilmittel that can be fulfilled by the selected Therapeuten
+      return this.selectedTherapeuten.length > 0;
+    },
   },
   mounted() {
-    TherapeutService.getAll().then(
-      (therapeutList) => (this.therapeuten = therapeutList)
-    );
-    this.generateVorschläge().then((vorschlaege) => {
-      this.vorschlaege = vorschlaege;
-      this.save();
-    });
+    console.log("mount");
+    TherapeutService.getAll({ include: "Heilmittels" })
+      .then((therapeutList) => {
+        // this.therapeuten = therapeutList;
+        const filteredTherapeuten = therapeutList.filter((t) =>
+          t.Heilmittels.some((thm) => this.heilmittelIdList.includes(thm.id))
+        );
+
+        this.therapeutenFilterOptions = filteredTherapeuten.map((t) => {
+          const hms = t.Heilmittels.filter((thms) =>
+            this.heilmittelIdList.includes(thms.id)
+          ).map((thms) => thms.abk);
+          return { value: t, text: `${t.name} (${hms.join(", ")})` };
+        });
+        this.selectedTherapeuten = filteredTherapeuten;
+      })
+      .then(() => {
+        this.generateVorschläge(
+          this.rezeptHeilmittel,
+          this.preSelect,
+          this.ausstellungsdatum,
+          this.selectedTherapeuten,
+          this.dringend
+        ).then((vorschlaege) => {
+          this.vorschlaege = vorschlaege;
+          this.save();
+        });
+      });
     // this.save();
   },
 };

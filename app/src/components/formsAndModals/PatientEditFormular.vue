@@ -1,23 +1,36 @@
 <template>
   <b-form class="PatientEditFormular">
-    <b-form-group id="lastname-group" label="Nachname:" label-for="lastname">
-      <b-form-input
-        id="lastname"
-        type="search"
-        placeholder="Nachname"
-        v-model="kunde.lastname"
-        required
-      />
-    </b-form-group>
-
-    <b-form-group id="firstname-group" label="Vorname:" label-for="firstname">
-      <b-form-input
-        id="firstname"
-        type="text"
-        placeholder="Vorname"
-        v-model="kunde.firstname"
-      />
-    </b-form-group>
+    <b-row>
+      <b-col>
+        <b-form-group
+          id="firstname-group"
+          label="Vorname:"
+          label-for="firstname"
+        >
+          <b-form-input
+            id="firstname"
+            type="text"
+            placeholder="Vorname"
+            v-model="kunde.firstname"
+          />
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group
+          id="lastname-group"
+          label="Nachname:"
+          label-for="lastname"
+        >
+          <b-form-input
+            id="lastname"
+            type="search"
+            placeholder="Nachname"
+            v-model="kunde.lastname"
+            required
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
 
     <b-form-group id="birthday-group" label="Geburtstag:" label-for="birthday">
       <b-form-input
