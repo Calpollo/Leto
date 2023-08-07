@@ -256,9 +256,11 @@ export default {
     },
   },
   mounted() {
-    KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
-      return (this.kunde = k);
-    });
+    if (!this.event?.Rezept?.Kunde)
+      KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
+        return (this.kunde = k);
+      });
+    else this.kunde = this.event.Rezept.Kunde;
   },
   components: {
     DeletionConfirmation,

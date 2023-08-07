@@ -119,10 +119,12 @@ export default {
   },
   methods: {
     generatePdf() {
-      return this.$refs.html2Pdf.generatePdf();
+      return this.updateRezept(this.RezeptId).then(() =>
+        this.$refs.html2Pdf.generatePdf()
+      );
     },
     updateRezept(id) {
-      RezeptService.getOne(id, {
+      return RezeptService.getOne(id, {
         include: ["Kunde", "Termins"],
       }).then((r) => {
         this.Rezept = r;
@@ -142,7 +144,7 @@ export default {
     },
   },
   mounted() {
-    this.updateRezept(this.RezeptId);
+    // this.updateRezept(this.RezeptId);
     PraxisService.getOne(ConfigService.getPraxis()).then((praxis) => {
       this.Praxis = praxis;
     });
