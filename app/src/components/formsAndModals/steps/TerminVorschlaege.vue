@@ -1,6 +1,7 @@
 <template>
   <div class="Terminvorschlaege">
-    <b-card border-variant="secondary" no-body>
+    <!-- filters -->
+    <b-card id="filters" border-variant="secondary" no-body>
       <b-card-header header-bg-variant="secondary" header-text-variant="white">
         <b-button block v-b-toggle.filter-collapse>
           <b-row>
@@ -15,6 +16,7 @@
           </b-row>
         </b-button>
       </b-card-header>
+
       <b-collapse id="filter-collapse" visible v-model="filterVisible">
         <b-card-body>
           <b-form>
@@ -32,220 +34,252 @@
                 Die ausgewählten Therapeuten können das Rezept nicht erfüllen.
               </b-form-invalid-feedback>
             </b-form-group>
+
+            <hr />
+
+            <b-form-group
+              description="Erlaube oder verbiete Zeiten für die Suche nach Terminvorschlägen"
+            >
+              <b-list-group>
+                <b-list-group-item>
+                  <b-form-group>
+                    <b-row>
+                      <b-col cols="3">
+                        <span> Montag: </span>
+                      </b-col>
+                      <b-col>
+                        <b-form-radio-group
+                          v-model="montagFilterOption"
+                          :options="timeFilterOptions"
+                          :state="selectedTimeFilterState"
+                        />
+                      </b-col>
+                      <b-col cols="auto">
+                        <b-button
+                          variant="outline-dark"
+                          size="sm"
+                          @click="selectOnly('montag')"
+                        >
+                          <b-icon-arrow-down />
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row v-if="montagFilterOption == null">
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="montagTime.start"
+                          locale="de"
+                        />
+                      </b-col>
+                      <b-col cols="auto">-</b-col>
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="montagTime.end"
+                          locale="de"
+                        />
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-list-group-item>
+                <b-list-group-item>
+                  <b-form-group>
+                    <b-row>
+                      <b-col cols="3">
+                        <span> Dienstag: </span>
+                      </b-col>
+                      <b-col>
+                        <b-form-radio-group
+                          v-model="dienstagFilterOption"
+                          :options="timeFilterOptions"
+                          :state="selectedTimeFilterState"
+                        />
+                      </b-col>
+                      <b-col cols="auto">
+                        <b-button
+                          variant="outline-dark"
+                          size="sm"
+                          @click="selectOnly('dienstag')"
+                        >
+                          <b-icon-arrow-down />
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row v-if="dienstagFilterOption == null">
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="dienstagTime.start"
+                          locale="de"
+                        />
+                      </b-col>
+                      <b-col cols="auto">-</b-col>
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="dienstagTime.end"
+                          locale="de"
+                        />
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-list-group-item>
+                <b-list-group-item>
+                  <b-form-group>
+                    <b-row>
+                      <b-col cols="3">
+                        <span> Mittwoch: </span>
+                      </b-col>
+                      <b-col>
+                        <b-form-radio-group
+                          v-model="mittwochFilterOption"
+                          :options="timeFilterOptions"
+                          :state="selectedTimeFilterState"
+                        />
+                      </b-col>
+                      <b-col cols="auto">
+                        <b-button
+                          variant="outline-dark"
+                          size="sm"
+                          @click="selectOnly('mittwoch')"
+                        >
+                          <b-icon-arrow-down />
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row v-if="mittwochFilterOption == null">
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="mittwochTime.start"
+                          locale="de"
+                        />
+                      </b-col>
+                      <b-col cols="auto">-</b-col>
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="mittwochTime.end"
+                          locale="de"
+                        />
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-list-group-item>
+                <b-list-group-item>
+                  <b-form-group>
+                    <b-row>
+                      <b-col cols="3">
+                        <span> Donnerstag: </span>
+                      </b-col>
+                      <b-col>
+                        <b-form-radio-group
+                          v-model="donnerstagFilterOption"
+                          :options="timeFilterOptions"
+                          :state="selectedTimeFilterState"
+                        />
+                      </b-col>
+                      <b-col cols="auto">
+                        <b-button
+                          variant="outline-dark"
+                          size="sm"
+                          @click="selectOnly('donnerstag')"
+                        >
+                          <b-icon-arrow-down />
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row v-if="donnerstagFilterOption == null">
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="donnerstagTime.start"
+                          locale="de"
+                        />
+                      </b-col>
+                      <b-col cols="auto">-</b-col>
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="donnerstagTime.end"
+                          locale="de"
+                        />
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-list-group-item>
+                <b-list-group-item>
+                  <b-form-group>
+                    <b-row>
+                      <b-col cols="3">
+                        <span> Freitag: </span>
+                      </b-col>
+                      <b-col>
+                        <b-form-radio-group
+                          v-model="freitagFilterOption"
+                          :options="timeFilterOptions"
+                          :state="selectedTimeFilterState"
+                        />
+                      </b-col>
+                      <b-col cols="auto">
+                        <b-button
+                          variant="outline-dark"
+                          size="sm"
+                          @click="selectOnly('freitag')"
+                        >
+                          <b-icon-arrow-down />
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row v-if="freitagFilterOption == null">
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="freitagTime.start"
+                          locale="de"
+                        />
+                      </b-col>
+                      <b-col cols="auto">-</b-col>
+                      <b-col>
+                        <b-form-timepicker
+                          v-model="freitagTime.end"
+                          locale="de"
+                        />
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-list-group-item>
+
+                <b-form-invalid-feedback :state="oneTimeSlotAllowed">
+                  Du musst mindestens einen Tag erlauben.
+                </b-form-invalid-feedback>
+              </b-list-group>
+            </b-form-group>
+
+            <hr />
+            <b-form-group
+              description="Erlaube Termine außerhalb der regulären Terminzeiten"
+            >
+              <b-form-checkbox v-model="allowOutsideOpeningHours" switch>
+                Termine ausßerhalb der Öffnungszeiten zulassen
+              </b-form-checkbox>
+              <b-form-checkbox v-model="allowOutsideWorkHours" switch>
+                Termine ausßerhalb der Arbeitszeiten zulassen
+              </b-form-checkbox>
+            </b-form-group>
           </b-form>
-
-          <!-- {{ selectedTherapeuten.map((t) => t.name) }} -->
-          <hr />
-
-          <b-form-group
-            description="Erlaube oder verbiete Zeiten für die Suche nach Terminvorschlägen"
-          >
-            <b-list-group>
-              <b-list-group-item>
-                <b-form-group>
-                  <b-row>
-                    <b-col cols="3">
-                      <span> Montag: </span>
-                    </b-col>
-                    <b-col>
-                      <b-form-radio-group
-                        v-model="montagFilterOption"
-                        :options="timeFilterOptions"
-                      />
-                    </b-col>
-                    <b-col cols="auto">
-                      <b-button
-                        variant="outline-dark"
-                        size="sm"
-                        @click="selectOnly('montag')"
-                      >
-                        <b-icon-arrow-down />
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row v-if="montagFilterOption == null">
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="montagTime.start"
-                        locale="de"
-                      />
-                    </b-col>
-                    <b-col cols="auto">-</b-col>
-                    <b-col>
-                      <b-form-timepicker v-model="montagTime.end" locale="de" />
-                    </b-col>
-                  </b-row>
-                </b-form-group>
-              </b-list-group-item>
-              <b-list-group-item>
-                <b-form-group>
-                  <b-row>
-                    <b-col cols="3">
-                      <span> Dienstag: </span>
-                    </b-col>
-                    <b-col>
-                      <b-form-radio-group
-                        v-model="dienstagFilterOption"
-                        :options="timeFilterOptions"
-                      />
-                    </b-col>
-                    <b-col cols="auto">
-                      <b-button
-                        variant="outline-dark"
-                        size="sm"
-                        @click="selectOnly('dienstag')"
-                      >
-                        <b-icon-arrow-down />
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row v-if="dienstagFilterOption == null">
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="dienstagTime.start"
-                        locale="de"
-                      />
-                    </b-col>
-                    <b-col cols="auto">-</b-col>
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="dienstagTime.end"
-                        locale="de"
-                      />
-                    </b-col>
-                  </b-row>
-                </b-form-group>
-              </b-list-group-item>
-              <b-list-group-item>
-                <b-form-group>
-                  <b-row>
-                    <b-col cols="3">
-                      <span> Mittwoch: </span>
-                    </b-col>
-                    <b-col>
-                      <b-form-radio-group
-                        v-model="mittwochFilterOption"
-                        :options="timeFilterOptions"
-                      />
-                    </b-col>
-                    <b-col cols="auto">
-                      <b-button
-                        variant="outline-dark"
-                        size="sm"
-                        @click="selectOnly('mittwoch')"
-                      >
-                        <b-icon-arrow-down />
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row v-if="mittwochFilterOption == null">
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="mittwochTime.start"
-                        locale="de"
-                      />
-                    </b-col>
-                    <b-col cols="auto">-</b-col>
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="mittwochTime.end"
-                        locale="de"
-                      />
-                    </b-col>
-                  </b-row>
-                </b-form-group>
-              </b-list-group-item>
-              <b-list-group-item>
-                <b-form-group>
-                  <b-row>
-                    <b-col cols="3">
-                      <span> Donnerstag: </span>
-                    </b-col>
-                    <b-col>
-                      <b-form-radio-group
-                        v-model="donnerstagFilterOption"
-                        :options="timeFilterOptions"
-                      />
-                    </b-col>
-                    <b-col cols="auto">
-                      <b-button
-                        variant="outline-dark"
-                        size="sm"
-                        @click="selectOnly('donnerstag')"
-                      >
-                        <b-icon-arrow-down />
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row v-if="donnerstagFilterOption == null">
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="donnerstagTime.start"
-                        locale="de"
-                      />
-                    </b-col>
-                    <b-col cols="auto">-</b-col>
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="donnerstagTime.end"
-                        locale="de"
-                      />
-                    </b-col>
-                  </b-row>
-                </b-form-group>
-              </b-list-group-item>
-              <b-list-group-item>
-                <b-form-group>
-                  <b-row>
-                    <b-col cols="3">
-                      <span> Freitag: </span>
-                    </b-col>
-                    <b-col>
-                      <b-form-radio-group
-                        v-model="freitagFilterOption"
-                        :options="timeFilterOptions"
-                      />
-                    </b-col>
-                    <b-col cols="auto">
-                      <b-button
-                        variant="outline-dark"
-                        size="sm"
-                        @click="selectOnly('freitag')"
-                      >
-                        <b-icon-arrow-down />
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row v-if="freitagFilterOption == null">
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="freitagTime.start"
-                        locale="de"
-                      />
-                    </b-col>
-                    <b-col cols="auto">-</b-col>
-                    <b-col>
-                      <b-form-timepicker
-                        v-model="freitagTime.end"
-                        locale="de"
-                      />
-                    </b-col>
-                  </b-row>
-                </b-form-group>
-              </b-list-group-item>
-            </b-list-group>
-          </b-form-group>
         </b-card-body>
-
-        <b-card-footer align="end">
-          <b-button-group>
-            <b-button variant="success">Filtern</b-button>
-            <b-button variant="outline-secondary">Zurücksetzen</b-button>
-          </b-button-group>
-        </b-card-footer>
       </b-collapse>
+
+      <b-card-footer align="end">
+        <b-button-group>
+          <b-button
+            variant="success"
+            @click="updateFilters"
+            :disabled="!filterVisible || selectedTimeFilterState == false"
+          >
+            Filtern
+          </b-button>
+          <b-button variant="outline-secondary" @click="resetFilters">
+            Zurücksetzen
+          </b-button>
+        </b-button-group>
+      </b-card-footer>
     </b-card>
 
+    <!-- termin count overall -->
     <p id="overall-count-check-indicator" class="my-3">
       <b-icon-exclamation-octagon
         v-if="!(selectionCount == maxSelectionNum)"
@@ -256,17 +290,18 @@
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
 
+    <!-- termin count per heilmittel -->
     <b-card
-      v-for="[key, vorsch] in Object.entries(vorschlaege)"
-      :key="key"
-      :title="key"
+      v-for="[hmName, hmVorschläge] in Object.entries(vorschlaege)"
+      :key="hmName"
+      :title="hmName"
     >
       <b-card-header id="specific-count-check-indicator">
         <b-icon-exclamation-octagon
           v-if="
             !(
-              vorsch.filter((v) => v.selected).length ==
-              rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
+              countSelected(hmVorschläge) ==
+              rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
                 ?.terminNumber
             )
           "
@@ -274,52 +309,84 @@
         />
         <b-icon-check-circle v-else variant="success" />
 
-        {{ vorsch.filter((v) => v.selected).length }} von
+        {{ countSelected(hmVorschläge) }} von
         {{
-          rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
+          rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
             ?.terminNumber
         }}
         ausgewählt
       </b-card-header>
       <b-card-text>
-        <b-row>
-          <b-col v-if="vorsch.length == 0">
-            <b-alert show variant="danger">
-              <b-icon-exclamation-triangle-fill />
-              Das System konnte keinen Vorschlag generieren. Du kannst Termine
-              nur händisch erstellen.
-              <hr />
-              Das kann mehrere Gründe haben:
-              <ul class="ml-4">
-                <li>
-                  Es stehen keine Therapeuten zur Verfügung, die das Heilmittel
-                  behandeln können.
-                </li>
-                <li>
-                  Es gibt keine Termine mit der notwendigen Länge in den
-                  nächsten 12 Monaten.
-                </li>
-              </ul>
-            </b-alert>
+        <b-col
+          v-if="
+            Object.values(hmVorschläge).every(
+              ({ thTerminList }) => thTerminList.length == 0
+            )
+          "
+        >
+          <b-alert show variant="danger">
+            <b-icon-exclamation-triangle-fill />
+            Das System konnte keinen Vorschlag generieren. Du kannst Termine nur
+            händisch erstellen.
+            <hr />
+            Das kann mehrere Gründe haben:
+            <ul class="ml-4">
+              <li>
+                Es stehen keine Therapeuten zur Verfügung, die das Heilmittel
+                behandeln können.
+              </li>
+              <li>
+                Es gibt keine Termine mit der notwendigen Länge in den nächsten
+                12 Monaten.
+              </li>
+            </ul>
+          </b-alert>
+        </b-col>
+        <b-row
+          v-for="[thID, { thSelected, thTerminList }] in Object.entries(
+            hmVorschläge
+          )"
+          :key="thID"
+          class="mt-2"
+        >
+          <b-col cols="12" class="mb-2">
+            <b-button
+              @click="
+                if (!thSelected) selectTherapeutForHeilmittel(hmName, thID);
+              "
+              :variant="thSelected ? 'primary' : 'outline-secondary'"
+            >
+              {{ thID }}
+            </b-button>
           </b-col>
           <b-col
-            v-else
-            v-for="[vorschlag, id] in vorsch.map((v) => {
-              return [v, vorsch.indexOf(v)];
+            v-for="[vorschlag, id] in thTerminList.map((v) => {
+              return [v, thTerminList.indexOf(v)];
             })"
             :key="id"
             cols="3"
           >
-            <!-- FIXME: don't allow overlapping appointment -->
             <b-button
               block
-              :variant="vorschlag.selected ? 'primary' : 'outline-secondary'"
-              class="m-2"
+              :variant="
+                vorschlag.selected
+                  ? thSelected
+                    ? thTerminList.filter((v) => v.selected).length ==
+                      rezeptHeilmittel.find(
+                        (rhm) => rhm.Heilmittel.abk == hmName
+                      )?.terminNumber
+                      ? 'primary'
+                      : 'danger'
+                    : 'secondary'
+                  : 'outline-secondary'
+              "
+              class="mb-2"
               :disabled="
                 !vorschlag.selected &&
-                vorsch.filter((v) => v.selected).length ==
-                  rezeptHeilmittel.find((rhm) => rhm.Heilmittel.name == key)
-                    .terminNumber
+                thSelected &&
+                thTerminList.filter((v) => v.selected).length ==
+                  rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
+                    ?.terminNumber
               "
               @click="selectVorschlag(vorschlag)"
             >
@@ -337,10 +404,26 @@
               {{ vorschlag.date.getHours() }}:{{
                 pad(vorschlag.date.getMinutes())
               }}
-              {{ vorschlag.Therapeut.name.split(" ")[0] }}
+              <!-- {{ vorschlag.Therapeut.name.split(" ")[0] }} -->
             </b-button>
           </b-col>
         </b-row>
+        <b-form-invalid-feedback
+          :state="
+            countSelected(hmVorschläge) ==
+            rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
+              ?.terminNumber
+          "
+        >
+          Du musst für das Heilmittel genau
+          {{
+            rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
+              ?.terminNumber
+          }}
+          Termine auswählen
+        </b-form-invalid-feedback>
+
+        <!-- TODO: implement a way to manually add terminvorschläge -->
         <!-- <b-row>
           <b-col>
             <b-row>
@@ -410,6 +493,7 @@
     </b-card>
     <br />
 
+    <!-- save button -->
     <b-button
       v-if="showSaveButton"
       class="mr-2"
@@ -420,6 +504,7 @@
       Speichern
     </b-button>
 
+    <!-- termin count overall -->
     <p>
       <b-icon-exclamation-octagon
         v-if="!(selectionCount == maxSelectionNum)"
@@ -441,10 +526,6 @@ export default {
   props: {
     rezeptHeilmittel: Array,
     showSaveButton: {
-      type: Boolean,
-      default: true,
-    },
-    preSelect: {
       type: Boolean,
       default: true,
     },
@@ -481,15 +562,65 @@ export default {
       mittwochTime: { start: "08:00:00", end: "18:00:00" },
       donnerstagTime: { start: "08:00:00", end: "18:00:00" },
       freitagTime: { start: "08:00:00", end: "18:00:00" },
+      allowOutsideOpeningHours: false,
+      allowOutsideWorkHours: false,
     };
   },
   methods: {
     generateVorschläge,
+    updateVorschläge() {
+      this.generateVorschläge(
+        this.selectedTherapeuten,
+        this.rezeptHeilmittel,
+        this.dringend,
+        this.ausstellungsdatum,
+        {
+          montag:
+            this.montagFilterOption != null
+              ? this.montagFilterOption
+              : this.montagTime,
+          dienstag:
+            this.dienstagFilterOption != null
+              ? this.dienstagFilterOption
+              : this.dienstagTime,
+          mittwoch:
+            this.mittwochFilterOption != null
+              ? this.mittwochFilterOption
+              : this.mittwochTime,
+          donnerstag:
+            this.donnerstagFilterOption != null
+              ? this.donnerstagFilterOption
+              : this.donnerstagTime,
+          freitag:
+            this.freitagFilterOption != null
+              ? this.freitagFilterOption
+              : this.freitagTime,
+        },
+        this.allowOutsideOpeningHours,
+        this.allowOutsideWorkHours
+      ).then((vorschlaege) => {
+        this.vorschlaege = vorschlaege;
+        this.save();
+      });
+    },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
     },
     pad(number) {
       return String(number).padStart(2, "0");
+    },
+    calculateTherapeutFilters() {
+      const filteredTherapeuten = this.therapeuten.filter((t) =>
+        t.Heilmittels.some((thm) => this.heilmittelIdList.includes(thm.id))
+      );
+
+      this.therapeutenFilterOptions = filteredTherapeuten.map((t) => {
+        const hms = t.Heilmittels.filter((thms) =>
+          this.heilmittelIdList.includes(thms.id)
+        ).map((thms) => thms.abk);
+        return { value: t, text: `${t.name} (${hms.join(", ")})` };
+      });
+      this.selectedTherapeuten = filteredTherapeuten;
     },
     selectOnly(dayString) {
       const dayFilterOptions = [false, false, false, false, false];
@@ -528,6 +659,25 @@ export default {
         this.freitagFilterOption,
       ] = dayFilterOptions;
     },
+    updateFilters() {
+      this.updateVorschläge();
+      this.filterVisible = false;
+    },
+    resetFilters() {
+      this.montagFilterOption = true;
+      this.dienstagFilterOption = true;
+      this.mittwochFilterOption = true;
+      this.donnerstagFilterOption = true;
+      this.freitagFilterOption = true;
+
+      this.calculateTherapeutFilters();
+    },
+    selectTherapeutForHeilmittel(hmName, thID) {
+      for (const _thID of Object.keys(this.vorschlaege[hmName])) {
+        this.vorschlaege[hmName][_thID].thSelected = false;
+      }
+      this.vorschlaege[hmName][thID].thSelected = true;
+    },
     selectVorschlag(vorschlag) {
       vorschlag.selected = !vorschlag.selected;
       this.save();
@@ -556,45 +706,55 @@ export default {
 
       this.vorschlaege[hmName].push(newVorschlag);
     },
+    countSelected(hmVorschläge) {
+      let sum = 0;
+      Object.values(hmVorschläge)
+        .filter(({ thSelected }) => thSelected)
+        .forEach(({ thTerminList }) => {
+          thTerminList.forEach((t) => (sum += t.selected ? 1 : 0));
+        });
+      return sum;
+    },
     save() {
-      this.$emit(
-        "save",
-        [].concat(
-          ...Object.values(this.vorschlaege).map((vorsch) => {
-            return vorsch
-              .filter((v) => v.selected)
-              .map((v) => {
-                return { date: v.date, TherapeutId: v.TherapeutId };
-              });
-          })
-        )
-      );
-      this.$emit(
-        "input",
-        [].concat(
-          ...Object.values(this.vorschlaege).map((vorsch) => {
-            return vorsch
-              .filter((v) => v.selected)
-              .map((v) => {
-                return { date: v.date, TherapeutId: v.TherapeutId };
-              });
-          })
-        )
-      );
+      // TODO: emit save and input for filtered and flattened this.vorschläge
+      // this.$emit(
+      //   "save",
+      //   [].concat(
+      //     ...Object.values(this.vorschlaege).map((vorsch) => {
+      //       return vorsch
+      //         .filter((v) => v.selected)
+      //         .map((v) => {
+      //           return { date: v.date, TherapeutId: v.TherapeutId };
+      //         });
+      //     })
+      //   )
+      // );
+      // this.$emit(
+      //   "input",
+      //   [].concat(
+      //     ...Object.values(this.vorschlaege).map((vorsch) => {
+      //       return vorsch
+      //         .filter((v) => v.selected)
+      //         .map((v) => {
+      //           return { date: v.date, TherapeutId: v.TherapeutId };
+      //         });
+      //     })
+      //   )
+      // );
     },
   },
   computed: {
     selectionCount() {
       let sum = 0;
-      Object.values(this.vorschlaege).forEach((hmVorschlagList) => {
-        sum += hmVorschlagList.filter((v) => v.selected).length;
+      Object.values(this.vorschlaege).forEach(() => {
+        // sum += hmVorschlagList.filter((v) => v.selected).length;
       });
       return sum;
     },
     maxSelectionNum() {
       let sum = 0;
-      this.rezeptHeilmittel.forEach((rhm) => {
-        sum += parseInt(rhm.terminNumber);
+      this.rezeptHeilmittel.forEach(() => {
+        // sum += parseInt(rhm.terminNumber);
       });
       return sum;
     },
@@ -608,36 +768,38 @@ export default {
       // TODO: improve by including wether rezeptHeilmittel that can be fulfilled by the selected Therapeuten
       return this.selectedTherapeuten.length > 0;
     },
+    filterData() {
+      return [
+        [this.montagFilterOption, this.montagTime],
+        [this.dienstagFilterOption, this.dienstagTime],
+        [this.mittwochFilterOption, this.mittwochTime],
+        [this.donnerstagFilterOption, this.donnerstagTime],
+        [this.freitagFilterOption, this.freitagTime],
+      ];
+    },
+    oneTimeSlotAllowed() {
+      return this.filterData.some(
+        // eslint-disable-next-line no-unused-vars
+        ([filterOption, filterTime]) => filterOption != false
+      );
+    },
+    selectedTimeFilterState() {
+      return this.oneTimeSlotAllowed ? null : false;
+    },
   },
   mounted() {
-    console.log("mount");
-    TherapeutService.getAll({ include: "Heilmittels" })
+    TherapeutService.getAll({
+      include: [
+        "Heilmittels",
+        "Termins",
+        { association: "Vertrag", include: { all: true } },
+      ],
+    })
       .then((therapeutList) => {
-        // this.therapeuten = therapeutList;
-        const filteredTherapeuten = therapeutList.filter((t) =>
-          t.Heilmittels.some((thm) => this.heilmittelIdList.includes(thm.id))
-        );
-
-        this.therapeutenFilterOptions = filteredTherapeuten.map((t) => {
-          const hms = t.Heilmittels.filter((thms) =>
-            this.heilmittelIdList.includes(thms.id)
-          ).map((thms) => thms.abk);
-          return { value: t, text: `${t.name} (${hms.join(", ")})` };
-        });
-        this.selectedTherapeuten = filteredTherapeuten;
+        this.therapeuten = therapeutList;
+        this.calculateTherapeutFilters();
       })
-      .then(() => {
-        this.generateVorschläge(
-          this.rezeptHeilmittel,
-          this.preSelect,
-          this.ausstellungsdatum,
-          this.selectedTherapeuten,
-          this.dringend
-        ).then((vorschlaege) => {
-          this.vorschlaege = vorschlaege;
-          this.save();
-        });
-      });
+      .then(this.updateVorschläge);
     // this.save();
   },
 };
