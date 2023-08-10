@@ -27,7 +27,6 @@ export function dateToAge(birthdate) {
 export function YYYY_MM_DD_convert(date) {
   if (!date) return date;
   if (typeof date == "string") date = new Date(date);
-  console.log(date);
 
   return `${date?.getFullYear()}-${new String(date?.getMonth() + 1).padStart(
     2,
