@@ -1,7 +1,7 @@
 <template>
   <b-form class="PatientEditFormular">
     <b-row>
-      <b-col>
+      <b-col cols="6">
         <b-form-group
           id="firstname-group"
           label="Vorname:"
@@ -15,7 +15,7 @@
           />
         </b-form-group>
       </b-col>
-      <b-col>
+      <b-col cols="6">
         <b-form-group
           id="lastname-group"
           label="Nachname:"
@@ -30,74 +30,90 @@
           />
         </b-form-group>
       </b-col>
-    </b-row>
 
-    <b-form-group id="birthday-group" label="Geburtstag:" label-for="birthday">
-      <b-form-input
-        id="birthday"
-        type="date"
-        placeholder="01.01.1990"
-        :value="YYYY_MM_DD_convert(kunde.geburtstag)"
-        @input="(val) => (kunde.geburtstag = new Date(val))"
-      />
-    </b-form-group>
-
-    <b-form-group id="address-group" label="Adresse:" label-for="address">
-      <b-form-input
-        id="address"
-        type="text"
-        placeholder="Straße Haus-Nr., PLZ Ort"
-        v-model="kunde.address"
-      />
-    </b-form-group>
-
-    <b-form-group id="phone-group" label="Telefonnummer:" label-for="phone">
-      <b-form-input
-        id="phone"
-        type="tel"
-        placeholder="0123 456789"
-        v-model="kunde.phone"
-      />
-    </b-form-group>
-
-    <b-form-group id="email-group" label="Email-Adresse:" label-for="email">
-      <b-form-input
-        id="email"
-        type="email"
-        placeholder="max.mustermann@gmail.com"
-        v-model="kunde.email"
-      />
-    </b-form-group>
-
-    <b-form-group
-      id="versicherstatus-group"
-      label="Versicherungsstatus:"
-      label-for="Versicherungsstatus"
-    >
-      <b-dropdown id="versicherstatus">
-        <template #button-content>{{ kunde.versichertenstatus }}</template>
-        <b-dropdown-item
-          v-for="status in ['GKV', 'Privat', 'SZ']"
-          :key="status"
-          @click="setVersichertenStatus(status)"
-          >{{ status }}</b-dropdown-item
+      <b-col cols="6">
+        <b-form-group
+          id="birthday-group"
+          label="Geburtstag:"
+          label-for="birthday"
         >
-      </b-dropdown>
-    </b-form-group>
+          <b-form-input
+            id="birthday"
+            type="date"
+            placeholder="01.01.1990"
+            :value="YYYY_MM_DD_convert(kunde.geburtstag)"
+            @input="(val) => (kunde.geburtstag = new Date(val))"
+          />
+        </b-form-group>
+      </b-col>
 
-    <b-form-group
-      id="versichertennummer-group"
-      label="Versichertennummer:"
-      label-for="versichertennummer"
-    >
-      <b-form-input
-        :disabled="!showVersichertenNummer"
-        id="versichertennummer"
-        type="text"
-        placeholder="Versichertennummer"
-        v-model="kunde.versichertennummer"
-      />
-    </b-form-group>
+      <b-col cols="6">
+        <b-form-group id="address-group" label="Adresse:" label-for="address">
+          <b-form-input
+            id="address"
+            type="text"
+            placeholder="Straße Haus-Nr., PLZ Ort"
+            v-model="kunde.address"
+          />
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="6">
+        <b-form-group id="phone-group" label="Telefonnummer:" label-for="phone">
+          <b-form-input
+            id="phone"
+            type="tel"
+            placeholder="0123 456789"
+            v-model="kunde.phone"
+          />
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="6">
+        <b-form-group id="email-group" label="Email-Adresse:" label-for="email">
+          <b-form-input
+            id="email"
+            type="email"
+            placeholder="max.mustermann@gmail.com"
+            v-model="kunde.email"
+          />
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="6">
+        <b-form-group
+          id="versicherstatus-group"
+          label="Versicherungsstatus:"
+          label-for="Versicherungsstatus"
+        >
+          <b-dropdown id="versicherstatus">
+            <template #button-content>{{ kunde.versichertenstatus }}</template>
+            <b-dropdown-item
+              v-for="status in ['GKV', 'Privat', 'SZ']"
+              :key="status"
+              @click="setVersichertenStatus(status)"
+              >{{ status }}</b-dropdown-item
+            >
+          </b-dropdown>
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="6">
+        <b-form-group
+          id="versichertennummer-group"
+          label="Versichertennummer:"
+          label-for="versichertennummer"
+        >
+          <b-form-input
+            :disabled="!showVersichertenNummer"
+            id="versichertennummer"
+            type="text"
+            placeholder="Versichertennummer"
+            v-model="kunde.versichertennummer"
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
   </b-form>
 </template>
 
