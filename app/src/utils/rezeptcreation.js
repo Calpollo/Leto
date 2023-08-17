@@ -15,6 +15,9 @@ const milliSecondsPerDay = milliSecondsPerMinute * 60 * 24;
  * - Zeiten: { montag, dienstag, mittwoch, donnerstag, freitag }
  * - allowOutsideOpeningHours
  * - allowOutsideWorkHours
+ * - options: {
+ *    nTermine: overwrite how many Termine are generated (default: null)
+ * }
  * @Returns an object of arrays
  * {HeilmittelAbk: [
  *   {
@@ -34,7 +37,8 @@ export function generateVorschläge(
   ausstellungsdatum,
   { montag, dienstag, mittwoch, donnerstag, freitag } = {},
   allowOutsideOpeningHours,
-  allowOutsideWorkHours
+  allowOutsideWorkHours,
+  { nTermine = null, preSelect = true } = {}
 ) {
   const praxisQuery = PraxisService.getOne(ConfigService.getPraxis(), {
     include: { all: true },
@@ -55,7 +59,8 @@ export function generateVorschläge(
           { montag, dienstag, mittwoch, donnerstag, freitag },
           allowOutsideOpeningHours,
           praxis,
-          allowOutsideWorkHours
+          allowOutsideWorkHours,
+          { nTermine, preSelect }
         );
       }
       result[rhm.Heilmittel.abk] = heilmittelTerminList;
@@ -75,7 +80,8 @@ function vorschlägeForHeilmittel(
   { montag, dienstag, mittwoch, donnerstag, freitag } = {},
   allowOutsideOpeningHours,
   openingHours,
-  allowOutsideWorkHours
+  allowOutsideWorkHours,
+  options
 ) {
   const vorschläge = {};
 
@@ -92,13 +98,15 @@ function vorschlägeForHeilmittel(
     );
 
     const thTerminList = [];
-    const terminNumberGoal = rezeptHeilmittel.terminNumber * MaxDatesPerDay;
+    const terminNumberGoal =
+      options.nTermine ||
+      rezeptHeilmittel.terminNumber * MaxDatesPerDay * (dringend ? 4 : 1);
     let terminJustFound = false;
 
     while (thTerminList.length < terminNumberGoal) {
       // console.count("while-loop vorschlägeForHeilmittel");
 
-      const foundDate = searchNextPossibleDate(
+      const [foundDate, metaData] = searchNextPossibleDate(
         currentSearchDate,
         terminJustFound,
         workHours,
@@ -108,6 +116,8 @@ function vorschlägeForHeilmittel(
         allowOutsideWorkHours,
         thTerminList,
         rezeptHeilmittel.Heilmittel.terminMinutes,
+        !options.preSelect && thTerminList.length == 0,
+        dringend,
         { montag, dienstag, mittwoch, donnerstag, freitag }
       );
       if (!foundDate) {
@@ -124,16 +134,22 @@ function vorschlägeForHeilmittel(
             return t0 == c0;
           }).length == 0;
         const selectedNumberNotReached =
-          thTerminList.filter((t) => t.selected).length <=
+          thTerminList.filter((t) => t.selected).length <
           rezeptHeilmittel.terminNumber;
-        thTerminList.push({
-          date: currentSearchDate,
-          Therapeut: therapeut,
-          TherapeutId: therapeut.id,
-          Heilmittel: rezeptHeilmittel.Heilmittel,
-          HeilmittelId: rezeptHeilmittel.HeilmittelId,
-          selected: firstThatDay && selectedNumberNotReached,
-        });
+        thTerminList.push(
+          Object.assign(
+            {
+              date: currentSearchDate,
+              Therapeut: therapeut,
+              TherapeutId: therapeut.id,
+              Heilmittel: rezeptHeilmittel.Heilmittel,
+              HeilmittelId: rezeptHeilmittel.HeilmittelId,
+              selected:
+                options.preSelect && firstThatDay && selectedNumberNotReached,
+            },
+            metaData
+          )
+        );
         terminJustFound = true;
       }
     }
@@ -157,6 +173,11 @@ function vorschlägeForHeilmittel(
  * - allTerminsInQuestion
  * - allowOutsideOpeningHours
  * - allowOutsideWorkHours
+ * - foundDates
+ * - terminMinutes
+ * - skipToNextDay
+ * - dringend
+ * - timerFilters
  * @Returns a date to continue the search
  */
 export function searchNextPossibleDate(
@@ -169,20 +190,30 @@ export function searchNextPossibleDate(
   allowOutsideWorkHours,
   foundDates,
   terminMinutes,
+  skipToNextDay,
+  dringend,
   { montag, dienstag, mittwoch, donnerstag, freitag } = {}
 ) {
   let currentSlotBlocked = true;
   let count = 0;
-  while (currentSlotBlocked && count < 999) {
+  let options = {};
+  const skipFactor = dringend ? 1 : 4;
+  const MaxDatesPerDayHere = MaxDatesPerDay * (dringend ? 4 : 1);
+
+  while (currentSlotBlocked && count < 9999) {
+    if (count == 1) skipToNextDay = false;
     count++;
+    options = {
+      outsideOpeningHours: false,
+      outsideWorkHours: false,
+    };
 
     // console.count("while-loop searchNextPossibleDate");
 
     // Skip terminMinutes if termin was just found
     if (terminJustFound && count == 1) {
-      currentSearchDate = new Date(
-        currentSearchDate.valueOf() + terminMinutes * milliSecondsPerMinute
-      );
+      const addMs = skipFactor * terminMinutes * milliSecondsPerMinute;
+      currentSearchDate = new Date(currentSearchDate.valueOf() + addMs);
     }
     // Add SearchMinuteStep minutes
     else {
@@ -190,136 +221,67 @@ export function searchNextPossibleDate(
       currentSearchDate = new Date(currentSearchDate.valueOf() + addedMs);
     }
 
+    // Checking for the filterTimes
+    let isOutsideFilter = false;
+    let foundNewSlot = null;
+    // eslint-disable-next-line no-unused-vars
+    [foundNewSlot, isOutsideFilter] = skipToNextTimeslot(
+      currentSearchDate,
+      filterHoursToSchedule({
+        montag,
+        dienstag,
+        mittwoch,
+        donnerstag,
+        freitag,
+      }),
+      terminMinutes
+    );
+    if (isOutsideFilter) {
+      // console.log(
+      //   "Skipping (isOutsideFilter)",
+      //   foundNewSlot.toLocaleString("de")
+      // );
+      currentSearchDate = foundNewSlot;
+      continue;
+    }
+
     // Checking for allowOutsideOpeningHours and openingHours and skip to next day
-    let relevantOpeningHours = getRelevantHoursPerDay(
+    let isOutsideOpeningHours = false;
+    foundNewSlot = null;
+    [foundNewSlot, isOutsideOpeningHours] = skipToNextTimeslot(
       currentSearchDate,
       openingHours,
-      { montag, dienstag, mittwoch, donnerstag, freitag }
+      terminMinutes
     );
-
     if (!allowOutsideOpeningHours) {
-      let skipToNextDay = false;
-      let skipToOpen = false;
-      if (relevantOpeningHours == null) skipToNextDay = true;
-      else {
-        relevantOpeningHours = {
-          start: new Date(currentSearchDate.valueOf()).setHours(
-            new Date(relevantOpeningHours.start).getHours(),
-            new Date(relevantOpeningHours.start).getMinutes(),
-            0,
-            0
-          ),
-          end: new Date(currentSearchDate.valueOf()).setHours(
-            new Date(relevantOpeningHours.end).getHours(),
-            new Date(relevantOpeningHours.end).getMinutes(),
-            0,
-            0
-          ),
-        };
-
-        const currentSearchDateBeforeOpeningHours =
-          currentSearchDate < relevantOpeningHours?.start;
-        const currentSearchDateAfterOpeningHours =
-          new Date(
-            currentSearchDate.valueOf() + terminMinutes * milliSecondsPerMinute
-          ) > relevantOpeningHours?.end;
-
-        if (currentSearchDateAfterOpeningHours) skipToNextDay = true;
-        if (currentSearchDateBeforeOpeningHours) skipToOpen = true;
-      }
-      if (skipToNextDay || skipToOpen) {
-        const tomorrow = new Date(
-          currentSearchDate.valueOf() + (skipToOpen ? 0 : milliSecondsPerDay)
-        );
-        const openingHoursTomorrow = getRelevantHoursPerDay(
-          tomorrow,
-          openingHours,
-          { montag, dienstag, mittwoch, donnerstag, freitag }
-        );
-        if (openingHoursTomorrow) {
-          const openingTomorrow = new Date(openingHoursTomorrow.start);
-          const currentSearchMs =
-            tomorrow.setHours(
-              openingTomorrow.getHours(),
-              openingTomorrow.getMinutes(),
-              0,
-              0
-            ) -
-            SearchMinuteStep * milliSecondsPerMinute;
-
-          currentSearchDate = new Date(currentSearchMs);
-        } else {
-          currentSearchDate = new Date(tomorrow.setHours(0, 0, 0, 0));
-        }
+      if (isOutsideOpeningHours) {
+        // console.log(
+        //   "Skipping (isOutsideOpeningHours)",
+        //   foundNewSlot.toLocaleString("de")
+        // );
+        currentSearchDate = foundNewSlot;
         continue;
       }
-    }
+    } else if (isOutsideOpeningHours) options.outsideOpeningHours = true;
 
     // Checking for allowOutsideWorkHours and workHours and skip to next day
-    let relevantWorkHours = getRelevantHoursPerDay(
+    let isOutsideWorkHours = false;
+    foundNewSlot = null;
+    [foundNewSlot, isOutsideWorkHours] = skipToNextTimeslot(
       currentSearchDate,
       workHours,
-      { montag, dienstag, mittwoch, donnerstag, freitag }
+      terminMinutes
     );
-
     if (!allowOutsideWorkHours) {
-      let skipToNextDay = false;
-      let skipToOpen = false;
-      if (relevantWorkHours == null) skipToNextDay = true;
-      else {
-        relevantWorkHours = {
-          start: new Date(currentSearchDate.valueOf()).setHours(
-            new Date(relevantWorkHours.start).getHours(),
-            new Date(relevantWorkHours.start).getMinutes(),
-            0,
-            0
-          ),
-          end: new Date(currentSearchDate.valueOf()).setHours(
-            new Date(relevantWorkHours.end).getHours(),
-            new Date(relevantWorkHours.end).getMinutes(),
-            0,
-            0
-          ),
-        };
-
-        const currentSearchDateBeforeWorkHours =
-          currentSearchDate < relevantWorkHours?.start;
-        const currentSearchDateAfterWorkHours =
-          currentSearchDate + terminMinutes * milliSecondsPerMinute >
-          relevantWorkHours?.end;
-
-        if (currentSearchDateAfterWorkHours) skipToNextDay = true;
-        if (currentSearchDateBeforeWorkHours) skipToOpen = true;
-      }
-      if (skipToNextDay || skipToOpen) {
-        const tomorrow = new Date(
-          currentSearchDate.valueOf() + (skipToOpen ? 0 : milliSecondsPerDay)
-        );
-        const workHoursTomorrow = getRelevantHoursPerDay(tomorrow, workHours, {
-          montag,
-          dienstag,
-          mittwoch,
-          donnerstag,
-          freitag,
-        });
-        if (workHoursTomorrow) {
-          const workingTomorrow = new Date(workHoursTomorrow.start);
-          const currentSearchMs =
-            tomorrow.setHours(
-              workingTomorrow.getHours(),
-              workingTomorrow.getMinutes(),
-              0,
-              0
-            ) -
-            SearchMinuteStep * milliSecondsPerMinute;
-
-          currentSearchDate = new Date(currentSearchMs);
-        } else {
-          currentSearchDate = new Date(tomorrow.setHours(0, 0, 0, 0));
-        }
+      if (isOutsideWorkHours) {
+        // console.log(
+        //   "Skipping (isOutsideWorkHours)",
+        //   foundNewSlot.toLocaleString("de")
+        // );
+        currentSearchDate = foundNewSlot;
         continue;
       }
-    }
+    } else if (isOutsideWorkHours) options.outsideWorkHours = true;
 
     // Skipping to tomorrow if MaxDatesPerDay is reached
     const numberOfNewDatesToday = foundDates.filter((t) => {
@@ -329,7 +291,7 @@ export function searchNextPossibleDate(
       const c0 = new Date(cValue).setHours(0, 0, 0, 0).valueOf();
       return t0 == c0;
     }).length;
-    if (numberOfNewDatesToday >= MaxDatesPerDay) {
+    if (numberOfNewDatesToday >= MaxDatesPerDayHere || skipToNextDay) {
       currentSearchDate = new Date(
         new Date(currentSearchDate.valueOf() + milliSecondsPerDay).setHours(
           0,
@@ -353,45 +315,101 @@ export function searchNextPossibleDate(
     }
   }
 
-  return !currentSlotBlocked ? currentSearchDate : null;
+  return [!currentSlotBlocked ? currentSearchDate : null, options];
 }
 
-export function getRelevantHoursPerDay(
-  currentSearchDate,
-  hours,
-  { montag, dienstag, mittwoch, donnerstag, freitag }
-) {
+export function getRelevantHoursPerDay(currentSearchDate, hours) {
   const week = [
     null,
-    selectRelevantTimes(currentSearchDate, hours.montagsZeit, montag),
-    selectRelevantTimes(currentSearchDate, hours.dienstagsZeit, dienstag),
-    selectRelevantTimes(currentSearchDate, hours.mittwochsZeit, mittwoch),
-    selectRelevantTimes(currentSearchDate, hours.donnerstagsZeit, donnerstag),
-    selectRelevantTimes(currentSearchDate, hours.freitagsZeit, freitag),
+    hours.montagsZeit,
+    hours.dienstagsZeit,
+    hours.mittwochsZeit,
+    hours.donnerstagsZeit,
+    hours.freitagsZeit,
     null,
   ];
   return week[currentSearchDate.getDay()];
 }
 
-function selectRelevantTimes(currentSearchDate, hoursDay, timefilter) {
-  if (timefilter == true) hoursDay;
-  else if (timefilter == false) return null;
-  else {
-    const [startHours, startMinutes, startSeconds] =
-      timefilter.start.split(":");
-    const [endHours, endMinutes, endSeconds] = timefilter.end.split(":");
+function filterHoursToSchedule({
+  montag,
+  dienstag,
+  mittwoch,
+  donnerstag,
+  freitag,
+}) {
+  return {
+    montagsZeit: filterDayToZeitspanne(montag),
+    dienstagsZeit: filterDayToZeitspanne(dienstag),
+    mittwochsZeit: filterDayToZeitspanne(mittwoch),
+    donnerstagsZeit: filterDayToZeitspanne(donnerstag),
+    freitagsZeit: filterDayToZeitspanne(freitag),
+  };
+}
+
+function filterDayToZeitspanne(timefilter) {
+  if (timefilter == true)
     return {
-      start: new Date(currentSearchDate).setHours(
-        startHours,
-        startMinutes,
-        startSeconds
+      start: new Date().setHours(0, 0, 0, 0),
+      end: new Date().setHours(23, 59, 59, 999),
+    };
+  else if (timefilter == false) return null;
+  else return timefilter;
+}
+
+function skipToNextTimeslot(currentSearchDate, hours, terminMinutes) {
+  let skipped = false;
+
+  let relevantHours = getRelevantHoursPerDay(currentSearchDate, hours);
+
+  let skipToNextDay = false;
+  let skipToOpen = false;
+  if (relevantHours == null) skipToNextDay = true;
+  else {
+    relevantHours = {
+      start: new Date(currentSearchDate.valueOf()).setHours(
+        new Date(relevantHours.start).getHours(),
+        new Date(relevantHours.start).getMinutes(),
+        0,
+        0
       ),
-      end: new Date(currentSearchDate).setHours(
-        endHours,
-        endMinutes,
-        endSeconds
+      end: new Date(currentSearchDate.valueOf()).setHours(
+        new Date(relevantHours.end).getHours(),
+        new Date(relevantHours.end).getMinutes(),
+        0,
+        0
       ),
     };
+
+    skipToOpen = currentSearchDate < relevantHours?.start;
+    skipToNextDay =
+      new Date(
+        currentSearchDate.valueOf() + terminMinutes * milliSecondsPerMinute
+      ) > relevantHours?.end;
   }
-  return hoursDay;
+
+  if (skipToNextDay || skipToOpen) {
+    const tomorrow = new Date(
+      currentSearchDate.valueOf() + (skipToOpen ? 0 : milliSecondsPerDay)
+    );
+    const relevantHoursTomorrow = getRelevantHoursPerDay(tomorrow, hours);
+    if (relevantHoursTomorrow) {
+      const hoursTomorrow = new Date(relevantHoursTomorrow.start);
+      const currentSearchMs =
+        tomorrow.setHours(
+          hoursTomorrow.getHours(),
+          hoursTomorrow.getMinutes(),
+          0,
+          0
+        ) -
+        SearchMinuteStep * milliSecondsPerMinute;
+
+      currentSearchDate = new Date(currentSearchMs);
+    } else {
+      currentSearchDate = new Date(tomorrow.setHours(0, 0, 0, 0));
+    }
+    skipped = true;
+  }
+
+  return [currentSearchDate, skipped];
 }

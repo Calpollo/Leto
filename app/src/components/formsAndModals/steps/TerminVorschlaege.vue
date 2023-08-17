@@ -263,6 +263,26 @@
         </b-card-body>
       </b-collapse>
 
+      <!-- warnings and errors for filters -->
+      <b-alert
+        v-for="error in filterWarningsAndErrors"
+        show
+        :key="error.title + error.info"
+        :variant="error.type"
+      >
+        <h4 class="p-0">{{ error.title }}</h4>
+        <p>{{ error.info }}</p>
+        <b-list-group v-if="error.list">
+          <b-list-group-item
+            class="py-2"
+            v-for="listitem in error.list"
+            :key="listitem"
+          >
+            {{ listitem }}
+          </b-list-group-item>
+        </b-list-group>
+      </b-alert>
+
       <b-card-footer align="end">
         <b-button-group>
           <b-button
@@ -290,12 +310,13 @@
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
 
-    <!-- termin count per heilmittel -->
+    <!-- Heilmittel overview -->
     <b-card
       v-for="[hmName, hmVorschläge] in Object.entries(vorschlaege)"
       :key="hmName"
       :title="hmName"
     >
+      <!-- termin count per heilmittel -->
       <b-card-header id="specific-count-check-indicator">
         <b-icon-exclamation-octagon
           v-if="
@@ -390,6 +411,27 @@
               "
               @click="selectVorschlag(vorschlag)"
             >
+              <span class="small" :id="'tooltip-target-' + hmName + thID + id">
+                <b-icon-watch class="mr-1" v-if="vorschlag.outsideWorkHours" />
+                <b-icon-clock-history
+                  class="mr-1"
+                  v-if="vorschlag.outsideOpeningHours"
+                />
+              </span>
+              <b-tooltip
+                v-if="
+                  vorschlag.outsideOpeningHours || vorschlag.outsideWorkHours
+                "
+                :target="'tooltip-target-' + hmName + thID + id"
+                triggers="hover"
+              >
+                <p v-if="vorschlag.outsideOpeningHours" class="m-0">
+                  Der Termin ist <b>außerhalb der Öffnungszeiten</b>.
+                </p>
+                <p v-if="vorschlag.outsideWorkHours" class="m-0">
+                  Der Termin ist <b>außerhalb der Arbeitszeiten</b>.
+                </p>
+              </b-tooltip>
               {{
                 vorschlag.date.toLocaleString("de-DE", {
                   weekday: "short",
@@ -405,6 +447,15 @@
                 pad(vorschlag.date.getMinutes())
               }}
               <!-- {{ vorschlag.Therapeut.name.split(" ")[0] }} -->
+            </b-button>
+          </b-col>
+          <b-col>
+            <b-button
+              block
+              variant="light"
+              @click="loadMoreVorschläge(hmName, thID)"
+            >
+              Mehr Terminvorschläge laden
             </b-button>
           </b-col>
         </b-row>
@@ -493,6 +544,26 @@
     </b-card>
     <br />
 
+    <!-- warnings and errors -->
+    <b-alert
+      v-for="error in warningsAndErrors"
+      show
+      :key="error.title + error.info"
+      :variant="error.type"
+    >
+      <h4 class="p-0">{{ error.title }}</h4>
+      <p>{{ error.info }}</p>
+      <b-list-group v-if="error.list">
+        <b-list-group-item
+          class="py-2"
+          v-for="listitem in error.list"
+          :key="listitem"
+        >
+          {{ listitem }}
+        </b-list-group-item>
+      </b-list-group>
+    </b-alert>
+
     <!-- save button -->
     <b-button
       v-if="showSaveButton"
@@ -568,12 +639,18 @@ export default {
   },
   methods: {
     generateVorschläge,
-    updateVorschläge() {
-      this.generateVorschläge(
-        this.selectedTherapeuten,
-        this.rezeptHeilmittel,
+    updateVorschläge({
+      therapeuten = this.selectedTherapeuten,
+      rezeptHeilmittel = this.rezeptHeilmittel,
+      ausstellungsdatum = this.ausstellungsdatum,
+      nTermine = null,
+      preSelect = true,
+    } = {}) {
+      return this.generateVorschläge(
+        therapeuten,
+        rezeptHeilmittel,
         this.dringend,
-        this.ausstellungsdatum,
+        ausstellungsdatum,
         {
           montag:
             this.montagFilterOption != null
@@ -597,11 +674,9 @@ export default {
               : this.freitagTime,
         },
         this.allowOutsideOpeningHours,
-        this.allowOutsideWorkHours
-      ).then((vorschlaege) => {
-        this.vorschlaege = vorschlaege;
-        this.save();
-      });
+        this.allowOutsideWorkHours,
+        { nTermine, preSelect }
+      );
     },
     roundToFullHour(date) {
       return new Date(Math.ceil(date / (30 * 60 * 1000)) * 30 * 60 * 1000);
@@ -660,7 +735,10 @@ export default {
       ] = dayFilterOptions;
     },
     updateFilters() {
-      this.updateVorschläge();
+      this.updateVorschläge().then((vorschlaege) => {
+        this.vorschlaege = vorschlaege;
+        this.save();
+      });
       this.filterVisible = false;
     },
     resetFilters() {
@@ -681,6 +759,28 @@ export default {
     selectVorschlag(vorschlag) {
       vorschlag.selected = !vorschlag.selected;
       this.save();
+    },
+    loadMoreVorschläge(rhmAbk, therapeutFirstName) {
+      const ausstellungsdatum = [
+        ...this.vorschlaege[rhmAbk][therapeutFirstName].thTerminList,
+      ].pop().date;
+      const thList = this.therapeuten.filter(
+        (t) => t.name.split(" ")[0] == therapeutFirstName
+      );
+      const rhmList = this.rezeptHeilmittel.filter(
+        (rhm) => rhm.Heilmittel.abk == rhmAbk
+      );
+      this.updateVorschläge({
+        therapeuten: thList,
+        rezeptHeilmittel: rhmList,
+        ausstellungsdatum,
+        nTermine: 24,
+        preSelect: false,
+      }).then((vorschlaege) => {
+        this.vorschlaege[rhmAbk][therapeutFirstName].thTerminList.push(
+          ...vorschlaege[rhmAbk][therapeutFirstName].thTerminList
+        );
+      });
     },
     addVorschlag(hmName) {
       const heilmittel = this.heilmittel.find((hm) => hm.name == hmName);
@@ -716,45 +816,27 @@ export default {
       return sum;
     },
     save() {
-      // TODO: emit save and input for filtered and flattened this.vorschläge
-      // this.$emit(
-      //   "save",
-      //   [].concat(
-      //     ...Object.values(this.vorschlaege).map((vorsch) => {
-      //       return vorsch
-      //         .filter((v) => v.selected)
-      //         .map((v) => {
-      //           return { date: v.date, TherapeutId: v.TherapeutId };
-      //         });
-      //     })
-      //   )
-      // );
-      // this.$emit(
-      //   "input",
-      //   [].concat(
-      //     ...Object.values(this.vorschlaege).map((vorsch) => {
-      //       return vorsch
-      //         .filter((v) => v.selected)
-      //         .map((v) => {
-      //           return { date: v.date, TherapeutId: v.TherapeutId };
-      //         });
-      //     })
-      //   )
-      // );
+      this.$emit("save", this.flattenedTermine);
+      this.$emit("input", this.flattenedTermine);
     },
   },
   computed: {
     selectionCount() {
       let sum = 0;
-      Object.values(this.vorschlaege).forEach(() => {
-        // sum += hmVorschlagList.filter((v) => v.selected).length;
+      Object.values(this.vorschlaege).forEach((hmVorschläge) => {
+        Object.values(hmVorschläge).forEach(({ thSelected, thTerminList }) => {
+          if (thSelected)
+            thTerminList.forEach((t) => {
+              if (t.selected) sum++;
+            });
+        });
       });
       return sum;
     },
     maxSelectionNum() {
       let sum = 0;
-      this.rezeptHeilmittel.forEach(() => {
-        // sum += parseInt(rhm.terminNumber);
+      this.rezeptHeilmittel.forEach((rhm) => {
+        sum += parseInt(rhm.terminNumber);
       });
       return sum;
     },
@@ -765,8 +847,14 @@ export default {
       return this.rezeptHeilmittel.map((rhm) => rhm.HeilmittelId);
     },
     selectedTherapeutenState() {
-      // TODO: improve by including wether rezeptHeilmittel that can be fulfilled by the selected Therapeuten
-      return this.selectedTherapeuten.length > 0;
+      const everyHeilmittelCovered = this.rezeptHeilmittel.every((rhm) =>
+        this.selectedTherapeuten.some((th) => {
+          return th.Heilmittels.map((thHm) => thHm.id).includes(
+            rhm.Heilmittel.id
+          );
+        })
+      );
+      return this.selectedTherapeuten.length > 0 && everyHeilmittelCovered;
     },
     filterData() {
       return [
@@ -786,6 +874,93 @@ export default {
     selectedTimeFilterState() {
       return this.oneTimeSlotAllowed ? null : false;
     },
+    flattenedTermine() {
+      return Object.values(this.vorschlaege)
+        .map((hmVorschläge) =>
+          Object.values(hmVorschläge).map(({ thSelected, thTerminList }) => {
+            return thSelected ? thTerminList.filter((t) => t.selected) : [];
+          })
+        )
+        .flat(2);
+    },
+    warningsAndErrors() {
+      const errorsAndWarnings = [];
+
+      // check for termine outside the working hours of the working hours
+      const termineOutsideWorkHours = this.flattenedTermine.filter(
+        (t) => t.outsideWorkHours
+      );
+      if (termineOutsideWorkHours.length > 0)
+        errorsAndWarnings.push({
+          title: "Du hast Termine außerhalb der Arbeitszeiten ausgewählt",
+          info: `${termineOutsideWorkHours.length} von ${this.selectionCount} ausgewählten Terminen sind außerhalb der Arbeitszeiten`,
+          type: "warning",
+          list: termineOutsideWorkHours.map(
+            (t) => `${t.date.toLocaleString("de")}, ${t.Therapeut.name}`
+          ),
+        });
+
+      // check for termine outside the working hours of the opening hours
+      const termineOutsideOpeningHours = this.flattenedTermine.filter(
+        (t) => t.outsideOpeningHours
+      );
+      if (termineOutsideOpeningHours.length > 0)
+        errorsAndWarnings.push({
+          title: "Du hast Termine außerhalb der Öffnungszeiten ausgewählt",
+          info: `${termineOutsideOpeningHours.length} von ${this.selectionCount} ausgewählten Terminen sind außerhalb der Öffnungszeiten`,
+          type: "warning",
+          list: termineOutsideOpeningHours.map(
+            (t) => `${t.date.toLocaleString("de")}, ${t.Therapeut.name}`
+          ),
+        });
+
+      // check if enough termine were selected
+      if (this.selectionCount != this.maxSelectionNum)
+        errorsAndWarnings.push({
+          title: "Nicht genug Termine ausgewählt",
+          info: `Du hast ${this.selectionCount} von ${this.maxSelectionNum} vorgesehenen im Rezept Terminen ausgewählt.`,
+          type: "danger",
+        });
+
+      return errorsAndWarnings;
+    },
+    filterWarningsAndErrors() {
+      const errorsAndWarnings = [];
+
+      if (
+        this.allowOutsideOpeningHours &&
+        this.allowOutsideWorkHours &&
+        (this.montagFilterOption == true || this.montagFilterOption == false) &&
+        (this.dienstagFilterOption == true ||
+          this.dienstagFilterOption == false) &&
+        (this.mittwochFilterOption == true ||
+          this.mittwochFilterOption == false) &&
+        (this.donnerstagFilterOption == true ||
+          this.donnerstagFilterOption == false) &&
+        (this.freitagFilterOption == true || this.freitagFilterOption == false)
+      )
+        errorsAndWarnings.push({
+          title: "Ungünstige Kombination",
+          info: "Wenn du Termine außerhalb der Öffnungs- und Arbeitszeiten erlaubst, solltest du die erlaubten Terminzeiten genauer angeben.",
+          type: "warning",
+        });
+
+      if (this.selectedTherapeutenState == false)
+        errorsAndWarnings.push({
+          title: "Therapeutenauswahl nicht gültig",
+          info: "Du musst mindestens einen Therapeuten für jedes Heilmittel des Rezepts erlauben.",
+          type: "danger",
+        });
+
+      if (this.selectedTimeFilterState == false)
+        errorsAndWarnings.push({
+          title: "Zeitangaben nicht gültig",
+          info: "Du musst mindestens einen gültigen Zeitraum erlauben.",
+          type: "danger",
+        });
+
+      return errorsAndWarnings;
+    },
   },
   mounted() {
     TherapeutService.getAll({
@@ -799,7 +974,11 @@ export default {
         this.therapeuten = therapeutList;
         this.calculateTherapeutFilters();
       })
-      .then(this.updateVorschläge);
+      .then(this.updateVorschläge)
+      .then((vorschlaege) => {
+        this.vorschlaege = vorschlaege;
+        this.save();
+      });
     // this.save();
   },
 };

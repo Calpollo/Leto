@@ -146,7 +146,7 @@ export default {
       this.rezept = {
         hausbesuch: false,
         therapieBericht: false,
-        Heilmittels: [],
+        RezeptHeilmittels: [],
       };
       this.terminvorschlaege = [];
       this.$bvModal.hide("neuesRezept");
