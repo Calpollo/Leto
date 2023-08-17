@@ -168,13 +168,13 @@
     <TerminUebersichtPdf
       v-if="this.event.RezeptId"
       :ref="'terminuebersicht-' + event?.id"
-      :RezeptId="this.event.RezeptId.toString()"
+      :RezeptId="this.event.RezeptId"
     />
 
     <RechnungKundePdf
       v-if="this.event?.RezeptId"
       :ref="'rechnung-' + event?.id"
-      :RezeptId="this.event.RezeptId.toString()"
+      :RezeptId="this.event.RezeptId"
     />
   </div>
 </template>

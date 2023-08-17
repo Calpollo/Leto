@@ -199,7 +199,7 @@ export default {
   },
   props: {
     RezeptId: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
