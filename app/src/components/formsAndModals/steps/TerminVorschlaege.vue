@@ -370,8 +370,9 @@
           :key="thID"
           class="mt-2"
         >
-          <b-col cols="12" class="mb-2">
+          <b-col cols="12" class="mt-2">
             <b-button
+              block
               @click="
                 if (!thSelected) selectTherapeutForHeilmittel(hmName, thID);
               "
@@ -379,6 +380,9 @@
             >
               {{ thID }}
             </b-button>
+          </b-col>
+          <b-col cols="12">
+            <hr />
           </b-col>
           <b-col
             v-for="[vorschlag, id] in thTerminList.map((v) => {
@@ -449,97 +453,48 @@
               <!-- {{ vorschlag.Therapeut.name.split(" ")[0] }} -->
             </b-button>
           </b-col>
+          <b-col cols="12">
+            <b-form-invalid-feedback
+              :state="
+                countSelected(hmVorschläge) ==
+                rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
+                  ?.terminNumber
+              "
+            >
+              Du musst für das Heilmittel genau
+              {{
+                rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
+                  ?.terminNumber
+              }}
+              Termine auswählen
+            </b-form-invalid-feedback>
+          </b-col>
+          <b-col cols="12">
+            <hr />
+          </b-col>
+          <b-col>
+            <b-button
+              block
+              variant="outline-secondary"
+              @click="loadMoreVorschläge(hmName, thID)"
+            >
+              <b-icon-plus />
+              Mehr Terminvorschläge laden
+            </b-button>
+          </b-col>
+
           <b-col>
             <b-button
               block
               variant="light"
-              @click="loadMoreVorschläge(hmName, thID)"
+              class="text-secondary"
+              @click="openNewTerminModal(hmName, thID)"
             >
-              Mehr Terminvorschläge laden
+              manuell hinzufügen
+              <b-icon-calendar-plus />
             </b-button>
           </b-col>
         </b-row>
-        <b-form-invalid-feedback
-          :state="
-            countSelected(hmVorschläge) ==
-            rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
-              ?.terminNumber
-          "
-        >
-          Du musst für das Heilmittel genau
-          {{
-            rezeptHeilmittel.find((rhm) => rhm.Heilmittel.abk == hmName)
-              ?.terminNumber
-          }}
-          Termine auswählen
-        </b-form-invalid-feedback>
-
-        <!-- TODO: implement a way to manually add terminvorschläge -->
-        <!-- <b-row>
-          <b-col>
-            <b-row>
-              <b-col>
-                <b-form-group label="Datum" label-for="date-input">
-                  <b-form-input
-                    id="date-input"
-                    type="date"
-                    v-model="newVorschlagDate"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group label="Zeit" label-for="time-input">
-                  <b-form-input
-                    id="time-input"
-                    type="time"
-                    v-model="newVorschlagTime"
-                  />
-                </b-form-group>
-              </b-col>
-              <b-col>
-                <b-form-group label="Therapeut" label-for="therapeut-search">
-                  <b-form-input
-                    id="therapeut-search"
-                    type="search"
-                    v-model="newVorschlagTherapeut"
-                    list="therapeutList"
-                  >
-                  </b-form-input>
-                  <datalist id="therapeutList">
-                    <option
-                      v-for="therapeut in therapeuten"
-                      :key="therapeut.id"
-                      :value="therapeut.name"
-                    >
-                      {{ therapeut.id }}
-                    </option>
-                  </datalist>
-                </b-form-group>
-              </b-col>
-              <b-col cols="auto">
-                <b-button
-                  :variant="
-                    newVorschlagDate &&
-                    newVorschlagTime &&
-                    newVorschlagTherapeut
-                      ? 'success'
-                      : 'outline-secondary'
-                  "
-                  class="m-2"
-                  :style="{ height: '70%' }"
-                  :disabled="
-                    vorsch.filter((v) => v.selected).length ==
-                    rezeptHeilmittel.find((hm) => hm.Heilmittel.name == key)
-                      .terminNumber
-                  "
-                  @click="addVorschlag(key)"
-                >
-                  <b-icon-plus />
-                </b-button>
-              </b-col>
-            </b-row>
-          </b-col>
-        </b-row> -->
       </b-card-text>
     </b-card>
     <br />
@@ -585,14 +540,24 @@
 
       {{ selectionCount }} von {{ maxSelectionNum }} ausgewählt
     </p>
+
+    <DateSelectCalendar
+      ref="newTerminSelection"
+      :therapeut="newTerminTherapeut"
+      :rezeptHeilmittel="newTerminRezeptHeilmittel"
+      @confirmHoverDate="addVorschlag"
+    />
   </div>
 </template>
 
 <script>
 import TherapeutService from "@/services/dbServices/TherapeutService";
 import { generateVorschläge } from "@/utils/rezeptcreation";
+import { millisecondsPerDay } from "@/utils/events";
+import DateSelectCalendar from "../../calendar/DateSelectCalendar.vue";
 
 export default {
+  components: { DateSelectCalendar },
   name: "TerminVorschlaege",
   props: {
     rezeptHeilmittel: Array,
@@ -612,9 +577,6 @@ export default {
     return {
       vorschlaege: {},
       therapeuten: [],
-      newVorschlagDate: null,
-      newVorschlagTime: null,
-      newVorschlagTherapeut: null,
       filterVisible: false,
       therapeutenFilterOptions: [],
       timeFilterOptions: [
@@ -635,6 +597,8 @@ export default {
       freitagTime: { start: "08:00:00", end: "18:00:00" },
       allowOutsideOpeningHours: false,
       allowOutsideWorkHours: false,
+      newTerminTherapeut: null,
+      newTerminRezeptHeilmittel: null,
     };
   },
   methods: {
@@ -723,7 +687,6 @@ export default {
           dayFilterOption = this.freitagFilterOption;
           break;
       }
-      console.log(dayFilterOption != false, dayFilterOption);
       dayFilterOptions[dayIndex] =
         dayFilterOption != false ? dayFilterOption : true;
       [
@@ -782,30 +745,6 @@ export default {
         );
       });
     },
-    addVorschlag(hmName) {
-      const heilmittel = this.heilmittel.find((hm) => hm.name == hmName);
-      const therapeut = this.therapeuten.find(
-        (t) => t.name == this.newVorschlagTherapeut
-      );
-      if (
-        !heilmittel ||
-        !therapeut ||
-        this.vorschlaege[hmName].filter((v) => v.selected).length >=
-          heilmittel.terminNumber
-      )
-        return;
-
-      const newVorschlag = {
-        date: new Date(this.newVorschlagDate + " " + this.newVorschlagTime),
-        selected: true,
-        Therapeut: therapeut,
-        TherapeutId: therapeut.id,
-        Heilmittel: heilmittel,
-        HeilmittelId: heilmittel.id,
-      };
-
-      this.vorschlaege[hmName].push(newVorschlag);
-    },
     countSelected(hmVorschläge) {
       let sum = 0;
       Object.values(hmVorschläge)
@@ -814,6 +753,31 @@ export default {
           thTerminList.forEach((t) => (sum += t.selected ? 1 : 0));
         });
       return sum;
+    },
+    openNewTerminModal(hmName, thID) {
+      this.newTerminTherapeut = this.therapeuten.find(
+        (t) => t.name.split(" ")[0] == thID
+      );
+      this.newTerminRezeptHeilmittel = this.rezeptHeilmittel.find(
+        (rhm) => rhm.Heilmittel.abk == hmName
+      );
+      this.$refs.newTerminSelection.show();
+    },
+    addVorschlag(value) {
+      this.vorschlaege[this.newTerminRezeptHeilmittel.Heilmittel.abk][
+        this.newTerminTherapeut.name.split(" ")[0]
+      ].thTerminList.push({
+        Heilmittel: this.newTerminRezeptHeilmittel.Heilmittel,
+        HeilmittelId: this.newTerminRezeptHeilmittel.Heilmittel.id,
+        Therapeut: this.newTerminTherapeut,
+        TherapeutId: this.newTerminTherapeut.id,
+        // TODO: calculate wether value is within working and opening hours
+        outsideWorkHours: false,
+        outsideOpeningHours: false,
+        selected: true,
+        date: new Date(value),
+      });
+      this.$refs.newTerminSelection.hide();
     },
     save() {
       this.$emit("save", this.flattenedTermine);
@@ -922,6 +886,32 @@ export default {
           type: "danger",
         });
 
+      // Check the days between Ausstellungsdatum and first selected Termin (warn if >=14, error if >=28)
+      const firstSelected = [...this.flattenedTermine].sort(
+        (ta, tb) => ta.date - tb.date
+      )[0];
+      if (firstSelected) {
+        const daysBetweenAusstellungAndStart =
+          (firstSelected.date - new Date(this.ausstellungsdatum)) /
+          millisecondsPerDay;
+        if (daysBetweenAusstellungAndStart >= 14)
+          errorsAndWarnings.push({
+            title: `Zeit bis zum ersten Termin: ${Math.floor(
+              daysBetweenAusstellungAndStart
+            )} Tage`,
+            info: `Der erste Termin ist ${Math.floor(
+              daysBetweenAusstellungAndStart
+            )} nach dem Ausstellungsdatum des Rezepts (Ausstellungsdatum: ${new Date(
+              this.ausstellungsdatum
+            ).toLocaleDateString(
+              "de"
+            )}, erster Termin: ${firstSelected.date.toLocaleDateString(
+              "de"
+            )}).`,
+            type: daysBetweenAusstellungAndStart >= 28 ? "danger" : "warning",
+          });
+      }
+
       return errorsAndWarnings;
     },
     filterWarningsAndErrors() {
@@ -966,7 +956,23 @@ export default {
     TherapeutService.getAll({
       include: [
         "Heilmittels",
-        "Termins",
+        {
+          association: "Termins",
+          include: [
+            "Therapeut",
+            "Heilmittels",
+            {
+              association: "Rezept",
+              include: [
+                "Kunde",
+                {
+                  association: "RezeptHeilmittels",
+                  include: "Heilmittel",
+                },
+              ],
+            },
+          ],
+        },
         { association: "Vertrag", include: { all: true } },
       ],
     })

@@ -1,8 +1,8 @@
 import DatabaseService from "../DatabaseService";
 
 class TerminService {
-  getAll({ include = [] } = {}) {
-    return DatabaseService.getTermine({ include }).catch((err) => {
+  getAll({ include = [], where = {} } = {}) {
+    return DatabaseService.getTermine({ include, where }).catch((err) => {
       console.warn(err);
       return [];
     });

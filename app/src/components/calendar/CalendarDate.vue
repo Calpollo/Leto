@@ -17,18 +17,27 @@
       {{ endDate.getHours() }}:{{ pad(endDate.getMinutes()) }}
     </p>
 
-    <p class="datename" v-show="kunde">
-      {{
-        event.Rezept.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
-          ", "
-        )
-      }}:
-      {{ kunde?.firstname }}
-      {{ kunde?.lastname }}
-      ({{ dateToAge(kunde?.geburtstag) }})
+    <p
+      class="datename"
+      v-show="kunde || event.Rezept.RezeptHeilmittels.length > 0"
+    >
+      <span v-if="event.Rezept.RezeptHeilmittels.length > 0">
+        {{
+          event.Rezept.RezeptHeilmittels.map((hmR) => hmR.Heilmittel.abk).join(
+            ", "
+          )
+        }}
+      </span>
+      <span v-if="kunde">
+        :
+        {{ kunde?.firstname }}
+        {{ kunde?.lastname }}
+        ({{ dateToAge(kunde?.geburtstag) }})
+      </span>
     </p>
 
     <b-tooltip
+      v-if="event.id"
       :target="`tooltip-target-${event.id}`"
       triggers="hover"
       placement="bottom"
@@ -117,12 +126,14 @@
     </b-tooltip>
 
     <TerminMove
+      v-if="event.id"
       :event="event"
       :ref="'terminMove-' + event.id"
       @done="moveDate"
     />
 
     <TerminMoveOrDelete
+      v-if="event.id"
       :ref="'terminMoveOrDelete-' + event.id"
       @delete="deleteDate"
       @move="openMoveModal"
@@ -139,12 +150,14 @@
     </TerminMoveOrDelete>
 
     <TerminAbsage
+      v-if="event.id"
       :id="'terminAbsage-' + event.id"
       :event="event"
       @triggerUpdate="$emit('triggerUpdate')"
     />
 
     <DeletionConfirmation
+      v-if="event.id"
       :ref="'deletionConfirmation-' + event.id"
       @confirm="confirmableFunction"
     >
@@ -166,13 +179,13 @@
     </DeletionConfirmation>
 
     <TerminUebersichtPdf
-      v-if="this.event.RezeptId"
+      v-if="event.RezeptId && event.id"
       :ref="'terminuebersicht-' + event?.id"
       :RezeptId="this.event.RezeptId"
     />
 
     <RechnungKundePdf
-      v-if="this.event?.RezeptId"
+      v-if="this.event?.RezeptId && event.id"
       :ref="'rechnung-' + event?.id"
       :RezeptId="this.event.RezeptId"
     />
@@ -256,7 +269,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.event?.Rezept?.Kunde)
+    if (!this.event?.Rezept?.Kunde && this.event?.Rezept?.KundeId)
       KundenService.getOne(this.event.Rezept.KundeId).then((k) => {
         return (this.kunde = k);
       });
