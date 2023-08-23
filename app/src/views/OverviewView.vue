@@ -4,37 +4,41 @@
 
     <b-row class="my-4 mx-0" align-v="stretch">
       <b-col cols="12" md="6" xl="3">
-        <b-button class="btn-stretch" v-b-modal.neuesRezept>
+        <b-button class="btn-stretch" v-b-modal.neuesRezept variant="primary">
           <b-icon-file-earmark-plus />Neues Rezept
         </b-button>
       </b-col>
       <b-col cols="12" md="6" xl="3">
-        <b-button class="btn-stretch" v-b-modal.folgeRezept>
+        <b-button class="btn-stretch" v-b-modal.folgeRezept variant="primary">
           <b-icon-files-alt /> Folgerezept
         </b-button>
       </b-col>
       <b-col cols="12" md="6" xl="3">
-        <b-button class="btn-stretch" disabled>
+        <b-button class="btn-stretch" disabled variant="primary">
           <b-icon-plus /> Neuer Einzeltermin
         </b-button>
       </b-col>
       <b-col cols="12" md="6" xl="3">
-        <b-button class="btn-stretch" v-b-modal.terminAbsage>
+        <b-button class="btn-stretch" v-b-modal.terminAbsage variant="primary">
           <b-icon-person-dash /> nicht erschienen
         </b-button>
       </b-col>
     </b-row>
 
     <div>
-      <b-row class="my-4 mx-0" align-h="between">
-        <calendar-color-legend
-          :therapeuten="therapeuten"
-          v-model="selectedTherapeuten"
-          class="my-2 mx-0"
-        />
-        <b-button>
-          <b-icon-arrow-counterclockwise @click="updateEventList" />
-        </b-button>
+      <b-row class="my-4 mx-0" align-v="baseline">
+        <b-col>
+          <calendar-color-legend
+            :therapeuten="therapeuten"
+            v-model="selectedTherapeuten"
+            class="my-2 mx-0"
+          />
+        </b-col>
+        <b-col cols="auto">
+          <b-button variant="outline-primary">
+            <b-icon-arrow-counterclockwise @click="updateEventList" />
+          </b-button>
+        </b-col>
       </b-row>
 
       <hr />

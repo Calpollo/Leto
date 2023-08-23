@@ -5,12 +5,13 @@
     :id="`tooltip-target-${this.event.id}`"
   >
     <p>
-      <b-icon-play-circle-fill v-if="event.isFirstEvent" />
-      <b-icon-exclamation-triangle-fill v-if="event.isLastEvent" />
-      <b-icon-person-dash-fill v-if="!event.erschienen" />
+      <b-icon-play-circle-fill v-if="event.isFirstEvent" class="mr-1" />
+      <b-icon-exclamation-triangle-fill v-if="event.isLastEvent" class="mr-1" />
+      <b-icon-person-dash-fill v-if="!event.erschienen" class="mr-1" />
       <b-icon-exclamation-octagon-fill
         variant="danger"
         v-if="event.rezeptIsMissingTermin"
+        class="mr-1"
       />
       {{ startDate.getHours() }}:{{ pad(startDate.getMinutes()) }}
       -
@@ -81,7 +82,7 @@
       <p>
         {{ event.Therapeut.name }}
       </p>
-      <p>
+      <p class="mb-1">
         <router-link
           :to="{ name: 'Verwaltung.Patienten', query: { kunde: kunde?.id } }"
         >
@@ -101,7 +102,7 @@
         </router-link>
       </p>
 
-      <b-button-group vertical>
+      <b-button-group vertical class="mb-1" size="sm">
         <b-button @click="printTerminPdf" variant="outline-light">
           <b-icon-file-earmark-pdf />
           Terminübersicht
@@ -291,7 +292,7 @@ export default {
   color: white;
   display: inline-block;
 
-  font-size: small;
+  font-size: 12px;
 
   text-align: left;
   padding: 5px 10px;
@@ -313,6 +314,7 @@ p {
 }
 
 button {
-  font-size: smaller;
+  font-size: 12px;
+  color: red;
 }
 </style>

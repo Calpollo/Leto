@@ -54,7 +54,7 @@
             top: '-10px',
             width: 'max-content',
             height: 'max-content',
-            backgroundColor: 'var(--background)',
+            backgroundColor: '$background',
             zIndex: 0,
           }"
         >

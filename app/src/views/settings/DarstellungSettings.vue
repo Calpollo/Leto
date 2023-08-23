@@ -49,7 +49,7 @@ export default {
 
   &::after {
     content: "";
-    background: url(@/assets/FrauKopftuch.svg);
+    background: url(@/assets/img/FrauKopftuch.svg);
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(250px, 30%);

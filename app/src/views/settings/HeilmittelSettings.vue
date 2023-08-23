@@ -196,7 +196,7 @@ export default {
 
   &::after {
     content: "";
-    background: url(@/assets/FrauRollstuhl.svg);
+    background: url(@/assets/img/FrauRollstuhl.svg);
     background-attachment: fixed;
     background-position: bottom right;
     background-repeat: no-repeat;
@@ -214,8 +214,8 @@ export default {
 }
 
 h3 {
-  background-color: var(--primary);
-  color: var(--background);
+  background-color: $primary;
+  color: $background;
   border-radius: 4px;
 }
 </style>

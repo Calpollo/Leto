@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import Leto from "@/assets/Leto.svg";
+import Leto from "@/assets/img/Leto.svg";
 import ConfigService from "../../services/ConfigService";
 import SpinnerLogo from "../../components/SpinnerLogo.vue";
 
@@ -106,7 +106,7 @@ export default {
 
   &::after {
     content: "";
-    background: url(@/assets/Krücken.svg);
+    background: url(@/assets/img/Krücken.svg);
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(350px, 50%);
