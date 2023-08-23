@@ -357,7 +357,7 @@ function filterDayToZeitspanne(timefilter) {
   else return timefilter;
 }
 
-function skipToNextTimeslot(currentSearchDate, hours, terminMinutes) {
+export function skipToNextTimeslot(currentSearchDate, hours, terminMinutes) {
   let skipped = false;
 
   let relevantHours = getRelevantHoursPerDay(currentSearchDate, hours);

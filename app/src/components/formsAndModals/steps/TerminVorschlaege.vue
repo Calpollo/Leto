@@ -368,9 +368,9 @@
             hmVorschläge
           )"
           :key="thID"
-          class="mt-2"
+          class="mtb-2"
         >
-          <b-col cols="12" class="mt-2">
+          <b-col cols="12" class="my-2">
             <b-button
               block
               @click="
@@ -380,9 +380,6 @@
             >
               {{ thID }}
             </b-button>
-          </b-col>
-          <b-col cols="12">
-            <hr />
           </b-col>
           <b-col
             v-for="[vorschlag, id] in thTerminList.map((v) => {
@@ -437,19 +434,21 @@
                 </p>
               </b-tooltip>
               {{
-                vorschlag.date.toLocaleString("de-DE", {
-                  weekday: "short",
+                toLocale(vorschlag.date, {
+                  options: {
+                    weekday: "short",
+                  },
                 })
               }},
               {{
-                vorschlag.date.toLocaleDateString("de-DE", {
-                  month: "2-digit",
-                  day: "2-digit",
+                toLocale(vorschlag.date, {
+                  options: {
+                    month: "2-digit",
+                    day: "2-digit",
+                  },
                 })
               }}
-              {{ vorschlag.date.getHours() }}:{{
-                pad(vorschlag.date.getMinutes())
-              }}
+              {{ toLocaleTime(vorschlag.date) }}
               <!-- {{ vorschlag.Therapeut.name.split(" ")[0] }} -->
             </b-button>
           </b-col>
@@ -469,10 +468,7 @@
               Termine auswählen
             </b-form-invalid-feedback>
           </b-col>
-          <b-col cols="12">
-            <hr />
-          </b-col>
-          <b-col>
+          <b-col cols="9">
             <b-button
               block
               variant="outline-secondary"
@@ -493,6 +489,9 @@
               manuell hinzufügen
               <b-icon-calendar-plus />
             </b-button>
+          </b-col>
+          <b-col cols="12">
+            <hr />
           </b-col>
         </b-row>
       </b-card-text>
@@ -552,9 +551,12 @@
 
 <script>
 import TherapeutService from "@/services/dbServices/TherapeutService";
-import { generateVorschläge } from "@/utils/rezeptcreation";
+import { generateVorschläge, skipToNextTimeslot } from "@/utils/rezeptcreation";
 import { millisecondsPerDay } from "@/utils/events";
+import { toLocale, toLocaleTime } from "@/utils/dates";
 import DateSelectCalendar from "../../calendar/DateSelectCalendar.vue";
+import ConfigService from "../../../services/ConfigService";
+import PraxisService from "@/services/dbServices/PraxisService";
 
 export default {
   components: { DateSelectCalendar },
@@ -577,6 +579,7 @@ export default {
     return {
       vorschlaege: {},
       therapeuten: [],
+      praxis: null,
       filterVisible: false,
       therapeutenFilterOptions: [],
       timeFilterOptions: [
@@ -603,6 +606,8 @@ export default {
   },
   methods: {
     generateVorschläge,
+    toLocale,
+    toLocaleTime,
     updateVorschläge({
       therapeuten = this.selectedTherapeuten,
       rezeptHeilmittel = this.rezeptHeilmittel,
@@ -764,6 +769,20 @@ export default {
       this.$refs.newTerminSelection.show();
     },
     addVorschlag(value) {
+      console.log({ value });
+      /* eslint-disable no-unused-vars */
+      const [_nextWorkTimeslot, outsideWorkHours] = skipToNextTimeslot(
+        new Date(value),
+        this.newTerminTherapeut.Vertrag,
+        this.newTerminRezeptHeilmittel.Heilmittel.terminMinutes
+      );
+      const [_nextOpeningTimeslot, outsideOpeningHours] = skipToNextTimeslot(
+        new Date(value),
+        this.praxis,
+        this.newTerminRezeptHeilmittel.Heilmittel.terminMinutes
+      );
+      /* eslint-enable no-unused-vars */
+      console.log({ outsideWorkHours, outsideOpeningHours });
       this.vorschlaege[this.newTerminRezeptHeilmittel.Heilmittel.abk][
         this.newTerminTherapeut.name.split(" ")[0]
       ].thTerminList.push({
@@ -771,9 +790,8 @@ export default {
         HeilmittelId: this.newTerminRezeptHeilmittel.Heilmittel.id,
         Therapeut: this.newTerminTherapeut,
         TherapeutId: this.newTerminTherapeut.id,
-        // TODO: calculate wether value is within working and opening hours
-        outsideWorkHours: false,
-        outsideOpeningHours: false,
+        outsideWorkHours,
+        outsideOpeningHours,
         selected: true,
         date: new Date(value),
       });
@@ -860,7 +878,10 @@ export default {
           info: `${termineOutsideWorkHours.length} von ${this.selectionCount} ausgewählten Terminen sind außerhalb der Arbeitszeiten`,
           type: "warning",
           list: termineOutsideWorkHours.map(
-            (t) => `${t.date.toLocaleString("de")}, ${t.Therapeut.name}`
+            (t) =>
+              `${toLocale(t.date)}, ${toLocaleTime(t.date)}, ${
+                t.Therapeut.name
+              }`
           ),
         });
 
@@ -874,7 +895,10 @@ export default {
           info: `${termineOutsideOpeningHours.length} von ${this.selectionCount} ausgewählten Terminen sind außerhalb der Öffnungszeiten`,
           type: "warning",
           list: termineOutsideOpeningHours.map(
-            (t) => `${t.date.toLocaleString("de")}, ${t.Therapeut.name}`
+            (t) =>
+              `${toLocale(t.date)}, ${toLocaleTime(t.date)}, ${
+                t.Therapeut.name
+              }`
           ),
         });
 
@@ -901,13 +925,9 @@ export default {
             )} Tage`,
             info: `Der erste Termin ist ${Math.floor(
               daysBetweenAusstellungAndStart
-            )} nach dem Ausstellungsdatum des Rezepts (Ausstellungsdatum: ${new Date(
-              this.ausstellungsdatum
-            ).toLocaleDateString(
-              "de"
-            )}, erster Termin: ${firstSelected.date.toLocaleDateString(
-              "de"
-            )}).`,
+            )} nach dem Ausstellungsdatum des Rezepts (Ausstellungsdatum: ${toLocale(
+              new Date(this.ausstellungsdatum)
+            )}, erster Termin: ${toLocale(firstSelected.date)}).`,
             type: daysBetweenAusstellungAndStart >= 28 ? "danger" : "warning",
           });
       }
@@ -986,6 +1006,9 @@ export default {
         this.save();
       });
     // this.save();
+    PraxisService.getOne(ConfigService.getPraxis()).then(
+      (praxis) => (this.praxis = praxis)
+    );
   },
 };
 </script>

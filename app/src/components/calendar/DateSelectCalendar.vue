@@ -1,6 +1,6 @@
 <template>
   <b-modal :id="'newTerminSelection-' + modalId" size="lg" scrollable>
-    <calendar-component
+    <CalendarComponent
       :events="events"
       :showHoverEvent="newEvent"
       @hoverTerminChange="onHoverTerminChange"
@@ -19,11 +19,8 @@
 
 <script>
 import { roundToMinutes, msPerMinute } from "@/utils/dates";
-import CalendarComponent from "./CalendarComponent.vue";
 
 export default {
-  components: { CalendarComponent },
-  // FIXME: fix component registration error
   name: "DateSelectCalendar",
   data() {
     return {
@@ -65,8 +62,8 @@ export default {
         5
       );
       eventStart = Math.min(
-        Math.max(eventStart, value.openingHours.start),
-        value.openingHours.end - this.newEvent.minutes * msPerMinute
+        Math.max(eventStart, value.openingHours.Zeitspanne.start),
+        value.openingHours.Zeitspanne.end - this.newEvent.minutes * msPerMinute
       );
       if (eventStart != this.newEvent.start) {
         this.newEvent = Object.assign(this.newEvent, {
@@ -83,7 +80,6 @@ export default {
   },
   watch: {
     therapeut() {
-      console.log("watch therapeut", this.therapeut);
       this.newEvent = Object.assign(this.newEvent, {
         Therapeut: this.therapeut,
       });

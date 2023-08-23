@@ -113,8 +113,8 @@ export default {
       return result;
     },
     getDateStyle(event) {
-      const rowStart = dateRowStart(event, this.openingHours);
-      const rowEnd = dateRowEnd(event, this.openingHours);
+      const rowStart = dateRowStart(event, this.opening);
+      const rowEnd = dateRowEnd(event, this.opening);
       const concurrentEvents = eventListToConcurringEventnumber(this.allEvents);
       const marginTop =
         (new Date(event.start).getMinutes() % (60 / 4)) *
@@ -144,7 +144,9 @@ export default {
           this.pixelPerHour / 4) /
         this.pixelPerHour;
       this.$emit("hoverTerminChange", {
-        start: new Date(this.opening.start + hourOffset * millisecondsPerHour),
+        start: new Date(
+          this.opening.Zeitspanne.start + hourOffset * millisecondsPerHour
+        ),
         openingHours: this.opening,
       });
     },
@@ -168,22 +170,25 @@ export default {
       const openStart = new Date(this.openingHours.Zeitspanne.start);
       const openEnd = new Date(this.openingHours.Zeitspanne.end);
       return {
-        start: new Date(this.date).setHours(
-          openStart.getHours(),
-          openStart.getMinutes(),
-          0,
-          0
-        ),
-        end: new Date(this.date).setHours(
-          openEnd.getHours(),
-          openEnd.getMinutes(),
-          0,
-          0
-        ),
+        Zeitspanne: {
+          start: new Date(this.date).setHours(
+            openStart.getHours(),
+            openStart.getMinutes(),
+            0,
+            0
+          ),
+          end: new Date(this.date).setHours(
+            openEnd.getHours(),
+            openEnd.getMinutes(),
+            0,
+            0
+          ),
+        },
       };
     },
     allEvents() {
-      if (this.showHoverEvent) return [...this.events, this.showHoverEvent];
+      if (this.showHoverEvent && !this.hideHoverEvent)
+        return [...this.events, this.showHoverEvent];
       else return this.events;
     },
   },

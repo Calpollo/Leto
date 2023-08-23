@@ -27,6 +27,7 @@
         id="rezeptwahl"
         type="search"
         list="rezeptlist"
+        placeholder="Heilmittel: Ausstellungsdatum"
         v-model="selectedRezept"
         @input="changeRezept"
         required
@@ -102,23 +103,30 @@ export default {
   },
   methods: {
     changedKunde() {
-      const [lastname, firstname] = this.selectedKunde.split(", ");
-      RezeptService.getByLastnameAndFirstname(lastname, firstname, {
-        include: [
-          "Kunde",
-          "icd10code",
-          {
-            association: "RezeptHeilmittels",
-            include: "Heilmittel",
-          },
-        ],
-      }).then((rezeptList) => {
-        this.rezepte = rezeptList;
+      if (this.selectedKunde) {
+        const [lastname, firstname] = this.selectedKunde.split(", ");
+        RezeptService.getByLastnameAndFirstname(lastname, firstname, {
+          include: [
+            "Kunde",
+            "icd10code",
+            {
+              association: "RezeptHeilmittels",
+              include: "Heilmittel",
+            },
+          ],
+        }).then((rezeptList) => {
+          this.rezepte = rezeptList;
+          this.selectedRezept = null;
+          this.rezept = {};
+          this.showRezeptDaten = false;
+          this.$emit("input", this.rezept);
+        });
+      } else {
         this.selectedRezept = null;
         this.rezept = {};
         this.showRezeptDaten = false;
         this.$emit("input", this.rezept);
-      });
+      }
     },
     dateToLocale(date, locale) {
       return toLocale(date, locale);
