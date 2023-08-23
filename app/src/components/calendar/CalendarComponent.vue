@@ -65,7 +65,10 @@
         <CalendarDay
           :events="relevantEvents(day)?.sort(sortByStartTime)"
           :date="new Date(startDay.valueOf() + day * msPerDay).valueOf()"
+          :showHoverEvent="showHoverEvent"
           @triggerUpdate="triggerUpdate"
+          @hoverTerminChange="onHoverTerminChange"
+          @confirmHoverDate="onconfirmHoverDate"
         />
       </b-col>
     </b-row>
@@ -101,6 +104,10 @@ export default {
     hideWeekend: {
       type: Boolean,
       default: true,
+    },
+    showHoverEvent: {
+      type: Object,
+      default: null,
     },
   },
   methods: {
@@ -202,6 +209,12 @@ export default {
         gridRow: row + "/" + (row + 1),
         gridColumn: "1/2",
       };
+    },
+    onHoverTerminChange(value) {
+      this.$emit("hoverTerminChange", value);
+    },
+    onconfirmHoverDate() {
+      this.$emit("confirmHoverDate");
     },
   },
   computed: {

@@ -3,15 +3,10 @@ import KundenService from "@/services/dbServices/KundenService";
 import RezeptHeilmittelService from "@/services/dbServices/RezeptHeilmittelService";
 import RezeptService from "@/services/dbServices/RezeptService";
 import TerminService from "@/services/dbServices/TerminService";
+import { roundToMinutes } from "@/utils/dates";
 
-const millisecondsPerHour = 3600000;
-const millisecondsPerDay = millisecondsPerHour * 24;
-
-// export function timeStringToDate(str, dateString = null) {
-//   const d = dateString ? new Date(dateString) : new Date();
-//   let [hours, minutes, seconds] = str.split(":");
-//   return d.setHours(hours, minutes, seconds);
-// }
+export const millisecondsPerHour = 3600000;
+export const millisecondsPerDay = millisecondsPerHour * 24;
 
 export function eventHours(event) {
   if (!event) return 0;
@@ -19,31 +14,25 @@ export function eventHours(event) {
 }
 
 export function eventsAtTheSameTime(event, events) {
-  const eventStart = new Date(event.start).valueOf();
-  const eventEnd = new Date(event.start)
-    .setMinutes(new Date(eventStart).getMinutes() + event.minutes)
-    .valueOf();
+  const eventStart = roundToMinutes(new Date(event.start)).valueOf();
+  const eventEnd = roundToMinutes(
+    new Date(event.start).setMinutes(
+      new Date(eventStart).getMinutes() + event.minutes
+    )
+  ).valueOf();
   return events.filter((e) => {
-    const eStart = new Date(e.start).valueOf();
-    const eEnd = new Date(e.start)
-      .setMinutes(new Date(eStart).getMinutes() + e.minutes)
-      .valueOf();
+    const eStart = roundToMinutes(new Date(e.start)).valueOf();
+    const eEnd = roundToMinutes(
+      new Date(e.start).setMinutes(new Date(eStart).getMinutes() + e.minutes)
+    ).valueOf();
 
-    // console.table({
-    //   eStart: eStart - 1670000000000,
-    //   eventStart: eventStart - 1670000000000,
-    //   eEnd: eEnd - 1670000000000,
-    //   eventEnd: eventEnd - 1670000000000,
-    //   startEndOverlapA: eventEnd == eStart,
-    //   startEndOverlapB: eEnd == eventStart,
-    //   inbetweenA: eventStart < eEnd && eventEnd >= eEnd,
-    //   inbetweenB: eventStart <= eStart && eventEnd > eStart,
-    // });
     return (
       eStart == eventStart ||
       eEnd == eventEnd ||
-      (eventStart < eEnd && eventEnd >= eEnd) ||
-      (eventStart <= eStart && eventEnd > eStart)
+      // eventEnd lies within eStart and eEnd
+      (eventEnd < eEnd && eventEnd > eStart) ||
+      // eventStart lies within eStart and eEnd
+      (eventStart > eStart && eventStart < eEnd)
     );
   }).length;
 }
@@ -55,7 +44,10 @@ export function startHoursDifference(earlyEvent, lateEvent) {
 
 export function eventListToConcurringEventnumber(eventList) {
   return new Map(
-    eventList.map((event) => [event.id, eventsAtTheSameTime(event, eventList)])
+    eventList.map((event) => [
+      event.id || "showHoverEvent",
+      eventsAtTheSameTime(event, eventList),
+    ])
   );
 }
 
@@ -65,20 +57,10 @@ export function fullDayHours(openingHours) {
 }
 
 export function dateRowStart(event, openingHours) {
-  // if (typeof event.start == "string")
-  //   event.start = timeStringToDate(
-  //     event.start.split("T")[1].substring(0, 9),
-  //     event.start
-  //   );
-  // if (typeof openingHours.Zeitspanne.start == "string")
-  //   openingHours.Zeitspanne.start = timeStringToDate(
-  //     openingHours.Zeitspanne.start
-  //   );
-
   let timeDiff =
     new Date(event.start) - new Date(openingHours.Zeitspanne.start);
   timeDiff = timeDiff % millisecondsPerDay;
-  return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
+  return Math.floor((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 
 export function dateRowEnd(event, openingHours) {
@@ -87,6 +69,7 @@ export function dateRowEnd(event, openingHours) {
       new Date(event.start).getMinutes() + event.minutes
     ) - new Date(openingHours.Zeitspanne.start);
   timeDiff = timeDiff % millisecondsPerDay;
+
   return Math.round((timeDiff / millisecondsPerHour) * 4 + 2);
 }
 

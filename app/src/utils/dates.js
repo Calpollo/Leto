@@ -27,10 +27,15 @@ export function dateToAge(birthdate) {
 export function YYYY_MM_DD_convert(date) {
   if (!date) return date;
   if (typeof date == "string") date = new Date(date);
-  console.log(date);
 
   return `${date?.getFullYear()}-${new String(date?.getMonth() + 1).padStart(
     2,
     "0"
   )}-${new String(date?.getDate()).padStart(2, "0")}`;
+}
+
+export const msPerMinute = 1000 * 60;
+export function roundToMinutes(date, minutes = 1) {
+  const msInQuestion = minutes * msPerMinute;
+  return new Date(date.valueOf() - (date.valueOf() % msInQuestion));
 }

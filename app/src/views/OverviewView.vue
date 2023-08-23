@@ -93,7 +93,6 @@
 </template>
 
 <script>
-import CalendarComponent from "@/components/calendar/CalendarComponent.vue";
 import FolgeRezeptFormular from "@/components/formsAndModals/FolgeRezeptFormular.vue";
 import NeuesRezeptFormular from "@/components/formsAndModals/NeuesRezeptFormular.vue";
 import TerminAbsage from "@/components/formsAndModals/TerminAbsage.vue";
@@ -221,7 +220,6 @@ export default {
     },
   },
   components: {
-    CalendarComponent,
     NeuesRezeptFormular,
     FolgeRezeptFormular,
     TerminAbsage,
