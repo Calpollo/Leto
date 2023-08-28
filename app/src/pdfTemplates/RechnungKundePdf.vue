@@ -21,7 +21,7 @@
       <section slot="pdf-content">
         <!-- PDF Content Here -->
         <div>
-          <img id="leto-logo" src="@/assets/Leto - Text.png" />
+          <img id="leto-logo" src="@/assets/img/Leto - Text.png" />
 
           <b-row>
             <b-col class="anschrift">

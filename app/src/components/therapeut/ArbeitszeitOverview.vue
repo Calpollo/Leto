@@ -3,6 +3,9 @@
     <h4 v-if="!this.hideName" class="therapeutname">
       {{ therapeut.name }} ({{ therapeut.geschlecht }})
     </h4>
+    <b-row class="timebar" :style="getTimebarStyle()">
+      <b-col class="fullTime" :style="getFullTimeStyle()"></b-col>
+    </b-row>
     <div class="timebar" :style="getTimebarStyle()">
       <div class="fullTime" :style="getFullTimeStyle()">
         <b>
@@ -54,9 +57,8 @@ export default {
       const percent =
         ((this.termineZeitSumme || 0) / this.therapeut.Vertrag?.wochenstunden ||
           1) * 100;
-      // const percent = 50;
       return {
-        background: `linear-gradient(to right, var(--secondary), var(--secondary) ${percent}%, var(--secondary-accent) ${percent}%)`,
+        background: `linear-gradient(to right, $secondary, $secondary ${percent}%, $secondary-accent ${percent}%)`,
       };
     },
     updatetermineZeitSumme() {
@@ -83,8 +85,8 @@ export default {
 }
 
 .fullTime {
-  color: var(--background-accent);
-  border: solid 2px var(--secondary);
+  color: $background-accent;
+  border: solid 2px $secondary;
   border-radius: 999px;
   overflow: hidden;
   width: 100%;

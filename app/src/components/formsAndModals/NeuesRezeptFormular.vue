@@ -232,13 +232,13 @@ label {
 .v-stepper__step--active {
   .v-stepper__step__step {
     color: white;
-    background-color: var(--primary) !important;
+    background-color: $primary !important;
   }
 }
 
 .v-stepper__step--complete {
   .v-stepper__step__step {
-    background-color: var(--secondary-accent) !important;
+    background-color: $secondary-accent !important;
   }
 }
 </style>

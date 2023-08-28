@@ -21,7 +21,7 @@
           </router-link>
         </div>
         <template #overlay>
-          <b :style="{ color: 'var(--light)' }">Demnächst verfügbar</b>
+          <b :style="{ color: 'white' }">Demnächst verfügbar</b>
         </template>
       </b-overlay>
 
@@ -42,7 +42,7 @@
           </router-link>
         </div>
         <template #overlay>
-          <b :style="{ color: 'var(--light)' }">Demnächst verfügbar</b>
+          <b :style="{ color: 'white' }">Demnächst verfügbar</b>
         </template>
       </b-overlay>
     </div>
@@ -120,7 +120,7 @@ export default {
 
   &::after {
     content: "";
-    background: url(@/assets/MannSitzend.svg);
+    background: url(@/assets/img/MannSitzend.svg);
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(250px, 30%);
@@ -143,9 +143,6 @@ export default {
 }
 
 .warningbox {
-  // background-color: var(--background-accent);
-  // display: flex;
-  // flex-direction: column;
   display: grid;
   grid-template-rows: max-content 1fr max-content;
   gap: 16px;
@@ -154,12 +151,12 @@ export default {
   padding: 20px;
 
   .r-arrow {
-    color: var(--color);
+    color: $text;
     margin-left: auto;
     align-self: flex-end;
 
     &:hover {
-      color: var(--secondary);
+      color: $secondary;
     }
   }
 
@@ -170,12 +167,12 @@ export default {
     width: 100%;
     padding: 10px;
     border-radius: 12px;
-    background-color: var(--warning);
+    background-color: $warning;
     justify-self: center;
   }
 
   &.error h3 {
-    background-color: var(--error);
+    background-color: $danger;
   }
 }
 

@@ -1,0 +1,14 @@
+$primary: #6927d3;
+$secondary: #495f41;
+$secondary-accent: #384932;
+$danger: #fa8253;
+$warning: #ffbb00;
+
+$background: #eff9f0;
+$background-accent: #b6dfb9;
+$text: #330f0a;
+
+// Bootstrap and its default variables
+@import "@/../node_modules/bootstrap/scss/bootstrap.scss";
+// BootstrapVue and its default variables
+@import "@/../node_modules/bootstrap-vue/src/index.scss";

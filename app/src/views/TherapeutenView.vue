@@ -43,7 +43,7 @@ export default {
 
   &::after {
     content: "";
-    background: url(@/assets/FrauSitzend.svg);
+    background: url(@/assets/img/FrauSitzend.svg);
     background-position: bottom right;
     background-repeat: no-repeat;
     background-size: min(250px, 30%);

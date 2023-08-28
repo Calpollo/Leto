@@ -11,7 +11,7 @@
     >
       <div id="topNav">
         <router-link :to="{ name: 'Home' }">
-          <img src="@/assets/Leto - Text.svg" />
+          <img src="@/assets/img/Leto - Text.svg" />
         </router-link>
 
         <nav>
@@ -68,42 +68,39 @@ export default {
   width: max-content;
   height: 100vh;
 
-  box-shadow: 0 0 12px 4px rgba(0, 0, 0, 0.25);
-  background: var(--background);
+  box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.1);
+  background: $background;
 
   z-index: 2;
 }
 
 nav {
-  display: grid;
+  display: grid !important;
   flex-direction: column;
 
   & .router-link-active {
-    // color: var(--accent);
-    background-color: var(--background-accent);
+    background-color: $background-accent;
   }
 
   & a {
-    color: var(--primary);
+    color: $primary;
     padding: 10px 20px;
     // border-radius: 999px;
     // margin: 0 10px;
 
     &:hover {
-      color: var(--secondary);
-      background-color: var(--background-accent);
+      color: $secondary;
+      background-color: $background-accent;
     }
   }
 }
 
 #bottomNav > nav {
   & .router-link-active {
-    // color: var(--accent);
     background-color: transparent;
   }
   & .router-link-exact-active {
-    // color: var(--accent);
-    background-color: var(--background-accent);
+    background-color: $background-accent;
   }
 }
 </style>

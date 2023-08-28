@@ -1,5 +1,5 @@
 
-![Logo](./app/src/assets/Leto%20-%20Text.svg)
+![Logo](./app/src/assets/img/Leto%20-%20Text.svg)
 
 
 # Leto

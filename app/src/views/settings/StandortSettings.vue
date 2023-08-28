@@ -252,7 +252,7 @@ export default {
 
   &::after {
     content: "";
-    background-image: url(@/assets/houseBG.svg);
+    background-image: url(@/assets/img/houseBG.svg);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-position: bottom right;
@@ -271,14 +271,14 @@ export default {
 }
 
 .praxisHeading {
-  background-color: var(--primary);
-  color: var(--background);
+  background-color: $primary;
+  color: $background;
   border-radius: 4px;
 
   &:not(.selected) {
     background-color: white;
-    color: var(--primary);
-    border: 2px solid var(--primary);
+    color: $primary;
+    border: 2px solid $primary;
   }
 }
 </style>

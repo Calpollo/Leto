@@ -268,8 +268,8 @@ export default {
 
 <style lang="scss" scoped>
 h3 {
-  background-color: var(--primary);
-  color: var(--background);
+  background-color: $primary;
+  color: $background;
   border-radius: 4px;
 }
 </style>

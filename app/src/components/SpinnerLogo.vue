@@ -1,5 +1,5 @@
 <template>
-  <img src="@/assets/Leto.svg" alt="" />
+  <img src="@/assets/img/Leto.svg" alt="" />
 </template>
 
 <style scoped lang="scss">
