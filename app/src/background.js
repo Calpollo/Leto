@@ -38,7 +38,11 @@ async function createWindow() {
     win.loadURL("app://./index.html");
   }
 
-  win.setTitle(require("../package.json").displayName);
+  win.setTitle("Leto by Calpollo");
+
+  win.on("page-title-updated", (e) => {
+    e.preventDefault();
+  });
 
   win.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);

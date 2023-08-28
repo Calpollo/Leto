@@ -22,7 +22,7 @@ class LocalDbAdapter {
       this.sequelize.query(
         "UPDATE sqlite_sequence SET SEQ=1000 WHERE NAME='Rezepts'"
       );
-      this.seed();
+      // this.seed();
     });
   }
 
@@ -729,7 +729,7 @@ class LocalDbAdapter {
     // Synchronisation
     // #################
     return this.sequelize.sync({
-      force: true,
+      force: process.env.NODE_ENV !== "production",
       // alter: true,
     });
   }
