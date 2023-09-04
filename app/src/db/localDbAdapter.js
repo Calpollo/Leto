@@ -1,4 +1,5 @@
 import { INTEGER } from "sequelize";
+import sqlite3 from "sqlite3";
 import Praxis from "./seeds/Praxis.json";
 import Heilmittel from "./seeds/Heilmittel.json";
 import Therapeuten from "./seeds/Therapeuten.json";
@@ -15,6 +16,7 @@ class LocalDbAdapter {
     fs.mkdirSync("./data", { recursive: true });
     this.sequelize = new Sequelize("database", null, null, {
       dialect: "sqlite",
+      dialectModule: sqlite3,
       storage: "./data/database.sqlite",
     });
 
