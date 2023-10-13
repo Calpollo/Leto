@@ -70,7 +70,7 @@
           id="seedButton"
         >
           <SpinnerLogo id="spinnerButton" v-if="seeding" />
-          <span v-else> Seed </span>
+          <span v-else> Testdaten laden </span>
         </b-button>
         <b-button @click="ok" variant="primary" :disabled="!selectedPraxisId">
           Speichern
@@ -84,6 +84,7 @@
     <PraxisEditFormular
       id="praxisEdit"
       ref="praxisEdit"
+      v-model="praxisToCreate"
       @done="confirmPraxisCreation"
       @cancel="backToPraxisSelection"
     />
@@ -120,6 +121,14 @@ export default {
       selectedTherapeuten: [],
       showSeedButton: false,
       seeding: false,
+      praxisToCreate: {
+        montagsZeit: {},
+        dienstagsZeit: {},
+        mittwochsZeit: {},
+        donnerstagsZeit: {},
+        freitagsZeit: {},
+        Feiertage: [],
+      },
     };
   },
   methods: {
@@ -165,8 +174,6 @@ export default {
       this.$refs.praxisEdit.openModal();
     },
     confirmPraxisCreation(praxisToCreate) {
-      console.log(praxisToCreate);
-
       const {
         name,
         email,
