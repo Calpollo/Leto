@@ -829,12 +829,13 @@ export default {
       return this.rezeptHeilmittel.map((rhm) => rhm.HeilmittelId);
     },
     selectedTherapeutenState() {
-      const everyHeilmittelCovered = this.rezeptHeilmittel.every((rhm) =>
-        this.selectedTherapeuten.some((th) => {
-          return th.Heilmittels.map((thHm) => thHm.id).includes(
-            rhm.Heilmittel.id
-          );
-        })
+      const everyHeilmittelCovered = (this.rezeptHeilmittel || []).every(
+        (rhm) =>
+          this.selectedTherapeuten.some((th) => {
+            return th.Heilmittels.map((thHm) => thHm.id).includes(
+              rhm.Heilmittel.id
+            );
+          })
       );
       return this.selectedTherapeuten.length > 0 && everyHeilmittelCovered;
     },
@@ -925,7 +926,7 @@ export default {
             )} Tage`,
             info: `Der erste Termin ist ${Math.floor(
               daysBetweenAusstellungAndStart
-            )} nach dem Ausstellungsdatum des Rezepts (Ausstellungsdatum: ${toLocale(
+            )} Tage nach dem Ausstellungsdatum des Rezepts (Ausstellungsdatum: ${toLocale(
               new Date(this.ausstellungsdatum)
             )}, erster Termin: ${toLocale(firstSelected.date)}).`,
             type: daysBetweenAusstellungAndStart >= 28 ? "danger" : "warning",

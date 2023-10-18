@@ -93,7 +93,7 @@
 
     <FolgeRezeptFormular id="folgeRezept" @done="updateEventList" />
 
-    <TerminAbsage id="terminAbsage" />
+    <TerminAbsage id="terminAbsage" @triggerUpdate="updateEventList" />
   </div>
 </template>
 
@@ -121,14 +121,7 @@ export default {
       selectedTherapeuten: [],
       showSeedButton: false,
       seeding: false,
-      praxisToCreate: {
-        montagsZeit: {},
-        dienstagsZeit: {},
-        mittwochsZeit: {},
-        donnerstagsZeit: {},
-        freitagsZeit: {},
-        Feiertage: [],
-      },
+      praxisToCreate: null,
     };
   },
   methods: {

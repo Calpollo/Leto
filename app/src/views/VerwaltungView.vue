@@ -54,20 +54,22 @@
     </div>
 
     <b-row>
-      <b-col class="exports">
-        <b-button :to="{ name: 'Verwaltung.Patienten' }" class="my-1">
+      <b-col cols="12" lg="8">
+        <b-button :to="{ name: 'Verwaltung.Patienten' }" class="my-1" block>
           Patientenübersicht
         </b-button>
-        <b-button :to="{ name: 'Verwaltung.Rezepte' }" class="my-1">
+        <b-button :to="{ name: 'Verwaltung.Rezepte' }" class="my-1" block>
           Rezeptübersicht
         </b-button>
-        <b-button class="my-1" disabled>Gehaltsübersicht generieren</b-button>
-        <b-button class="my-1" disabled>Zur Gesamtstatistik</b-button>
-        <b-button class="my-1" @click="openPdfGenerationKunde">
+        <b-button class="my-1" disabled block>
+          Gehaltsübersicht generieren
+        </b-button>
+        <b-button class="my-1" disabled block> Zur Gesamtstatistik </b-button>
+        <b-button class="my-1" @click="openPdfGenerationKunde" block>
           <b-icon-file-earmark></b-icon-file-earmark>
           PDFs generieren (Kunde)
         </b-button>
-        <b-button class="my-1" @click="openPdfGenerationKrankenkasse">
+        <b-button class="my-1" @click="openPdfGenerationKrankenkasse" block>
           <b-icon-file-earmark></b-icon-file-earmark>
           PDFs generieren (Krankenkasse)
         </b-button>
@@ -187,14 +189,6 @@ export default {
       font-size: xx-large;
       display: block;
     }
-  }
-}
-
-.exports {
-  max-width: 70%;
-  .btn {
-    display: block;
-    width: 100%;
   }
 }
 </style>

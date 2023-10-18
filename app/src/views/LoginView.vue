@@ -4,7 +4,12 @@
       <b-card-text>
         <b-form-group>
           <b-form-group label="Benutzername" label-for="username">
-            <b-input id="username" type="text" v-model="username"></b-input>
+            <b-input
+              id="username"
+              type="text"
+              v-model="username"
+              autofocus
+            ></b-input>
           </b-form-group>
           <b-form-group label="Password" label-for="password">
             <b-input id="password" type="password" v-model="password"></b-input>

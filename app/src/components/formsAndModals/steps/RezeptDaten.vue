@@ -79,27 +79,17 @@
     <b-row>
       <b-col cols="6" v-if="kundeDaten?.versichertenstatus != 'Privat'">
         <b-form-group id="icd10-group" label="ICD 10 Code:" label-for="icd10">
-          <b-form-input
-            id="icd10"
-            @change="setICD10Code"
-            :value="
-              rezept.icd10code
-                ? rezept.icd10code.primärschlüssel +
-                  ', ' +
-                  rezept.icd10code.text
-                : null
+          <b-form-select
+            :v-model="rezept.icd10codeId"
+            :options="
+              icd10codes.map((i) => {
+                return {
+                  value: i.id,
+                  text: `${i.primärschlüssel}, ${i.text}`,
+                };
+              })
             "
-            list="icd10list"
           />
-          <datalist id="icd10list">
-            <option
-              v-for="icd in icd10codes"
-              :key="icd.id"
-              :value="icd.primärschlüssel + ', ' + icd.text"
-            >
-              {{ icd.primärschlüssel }}, {{ icd.text }}
-            </option>
-          </datalist>
         </b-form-group>
       </b-col>
       <b-col cols="6" v-if="kundeDaten?.versichertenstatus != 'Privat'">
@@ -290,17 +280,6 @@ export default {
       const idx = this.rezept.RezeptHeilmittels.indexOf(hm);
 
       this.rezept.RezeptHeilmittels.splice(idx, 1);
-      this.$emit("input", this.rezept);
-    },
-    setICD10Code(icd10) {
-      // TODO: optimize performance from 3687 instances in the list
-      const [primärschlüssel, text] = icd10.split(", ");
-      const icd = this.icd10codes.find(
-        (i) => i.primärschlüssel == primärschlüssel && i.text == text
-      );
-      if (icd)
-        this.rezept = { ...this.rezept, icd10code: icd, icd10codeId: icd.id };
-      else this.rezept = { ...this.rezept, icd10code: null, icd10codeId: null };
       this.$emit("input", this.rezept);
     },
     createArzt() {

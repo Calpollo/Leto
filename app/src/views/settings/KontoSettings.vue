@@ -22,16 +22,18 @@
           </p>
           <p>Aktueller Abo-Status: {{ $store.state.me.RoleName }}</p>
 
-          <b-button
-            variant="outline-primary"
-            href="https://leto.andreasnicklaus.de/account"
-            target="_blank"
-          >
-            Kontoverwaltung
-          </b-button>
-          <b-button v-if="online" variant="outline-danger" @click="logout">
-            Abmelden
-          </b-button>
+          <b-button-group>
+            <b-button
+              variant="outline-primary"
+              href="https://leto.andreasnicklaus.de/account"
+              target="_blank"
+            >
+              Kontoverwaltung
+            </b-button>
+            <b-button v-if="online" variant="outline-danger" @click="logout">
+              Abmelden
+            </b-button>
+          </b-button-group>
         </b-card-text>
       </b-card>
     </div>

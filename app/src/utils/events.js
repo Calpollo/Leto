@@ -53,7 +53,7 @@ export function eventListToConcurringEventnumber(eventList) {
 
 export function fullDayHours(openingHours) {
   let { start, end } = openingHours.Zeitspanne;
-  return Math.ceil((end - start) / millisecondsPerHour);
+  return Math.ceil((end - start) / (millisecondsPerHour / 2)) / 2;
 }
 
 export function dateRowStart(event, openingHours) {
@@ -154,8 +154,8 @@ export async function createNewRezept(rezept, termine, { kunde = null } = {}) {
         })
       ).then(() => termine);
     });
-    return Promise.all([rezeptHeilmittelCreation, termincreation]).then(
-      () => createdRezept
+    return Promise.all([rezeptHeilmittelCreation, termincreation]).then(() =>
+      RezeptService.getOne(createdRezept.id)
     );
   });
 }

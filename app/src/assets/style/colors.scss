@@ -12,3 +12,11 @@ $text: #330f0a;
 @import "@/../node_modules/bootstrap/scss/bootstrap.scss";
 // BootstrapVue and its default variables
 @import "@/../node_modules/bootstrap-vue/src/index.scss";
+
+.root {
+  --primary: $primary;
+  --secondary: $secondary;
+  --secondary-accent: $secondary-accent;
+  --danger: $danger;
+  --warning: $warning;
+}
