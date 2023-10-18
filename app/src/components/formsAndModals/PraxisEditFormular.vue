@@ -582,12 +582,37 @@ export default {
         email: null,
         phone: null,
         ikNummer: null,
-        Feiertage: [],
         montagsZeit: {},
         dienstagsZeit: {},
         mittwochsZeit: {},
         donnerstagsZeit: {},
         freitagsZeit: {},
+        Feiertage: [
+          {
+            yearlyRepetition: true,
+            datum: "2023-01-01",
+          },
+          {
+            yearlyRepetition: true,
+            datum: "2023-01-06",
+          },
+          {
+            yearlyRepetition: true,
+            datum: "2023-05-01",
+          },
+          {
+            yearlyRepetition: true,
+            datum: "2023-10-03",
+          },
+          {
+            yearlyRepetition: true,
+            datum: "2023-12-25",
+          },
+          {
+            yearlyRepetition: true,
+            datum: "2023-12-26",
+          },
+        ],
       });
     },
     init() {
