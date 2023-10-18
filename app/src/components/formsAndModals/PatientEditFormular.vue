@@ -100,6 +100,29 @@
 
       <b-col cols="6">
         <b-form-group
+          id="versicherungs-group"
+          label="Krankenkasse:"
+          label-for="versicherung"
+        >
+          <b-form-select
+            :disabled="!showVersichertenNummer"
+            v-model="kunde.KrankenkasseKostenträgerkennung"
+            id="versicherung"
+            placeholder="Versicherung (Kostenträgerkennung)"
+            :options="
+              krankenkassen.map((versicherung) => {
+                return {
+                  value: versicherung.kostenträgerkennung,
+                  text: `${versicherung.name} (${versicherung.kostenträgerkennung})`,
+                };
+              })
+            "
+          />
+        </b-form-group>
+      </b-col>
+
+      <b-col cols="6">
+        <b-form-group
           id="versichertennummer-group"
           label="Versichertennummer:"
           label-for="versichertennummer"
@@ -119,6 +142,7 @@
 
 <script>
 import { YYYY_MM_DD_convert } from "@/utils/dates";
+import KrankenkasseService from "@/services/dbServices/KrankenkasseService";
 
 export default {
   name: "PatientEditFormular",
@@ -126,10 +150,14 @@ export default {
     return {
       kunde: this.value,
       dateTest: null,
+      krankenkassen: [],
     };
   },
   props: {
     value: Object,
+  },
+  mounted() {
+    this.loadKrankenkassen();
   },
   methods: {
     YYYY_MM_DD_convert,
@@ -139,10 +167,14 @@ export default {
         versichertenstatus: status,
         versichertennummer:
           status == "SZ" ? null : this.kunde.versichertennummer,
+        KrankenkasseKostenträgerkennung:
+          status == "SZ" ? null : this.kunde.KrankenkasseKostenträgerkennung,
       };
     },
-    log(a) {
-      console.log(a);
+    loadKrankenkassen() {
+      KrankenkasseService.getAll().then((krankenkasseList) => {
+        this.krankenkassen = krankenkasseList;
+      });
     },
   },
   watch: {
