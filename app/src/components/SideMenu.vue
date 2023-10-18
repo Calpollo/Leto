@@ -39,6 +39,14 @@
             <b-icon-person-square class="mr-2" />
             Konto
           </router-link>
+          <b-button
+            @click="logout"
+            class="m-2"
+            variant="outline-danger"
+            v-if="loggedIn"
+          >
+            Abmelden
+          </b-button>
         </nav>
       </div>
       <template #overlay>
@@ -54,6 +62,14 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.state.loggedIn;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.commit("logOut");
+      this.$router.currentRoute.name != "Start"
+        ? this.$router.push({ name: "Start" })
+        : null;
     },
   },
 };
