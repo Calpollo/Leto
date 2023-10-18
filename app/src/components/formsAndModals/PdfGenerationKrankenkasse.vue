@@ -19,7 +19,7 @@
 
     <b-row>
       <b-col>
-        <b-form-checkbox v-model="allowKostenfrei">
+        <b-form-checkbox v-model="allowKostenfrei" disabled>
           Rezepte ohne Krankenkassenbeteiligung erlauben
         </b-form-checkbox>
       </b-col>
@@ -141,7 +141,7 @@ export default {
       this.selectedKrankenkasse = krankenkasse;
       setTimeout(() => {
         this.$refs.krankenkasseAbrechnung.generatePdf();
-        // this.selectedKrankenkasse = null;
+        this.selectedKrankenkasse = null;
       }, 200);
     },
     ok() {
@@ -187,9 +187,9 @@ export default {
       return this.filteredRezepte.filter((r) => r.selected);
     },
     relevanteKrankenkassen() {
-      const krankenkassen = this.abrechnungsRezepte.map(
-        (r) => r.Kunde.Krankenkasse
-      );
+      const krankenkassen = this.abrechnungsRezepte
+        .map((r) => r.Kunde.Krankenkasse)
+        .filter((k) => k != null);
       const kennungen = Array.from(
         new Set(krankenkassen.map((k) => k.kostenträgerkennung))
       );

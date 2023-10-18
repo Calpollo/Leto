@@ -110,6 +110,12 @@ export default {
   computed: {
     kostenaufstellung() {
       return [...this.RezeptList]
+        .filter(
+          (r) =>
+            !this.krankenkasse?.kostenträgerkennung ||
+            r.Kunde.KrankenkasseKostenträgerkennung ==
+              this.krankenkasse.kostenträgerkennung
+        )
         .map((r) => {
           return r.RezeptHeilmittels.map((hmR) => {
             return {
