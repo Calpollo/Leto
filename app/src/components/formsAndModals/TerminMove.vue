@@ -6,7 +6,7 @@
     scrollable
   >
     <TerminVorschlaege
-      :heilmittel="replacementHeilmittel"
+      :rezeptHeilmittel="replacementHeilmittel"
       :showSaveButton="false"
       :preSelect="false"
       :ausstellungsdatum="event.Rezept.ausstellungsdatum"
