@@ -28,6 +28,14 @@
         id="termin-auswahl"
         type="search"
         list="terminlist"
+        :disabled="!termine || termine.length == 0"
+        :placeholder="
+          !selectedPatientId
+            ? 'Kein Patient gewählt'
+            : termine.length == 0
+            ? 'Gewählter Patient hat keine Termine'
+            : '31.02.1999 - 00:00'
+        "
         :value="
           termin
             ? toLocale(termin.start) + ' - ' + toLocaleTime(termin.start)
@@ -37,7 +45,7 @@
       />
       <datalist id="terminlist">
         <option
-          v-for="t in termine"
+          v-for="t in termine.filter((t) => t.erschienen)"
           :key="t.id"
           :value="toLocale(t.start) + ' - ' + toLocaleTime(t.start)"
         >
@@ -104,7 +112,7 @@ import TerminMove from "./TerminMove.vue";
 import DeletionConfirmation from "./DeletionConfirmation.vue";
 export default {
   components: { TerminMove, DeletionConfirmation },
-  name: "PatientNichtErschienen",
+  name: "TerminAbsage",
   data() {
     return {
       patienten: [],
@@ -126,41 +134,56 @@ export default {
     toLocaleTime,
     updateTermine() {
       const p = this.patienten.find((p) => p.id == this.selectedPatientId);
-      TerminService.getByKunde(p.id, {
-        include: [
-          {
-            association: "Rezept",
-            include: {
-              association: "RezeptHeilmittels",
-              include: "Heilmittel",
+      if (p)
+        TerminService.getByKunde(p.id, {
+          include: [
+            {
+              association: "Rezept",
+              include: {
+                association: "RezeptHeilmittels",
+                include: "Heilmittel",
+              },
             },
-          },
-        ],
-      }).then((terminList) => {
-        this.termine = terminList.filter(
-          (t) => t.start > new Date().setDate(new Date().getDate() - 7)
-        );
-      });
+          ],
+        }).then((terminList) => {
+          this.termine = terminList.filter(
+            (t) => t.start > new Date().setDate(new Date().getDate() - 7)
+          );
+        });
+      else this.termine = [];
     },
     changePatient(lastnamefirstname) {
-      const [lastname, firstname] = lastnamefirstname.split(", ");
-      const found = this.patienten.find(
-        (p) => p.lastname == lastname && p.firstname == firstname
-      );
-      if (found) this.selectedPatientId = found.id;
-      else this.selectedPatientId = "";
+      if (!lastnamefirstname) this.selectedPatientId = "";
+      else {
+        const [lastname, firstname] = lastnamefirstname.split(", ");
+        const found = this.patienten.find(
+          (p) => p.lastname == lastname && p.firstname == firstname
+        );
+        if (found) this.selectedPatientId = found.id;
+        else this.selectedPatientId = "";
+      }
     },
     changeTermin(dateTime) {
-      const [date, time] = dateTime.split(" - ");
-      const [day, month, year] = date.split(".");
-      const [hours, minutes] = time.split(":");
-      const found = this.termine.find(
-        (p) =>
-          new Date(p.start).valueOf() ==
-          new Date(year, month - 1, day, hours, minutes).valueOf()
-      );
-      if (found) this.selectedTerminId = found.id;
-      else this.selectedTerminId = "";
+      if (!dateTime) this.selectedTerminId = "";
+      else {
+        const [date, time] = dateTime.split(" - ");
+
+        if (!date || !time) return (this.selectedTerminId = "");
+
+        const [day, month, year] = date.split(".");
+        const [hours, minutes] = time.split(":");
+
+        if (!day || !month || !year || !hours || !minutes)
+          return (this.selectedTerminId = "");
+
+        const found = this.termine.find(
+          (p) =>
+            new Date(p.start).valueOf() ==
+            new Date(year, month - 1, day, hours, minutes).valueOf()
+        );
+        if (found) this.selectedTerminId = found.id;
+        else this.selectedTerminId = "";
+      }
     },
     openMoveModal() {
       this.$refs.terminMove.show();
@@ -174,6 +197,7 @@ export default {
         TherapeutId,
         start: new Date(date),
       }).then(() => {
+        this.$emit("triggerUpdate");
         this.cancel();
       });
     },
