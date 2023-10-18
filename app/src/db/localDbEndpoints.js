@@ -13,6 +13,7 @@ let {
   Rezept,
   RezeptHeilmittel,
   ICD10Code,
+  Krankenkasse,
   Arzt,
 } = localDB;
 
@@ -65,6 +66,10 @@ ipcMain.handle("getRezept", async (event, data) => {
 
 ipcMain.handle("getICD10Code", async (event, data) => {
   return JSON.stringify(await localDB.get(ICD10Code, data));
+});
+
+ipcMain.handle("getKrankenkasse", async (event, data) => {
+  return JSON.stringify(await localDB.get(Krankenkasse, data));
 });
 
 ipcMain.handle("getArzt", async (event, data) => {

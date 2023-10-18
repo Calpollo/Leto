@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld("ipc", {
   getHeilmittel: (data) => ipcRenderer.invoke("getHeilmittel", data),
   getDatum: (data) => ipcRenderer.invoke("getDatum", data),
   getICD10Code: (data) => ipcRenderer.invoke("getICD10Code", data),
+  getKrankenkasse: (data) => ipcRenderer.invoke("getKrankenkasse", data),
   getArzt: (data) => ipcRenderer.invoke("getArzt", data),
 
   createZeitspanne: (data) => ipcRenderer.invoke("createZeitspanne", data),

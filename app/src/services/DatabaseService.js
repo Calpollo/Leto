@@ -37,7 +37,7 @@ class DatabaseService {
     if (this.isOffline()) {
       return window.ipc.getTermin(data).then(JSON.parse);
     } else {
-      const params = { include: data.include };
+      const params = { include: data.include, where: data.where };
       if (data.id)
         return ax.get("/termin/" + data.id, { params }).then((res) => res.data);
       return ax.get("/termin/", { params }).then((res) => res.data);
@@ -83,7 +83,7 @@ class DatabaseService {
     if (this.isOffline()) {
       return window.ipc.getRezept(data).then(JSON.parse);
     } else {
-      const params = { include: data.include };
+      const params = { include: data.include, where: data.where };
       if (data.id)
         return ax.get("/rezept/" + data.id, { params }).then((res) => res.data);
       return ax.get("/rezept/", { params }).then((res) => res.data);
@@ -137,6 +137,15 @@ class DatabaseService {
           .get("/icd10code/" + data.id, { params })
           .then((res) => res.data);
       return ax.get("/icd10code/", { params }).then((res) => res.data);
+    }
+  }
+
+  getKrankenkasse(data) {
+    if (this.isOffline()) {
+      return window.ipc.getKrankenkasse(data).then(JSON.parse);
+    } else {
+      const params = { include: data.include };
+      return ax.get("/krankenkasse/", { params }).then((res) => res.data);
     }
   }
 
