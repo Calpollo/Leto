@@ -101,7 +101,7 @@ export default {
       const dayLengthInHours = fullDayHours(this.openingHours);
       const backgroundColor = this.isToday ? "#EEE" : "transparent";
       const result = {
-        gridTemplateRows: `repeat(${dayLengthInHours * 4}, ${
+        gridTemplateRows: `repeat(${dayLengthInHours * 4 + 1}, ${
           this.pixelPerHour / 4
         }px)`,
         background: `repeating-linear-gradient(

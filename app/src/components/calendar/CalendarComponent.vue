@@ -42,7 +42,9 @@
         class="pl-0 pr-1"
         :style="{
           display: 'grid',
-          gridTemplateRows: `repeat(${timeLegend.length * 2}, ${160 / 4}px)`,
+          gridTemplateRows: `repeat(${timeLegend.length * 2 - 1}, ${
+            160 / 4
+          }px)`,
         }"
       >
         <small
@@ -51,7 +53,7 @@
           :style="{
             ...getTimeLegendStyle(time),
             position: 'relative',
-            top: '-10px',
+            bottom: '-30px',
             width: 'max-content',
             height: 'max-content',
             backgroundColor: '$background',
@@ -65,6 +67,7 @@
         <CalendarDay
           :events="relevantEvents(day)?.sort(sortByStartTime)"
           :date="new Date(startDay.valueOf() + day * msPerDay).valueOf()"
+          :openingHours="getOpeningHoursOfDay(day, startDay)"
           :showHoverEvent="showHoverEvent"
           @triggerUpdate="triggerUpdate"
           @hoverTerminChange="onHoverTerminChange"
@@ -204,7 +207,7 @@ export default {
       }
     },
     getTimeLegendStyle(time) {
-      const row = this.timeLegend.indexOf(time) * 2 + 2;
+      const row = this.timeLegend.indexOf(time) * 2 + 1;
       return {
         gridRow: row + "/" + (row + 1),
         gridColumn: "1/2",
@@ -215,6 +218,19 @@ export default {
     },
     onconfirmHoverDate() {
       this.$emit("confirmHoverDate");
+    },
+    getOpeningHoursOfDay(day, startDay) {
+      const thatDay = new Date(startDay.valueOf() + day * msPerDay);
+      const openingHoursWeek = [
+        null,
+        { Zeitspanne: this.praxis.montagsZeit },
+        { Zeitspanne: this.praxis.dienstagsZeit },
+        { Zeitspanne: this.praxis.mittwochsZeit },
+        { Zeitspanne: this.praxis.donnerstagsZeit },
+        { Zeitspanne: this.praxis.freitagsZeit },
+        null,
+      ];
+      return openingHoursWeek[thatDay.getDay()];
     },
   },
   computed: {

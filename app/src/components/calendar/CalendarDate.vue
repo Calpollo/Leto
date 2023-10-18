@@ -215,12 +215,12 @@ export default {
   data() {
     return {
       kunde: null,
-      startDate: new Date(this.event.start),
-      endDate: new Date(
-        new Date(this.event.start).setMinutes(
-          new Date(this.event.start).getMinutes() + this.event.minutes
-        )
-      ),
+      // startDate: new Date(this.event.start),
+      // endDate: new Date(
+      //   new Date(this.event.start).setMinutes(
+      //     new Date(this.event.start).getMinutes() + this.event.minutes
+      //   )
+      // ),
       confirmableFunction: () => {},
     };
   },
@@ -283,6 +283,18 @@ export default {
     TerminAbsage,
     RechnungKundePdf,
     TerminUebersichtPdf,
+  },
+  computed: {
+    startDate() {
+      return new Date(this.event.start);
+    },
+    endDate() {
+      return new Date(
+        new Date(this.event.start).setMinutes(
+          new Date(this.event.start).getMinutes() + this.event.minutes
+        )
+      );
+    },
   },
 };
 </script>
