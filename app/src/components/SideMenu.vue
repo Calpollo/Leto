@@ -9,46 +9,66 @@
         height: '100%',
       }"
     >
-      <div id="topNav">
-        <router-link :to="{ name: 'Home' }">
-          <img src="@/assets/img/Leto - Text.svg" />
+      <b-nav vertical id="topNav">
+        <router-link :to="{ name: 'Home' }" class="p-2">
+          <img
+            class="d-none d-md-block"
+            src="@/assets/img/Leto - Text.svg"
+            width="180"
+          />
+          <img
+            class="d-block d-md-none"
+            src="@/assets/img/Leto.svg"
+            width="50"
+          />
         </router-link>
 
-        <nav>
-          <router-link :to="{ name: 'Home' }">
-            <b-icon-house-fill class="mr-2" />
-            Übersicht
-          </router-link>
-          <router-link :to="{ name: 'Therapeuten' }">
-            <b-icon-person-lines-fill class="mr-2" />
-            Therapeuten
-          </router-link>
-          <router-link :to="{ name: 'Verwaltung' }">
-            <b-icon-file-bar-graph-fill class="mr-2" />
-            Verwaltung
-          </router-link>
-          <router-link :to="{ name: 'Einstellungen' }">
-            <b-icon-tools class="mr-2" />
-            Einstellungen
-          </router-link>
-        </nav>
-      </div>
-      <div id="bottomNav">
-        <nav>
-          <router-link :to="{ name: 'Einstellungen.Konto' }">
-            <b-icon-person-square class="mr-2" />
-            Konto
-          </router-link>
-          <b-button
-            @click="logout"
-            class="m-2"
-            variant="outline-danger"
-            v-if="loggedIn"
+        <b-nav vertical>
+          <b-nav-item :to="{ name: 'Home' }" class="text-md-left text-center">
+            <b-icon-house-fill class="mr-0 mr-md-2" />
+            <span class="d-none d-md-inline">Übersicht</span>
+          </b-nav-item>
+          <b-nav-item
+            :to="{ name: 'Therapeuten' }"
+            class="text-md-left text-center"
           >
-            Abmelden
-          </b-button>
-        </nav>
-      </div>
+            <b-icon-person-lines-fill class="mr-0 mr-md-2" />
+            <span class="d-none d-md-inline">Therapeuten</span>
+          </b-nav-item>
+          <b-nav-item
+            :to="{ name: 'Verwaltung' }"
+            class="text-md-left text-center"
+          >
+            <b-icon-file-bar-graph-fill class="mr-0 mr-md-2" />
+            <span class="d-none d-md-inline">Verwaltung</span>
+          </b-nav-item>
+          <b-nav-item
+            :to="{ name: 'Einstellungen' }"
+            class="text-md-left text-center"
+          >
+            <b-icon-tools class="mr-0 mr-md-2" />
+            <span class="d-none d-md-inline">Einstellungen</span>
+          </b-nav-item>
+        </b-nav>
+      </b-nav>
+      <b-nav vertical id="bottomNav">
+        <b-nav-item
+          :to="{ name: 'Einstellungen.Konto' }"
+          class="text-md-left text-center"
+        >
+          <b-icon-file-person class="mr-0 mr-md-2" />
+          <span class="d-none d-md-inline">Konto</span>
+        </b-nav-item>
+        <b-button
+          @click="logout"
+          class="m-2"
+          variant="outline-danger"
+          v-if="loggedIn"
+        >
+          <b-icon-door-open-fill />
+          <span class="d-none d-md-inline">Abmelden</span>
+        </b-button>
+      </b-nav>
       <template #overlay>
         <b-icon-lock-fill />
       </template>
@@ -77,11 +97,10 @@ export default {
 
 <style lang="scss">
 .sideMenu {
-  display: inline-block;
+  // display: inline-block;
   position: sticky;
   top: 0;
-  bottom: 0;
-  width: max-content;
+  // bottom: 0;
   height: 100vh;
 
   box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.1);
@@ -90,24 +109,19 @@ export default {
   z-index: 2;
 }
 
-nav {
-  display: grid !important;
-  flex-direction: column;
-
-  & .router-link-active {
+.nav-link {
+  &.router-link-active {
     background-color: $background-accent;
   }
 
-  & a {
-    color: $primary;
-    padding: 10px 20px;
-    // border-radius: 999px;
-    // margin: 0 10px;
+  color: $primary;
+  padding: 10px 20px;
+  // border-radius: 999px;
+  // margin: 0 10px;
 
-    &:hover {
-      color: $secondary;
-      background-color: $background-accent;
-    }
+  &:hover {
+    color: $secondary;
+    background-color: $background-accent;
   }
 }
 
@@ -118,12 +132,5 @@ nav {
   & .router-link-exact-active {
     background-color: $background-accent;
   }
-}
-</style>
-
-<style lang="scss" scoped>
-img {
-  padding: 20px;
-  width: 200px;
 }
 </style>

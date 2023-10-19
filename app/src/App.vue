@@ -57,10 +57,4 @@ h6 {
   width: 100%;
   padding: 20px 50px;
 }
-
-.neomorph {
-  border-radius: 50px;
-  background: $background;
-  box-shadow: 30px 30px 36px #c3c3c3, -30px -30px 36px #fdfdfd;
-}
 </style>
