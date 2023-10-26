@@ -86,14 +86,20 @@
           label="Versicherungsstatus:"
           label-for="Versicherungsstatus"
         >
-          <b-dropdown id="versicherstatus">
-            <template #button-content>{{ kunde.versichertenstatus }}</template>
+          <b-dropdown
+            id="versicherstatus"
+            :variant="kunde.versichertenstatus ? 'success' : 'outline-danger'"
+          >
+            <template #button-content>
+              {{ kunde.versichertenstatus || "nicht gewählt" }}
+            </template>
             <b-dropdown-item
               v-for="status in ['GKV', 'Privat', 'SZ']"
               :key="status"
               @click="setVersichertenStatus(status)"
-              >{{ status }}</b-dropdown-item
             >
+              {{ status }}
+            </b-dropdown-item>
           </b-dropdown>
         </b-form-group>
       </b-col>
@@ -106,7 +112,11 @@
         >
           <b-form-select
             :disabled="!showVersichertenNummer"
-            v-model="kunde.KrankenkasseKostenträgerkennung"
+            :value="kunde.KrankenkasseKostenträgerkennung"
+            @input="
+              (value) =>
+                (kunde = { ...kunde, KrankenkasseKostenträgerkennung: value })
+            "
             id="versicherung"
             placeholder="Versicherung (Kostenträgerkennung)"
             :options="
@@ -173,7 +183,9 @@ export default {
     },
     loadKrankenkassen() {
       KrankenkasseService.getAll().then((krankenkasseList) => {
-        this.krankenkassen = krankenkasseList;
+        this.krankenkassen = krankenkasseList.sort((a, b) =>
+          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+        );
       });
     },
   },

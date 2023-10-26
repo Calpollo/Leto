@@ -167,7 +167,7 @@ export default {
         RezeptHeilmittels,
         ausstellungsdatum,
         ArztLanr,
-        icd10code,
+        icd10codeId,
         hausbesuch,
         beschreibung,
         indikation,
@@ -195,7 +195,7 @@ export default {
             hausbesuch != null &&
             therapieBericht != null &&
             (versichertenstatus == "GKV"
-              ? icd10code && indikation
+              ? icd10codeId && indikation
               : beschreibung)
           );
         }

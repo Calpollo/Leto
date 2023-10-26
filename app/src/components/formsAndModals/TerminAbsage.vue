@@ -5,53 +5,79 @@
     title="Patient nicht erschienen"
   >
     <b-form-group label="Patient:" label-for="patienten-auswahl">
-      <b-input
-        id="patienten-auswahl"
-        type="search"
-        list="patientenlist"
-        :value="patient ? patient.lastname + ', ' + patient.firstname : null"
-        @change="changePatient"
-      />
-      <datalist id="patientenlist">
-        <option
-          v-for="patient in patienten"
-          :key="patient.id"
-          :value="patient.lastname + ', ' + patient.firstname"
-        >
-          {{ patient.lastname }}, {{ patient.firstname }}
-        </option>
-      </datalist>
+      <b-input-group>
+        <b-input
+          id="patienten-auswahl"
+          type="search"
+          list="patientenlist"
+          :value="patient ? patient.lastname + ', ' + patient.firstname : null"
+          @change="changePatient"
+        />
+        <datalist id="patientenlist">
+          <option
+            v-for="patient in patienten"
+            :key="patient.id"
+            :value="patient.lastname + ', ' + patient.firstname"
+          >
+            {{ patient.lastname }}, {{ patient.firstname }}
+          </option>
+        </datalist>
+        <template #append>
+          <b-input-group-append>
+            <b-button
+              variant="outline-danger"
+              :disabled="!patient"
+              @click="changePatient(null)"
+            >
+              <b-icon-x />
+            </b-button>
+          </b-input-group-append>
+        </template>
+      </b-input-group>
     </b-form-group>
 
     <b-form-group label="Termin:" label-for="termin-auswahl">
-      <b-input
-        id="termin-auswahl"
-        type="search"
-        list="terminlist"
-        :disabled="!termine || termine.length == 0"
-        :placeholder="
-          !selectedPatientId
-            ? 'Kein Patient gewählt'
-            : termine.length == 0
-            ? 'Gewählter Patient hat keine Termine'
-            : '31.02.1999 - 00:00'
-        "
-        :value="
-          termin
-            ? toLocale(termin.start) + ' - ' + toLocaleTime(termin.start)
-            : null
-        "
-        @change="changeTermin"
-      />
-      <datalist id="terminlist">
-        <option
-          v-for="t in termine.filter((t) => t.erschienen)"
-          :key="t.id"
-          :value="toLocale(t.start) + ' - ' + toLocaleTime(t.start)"
-        >
-          {{ toLocale(t.start) }} - {{ toLocaleTime(t.start) }}
-        </option>
-      </datalist>
+      <b-input-group>
+        <b-input
+          id="termin-auswahl"
+          type="search"
+          list="terminlist"
+          :disabled="!termine || termine.length == 0"
+          :placeholder="
+            !selectedPatientId
+              ? 'Kein Patient gewählt'
+              : termine.length == 0
+              ? 'Gewählter Patient hat keine Termine'
+              : 'Termin wählen'
+          "
+          :value="
+            termin
+              ? toLocale(termin.start) + ' - ' + toLocaleTime(termin.start)
+              : null
+          "
+          @change="changeTermin"
+        />
+        <datalist id="terminlist">
+          <option
+            v-for="t in termine.filter((t) => t.erschienen)"
+            :key="t.id"
+            :value="toLocale(t.start) + ' - ' + toLocaleTime(t.start)"
+          >
+            {{ toLocale(t.start) }} - {{ toLocaleTime(t.start) }}
+          </option>
+        </datalist>
+        <template #append>
+          <b-input-group-append>
+            <b-button
+              variant="outline-danger"
+              :disabled="!termin"
+              @click="changeTermin(null)"
+            >
+              <b-icon-x />
+            </b-button>
+          </b-input-group-append>
+        </template>
+      </b-input-group>
     </b-form-group>
 
     <template #modal-footer="{}">

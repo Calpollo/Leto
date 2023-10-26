@@ -1,13 +1,31 @@
 <template>
   <b-form class="kundendaten" @submit="save">
     <b-form-group label="Kundendaten laden:" label-for="kunde-search">
-      <b-form-input
-        id="kunde-search"
-        type="search"
-        list="kundenlist"
-        placeholder="Nachname, Vorname"
-        @change="loadKundenDaten"
-      ></b-form-input>
+      <b-input-group>
+        <b-form-input
+          id="kunde-search"
+          type="search"
+          list="kundenlist"
+          placeholder="Nachname, Vorname"
+          @change="loadKundenDaten"
+          v-model="loadingSearchTerm"
+        />
+
+        <template #append>
+          <b-input-group-append>
+            <b-button
+              variant="outline-danger"
+              :disabled="!loadingSearchTerm"
+              @click="
+                loadingSearchTerm = null;
+                loadKundenDaten();
+              "
+            >
+              <b-icon-x />
+            </b-button>
+          </b-input-group-append>
+        </template>
+      </b-input-group>
 
       <hr class="my-4" />
 
@@ -56,6 +74,7 @@ export default {
   },
   data() {
     return {
+      loadingSearchTerm: null,
       kunde: this.value,
       kunden: [],
     };
@@ -64,15 +83,26 @@ export default {
     save() {
       this.$emit("save", this.kunde);
     },
-    loadKundenDaten(lastFirstName) {
-      const [lastname, firstname] = lastFirstName.split(", ");
-      const found = this.kunden.find(
-        (k) => k.lastname == lastname && k.firstname == firstname
-      );
-      if (!found) return;
-      else {
-        this.kunde = found;
-        this.$emit("input", found);
+    loadKundenDaten(lastFirstName = null) {
+      if (!lastFirstName || lastFirstName == "") {
+        this.kunde = {
+          nachname: null,
+          vorname: null,
+          address: null,
+          phone: null,
+          email: null,
+        };
+        this.$emit("input", this.kunde);
+      } else {
+        const [lastname, firstname] = lastFirstName.split(", ");
+        const found = this.kunden.find(
+          (k) => k.lastname == lastname && k.firstname == firstname
+        );
+        if (!found) return;
+        else {
+          this.kunde = found;
+          this.$emit("input", found);
+        }
       }
     },
   },

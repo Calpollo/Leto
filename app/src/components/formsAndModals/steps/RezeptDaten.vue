@@ -79,17 +79,36 @@
     <b-row>
       <b-col cols="6" v-if="kundeDaten?.versichertenstatus != 'Privat'">
         <b-form-group id="icd10-group" label="ICD 10 Code:" label-for="icd10">
-          <b-form-select
-            :v-model="rezept.icd10codeId"
-            :options="
-              icd10codes.map((i) => {
-                return {
-                  value: i.id,
-                  text: `${i.primärschlüssel}, ${i.text}`,
-                };
-              })
-            "
-          />
+          <b-input-group>
+            <b-form-select
+              :value="rezept.icd10codeId"
+              @input="
+                (value) => {
+                  rezept = { ...rezept, icd10codeId: value };
+                  this.$emit('input', this.rezept);
+                }
+              "
+              :options="
+                icd10codes.map((i) => {
+                  return {
+                    value: i.id,
+                    text: `${i.primärschlüssel}, ${i.text}`,
+                  };
+                })
+              "
+            />
+            <template #append>
+              <b-input-group-append>
+                <b-button
+                  variant="outline-danger"
+                  :disabled="!rezept?.icd10codeId"
+                  @click="rezept.icd10codeId = null"
+                >
+                  <b-icon-x />
+                </b-button>
+              </b-input-group-append>
+            </template>
+          </b-input-group>
         </b-form-group>
       </b-col>
       <b-col cols="6" v-if="kundeDaten?.versichertenstatus != 'Privat'">
@@ -319,7 +338,12 @@ export default {
     });
 
     ICD10Service.getAll().then((icd10list) => {
-      this.icd10codes = icd10list;
+      this.icd10codes = icd10list.sort((a, b) =>
+        `${a.primärschlüssel}, ${a.text}`.toLowerCase() >
+        `${b.primärschlüssel}, ${b.text}`.toLowerCase()
+          ? 1
+          : -1
+      );
     });
 
     ArztService.getAll().then((arztList) => (this.arzts = arztList));
